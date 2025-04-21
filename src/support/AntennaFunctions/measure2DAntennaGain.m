@@ -159,7 +159,8 @@ function measure2DAntennaGain(app)
             pause(app.AntennaMeasurementDelayValueField.Value);
 
             % Get S-Parameters and Frequencies from VNA
-            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA); 
+            % [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA);
+            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters2(app.VNA); 
 
             if ~isempty(app.ReferenceGainFile)
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, ReferenceGain, ReferenceFreqs);
