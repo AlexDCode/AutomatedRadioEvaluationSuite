@@ -8,10 +8,11 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'ARES'
-copyright = '2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
+copyright = '%Y, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
 author = 'Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
 release = '1.0'
 ARES_logo = './../../../src/support/ARES Icon.png'
+ARES_favicon = './../../../src/support/ARES Icon.png'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -23,7 +24,7 @@ exclude_patterns = []
 
 myst_enable_extensions = [
     "colon_fence",  # Allows ::: for directives
-    "html_admonition",  # Allows HTML admonitions
+    # "html_admonition",  # Allows HTML admonitions
     "html_image",  # Allows HTML images
     "attrs_inline",  # Allows inline attributes
 ]
@@ -36,13 +37,15 @@ latex_engine = 'pdflatex'
 html_theme = 'furo'
 html_static_path = ['_static']
 html_logo = ARES_logo
-html_favicon = ARES_logo
+html_favicon = ARES_favicon
 html_title = "ARES"
 master_doc = "index"
 html_theme_options = {
     "source_repository": "https://github.com/AlexDCode/AutomatedRadioEvaluationSuite",
     "source_branch": "main",
     "source_directory": "docs/readthedocs/source/",
+    "navigation_with_keys": True,
+    "top_of_page_buttons": ["view", "edit"],
     "footer_icons": [
         {
             "name": "GitHub",
