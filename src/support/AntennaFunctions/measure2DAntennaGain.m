@@ -37,6 +37,7 @@ function measure2DAntennaGain(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables from the application.
+    smoothingPercentage = app.SmoothingPercentage.Value;
     sweepPoints = app.VNASweepPoints.Value;
 
     if ~isempty(app.ReferenceGainFile)
@@ -159,8 +160,7 @@ function measure2DAntennaGain(app)
             pause(app.AntennaMeasurementDelayValueField.Value);
 
             % Get S-Parameters and Frequencies from VNA
-            % [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA);
-            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters2(app.VNA); 
+            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPercentage);
 
             if ~isempty(app.ReferenceGainFile)
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, ReferenceGain, ReferenceFreqs);
