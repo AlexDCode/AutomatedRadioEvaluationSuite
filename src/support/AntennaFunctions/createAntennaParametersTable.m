@@ -12,11 +12,26 @@ function paramTable = createAntennaParametersTable(Theta, Phi)
     %                and Phi in (deg).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Create combinations of Theta and Phi.
-    varNames = {"Theta (deg)","Phi (deg)"};
-    varNames = horzcat(varNames{:});
+    % -180 maps to 180 in the EMCenter hardware we remove it from the list.
+    if ismember(-180, Theta) && ismember(180, Theta)
+        Theta = Theta(Theta ~= -180);
+    end
 
     % Set the column names for the table.
-    paramTable = combinations(Theta,Phi);
+    varNames = {"Theta (deg)", "Phi (deg)"};
+    varNames = horzcat(varNames{:});
+
+    % Create the table with combinations of theta and phi.
+    paramTable = combinations(Theta, Phi);
     paramTable.Properties.VariableNames = varNames;
+
+    % Movement angles for sorting (-180/180) range to (0-360 range).
+    paramTable.MovementAngle = mod(paramTable.("Theta (deg)"), 360);
+
+    % Sort by movement angle for efficient turntable rotation.
+    [~, idx] = sort(paramTable.MovementAngle);
+    paramTable = paramTable(idx, :);
+     
+    % Remove the temporary movement angles column used for sorting.
+    paramTable.MovementAngle = [];
 end

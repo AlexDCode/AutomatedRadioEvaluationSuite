@@ -100,8 +100,8 @@ function measure2DAntennaGain(app)
             dataPts = (i - 1) * sweepPoints + (1:sweepPoints);
 
             % Get measurement corrected angles for (0,360) range
-            adjustedTheta = mod(parametersTable.("Theta (deg)")(i), 360);
-            adjustedPhi = mod(parametersTable.("Phi (deg)")(i), 360);
+            adjustedTheta = mod(parametersTable.("Theta (deg)")(i), 360); 
+            adjustedPhi = parametersTable.("Phi (deg)")(i);
             
             % Move the turntable and tower to specified position.
             writeline(app.EMCenter, sprintf('1A:SK %d', adjustedTheta));
