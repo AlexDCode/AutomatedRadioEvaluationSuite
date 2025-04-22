@@ -42,6 +42,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
 - Measure antenna return loss (magnitude and phase).
 - Save and recall measurements in standardized file formats for data analysis.
+- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export currently unsupported for polar plots)
 - Plot measurement results within the app for quick visualization.
 
 ## TODO
@@ -50,7 +51,6 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - **3D Radiation Pattern**: Include 3D patterns if more than two cuts are included.
 - **Detailed Tutorials**: Improve the tutorials for each app functionality.
 - **Error Handling**: An error log function is still needed.
-- **Export Plots**: Save images in standard formats and in tikz for publication.
 - **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
 - **FAQ**: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and troubleshooting common difficulties.
