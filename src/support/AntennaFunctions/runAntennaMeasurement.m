@@ -1,4 +1,4 @@
-function measure2DAntennaGain(app) 
+function runAntennaMeasurement(app) 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % This function executes a full 2D antenna gain measurement sweep by 
     % controlling a dual-axis positioner (Theta and Phi) and capturing RF 
@@ -200,8 +200,11 @@ function measure2DAntennaGain(app)
             end
         end
 
-        % Close progress dialog.
+        % Close the progress dialog.
         close(d);
+
+        % Return the VNA windows to continuos mode.
+        writeline(app.VNA, 'SENS1:SWE:MODE CONT');
     catch ME
         app.displayError(ME);
     end
