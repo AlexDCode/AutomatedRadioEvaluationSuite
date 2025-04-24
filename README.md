@@ -47,10 +47,8 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## TODO
 
-- **Faster Antenna Scanning**: Improve scanning by measuring positive angles first and returning to the origin at the end of the measurement.
 - **3D Radiation Pattern**: Include 3D patterns if more than two cuts are included.
 - **Detailed Tutorials**: Improve the tutorials for each app functionality.
-- **Error Handling**: An error log function is still needed.
 - **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
 - **FAQ**: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and troubleshooting common difficulties.
