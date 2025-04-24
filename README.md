@@ -14,7 +14,7 @@
 [![License](https://img.shields.io/github/license/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
 
-The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresio.readthedocs.io/en/latest/getting_started.html) guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release. All the documentation is hosted on [Read the Docs](https://aresio.readthedocs.io/).
+The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
 
 ## Table of Contents
 
@@ -55,7 +55,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## Install
 
-[Getting Started Guide](https://aresio.readthedocs.io/en/latest/getting_started.html) is available in the documentation.
+[Getting Started Guide](https://aresio.readthedocs.io/latest/getting_started.html) is available in the documentation.
 
 ### Download
 
@@ -73,9 +73,9 @@ To run the app, you will need:
 
 ## Usage
 
-### [PA Measurement Tutorial](https://aresio.readthedocs.io/en/latest/tutorial_PA.html)
+### [PA Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_PA.html)
 
-### [Antenna Measurement Tutorial](https://aresio.readthedocs.io/en/latest/tutorial_ant.html)
+### [Antenna Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_ant.html)
 
 You can find the detailed tutorial for performing antenna measurements using ARES [here](docs/assets/Tutorials/Antenna%20Tutorial.pdf).
 
