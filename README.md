@@ -55,7 +55,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## Install
 
-[Getting Started Guide](https://aresio.readthedocs.io/latest/getting_started.html) is available in the documentation.
+[Getting Started Guide](https://aresapp.readthedocs.io/latest/getting_started.html) is available in the documentation.
 
 ### Download
 
