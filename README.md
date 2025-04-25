@@ -47,7 +47,6 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## TODO
 
-- **3D Radiation Pattern**: Include 3D patterns if more than two cuts are included.
 - **Detailed Tutorials**: Improve the tutorials for each app functionality.
 - **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
