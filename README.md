@@ -69,6 +69,7 @@ To run the app, you will need:
 - [MATLAB](https://www.mathworks.com/products/matlab.html)
 - [MATLAB Instrument Control Toolbox](https://www.mathworks.com/products/instrument.html) (for VISA control functions)
 - [MATLAB RF Toolbox](https://www.mathworks.com/products/rftoolbox.html) (to read and analyze S-parameter data)
+- [MATLAB Antenna Toolbox](https://www.mathworks.com/products/antenna.html) (to plot 3D radiation patterns)
 - [Keysight Connection Expert](https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html) (for VISA drivers; Install the pre-requisite first, then the main installer)
 
 ## Usage
