@@ -16,6 +16,9 @@ function paramTable = createAntennaParametersTable(Theta, Phi)
     if ismember(-180, Theta) && ismember(180, Theta)
         Theta = Theta(Theta ~= -180);
     end
+    if ismember(-180, Phi) && ismember(180, Phi)
+        Phi = Phi(Phi ~= -180);
+    end
 
     % Set the column names for the table.
     varNames = {"Theta (deg)", "Phi (deg)"};
