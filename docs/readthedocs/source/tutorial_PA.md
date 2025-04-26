@@ -7,16 +7,19 @@ The Power Amplifier (PA) module performs parametric measurements varying frequen
 ### Gain and Efficiency
 
 Drain Efficiency:
+
 $$
 DE = \frac{P_{out}}{P_{DC}}
 $$
 
 Power Added Efficiency:
+
 $$
 PAE = \frac{P_{out} - P_{in}}{P_{DC}}
 $$
 
 Gain:
+
 $$
 G = \frac{P_{out}}{P_{in}} = P_{out}^{[dB]} - P_{in}^{[dB]}
 $$

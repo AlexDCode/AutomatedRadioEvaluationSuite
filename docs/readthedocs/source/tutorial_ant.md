@@ -21,16 +21,19 @@ Where:
 * $d$: Distance between transmitter and receiver
 
 Which can be expressed in dB scale as:
+
 $$
 P_r^{[dB]} = P_t^{[dB]} + G_t^{[dBi]} + G_r^{[dBi]} + 20 \log \left( \frac{\lambda}{4 \pi d} \right)
 $$
 
 The Free Space Path Loss (FSPL) factor is given by:
+
 $$
 FSPL = 20 \log\bigg( \frac{\lambda}{4 \pi d} \bigg)
 $$
 
-The ratio of received to transmitted power will be the measured magnitude $S_{21}$
+The ratio of received to transmitted power will be the measured magnitude:
+
 $$
 S_{21}^{[dB]} = \frac{P_r}{P_t} = P_r^{[dB]} - P_t^{[dB]}
 $$
@@ -71,8 +74,10 @@ Reference Antenna View
 
 ### Configure the VNA
 
+Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to the instruments, the app will load the current settings to the app. If you change any of the *Start Frequency*, *Step Frequency*, and *Step Frequency* the calibration might not be valid anymore. To prevent this, calibrate before connecting and leave the loaded values. These settings are limited to the capabilites of the instruments (i.e., frequency and power range). In addition, the app can load the smoothened data from the VNA, which utilizes a moving average filter with the given number of samples. If the *Smoothing Percentage* is set to zero, the smoothing will be off.
 
 ### Configure the table (theta axis)
+
 
 
 ### Configure the tower (phi axis)
@@ -80,6 +85,7 @@ Reference Antenna View
 
 ### Configure the linear slider
 
+In the linear slider, set the *Antenna Offset*, which is adding the lengths of the DUT and reference antenna with respect to the mounting fixtures. The linear slider *Speed Preset* and *Slider Position* can be controlled from this tab. To move the slider, enter the target position and clock on *Move to Position*. The *Slider Position* will display the current position of the slider while the *Current Spacing* will display the current antenna separation, which takes into account the slider position and antenna offset. Options to *Home*, *Scan*, and *Stop* the slider are available.
 
 
 ### Run the test and plot the results
