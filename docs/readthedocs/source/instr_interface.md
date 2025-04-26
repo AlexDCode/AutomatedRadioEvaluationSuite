@@ -7,12 +7,12 @@ Virtual Instrument Standard Architecture (VISA) is a test & measurement industry
 
 ## SCPI Strings
 
-SCPI is a text-based command language used to control instruments and provides a common language to simplify the interface between devices and instruments mirrowing the intrument physical inputs and utilities. Since SCPI is hardware independent, SCPI strings can be sent over any interface that supports it. [Keysight Command Expert](www.keysight.com/find/commandexpert) allows to search the neccesary SCPI strings interactively and provides seamless integrations with different VISA libraries. There are two types of SCPI strings:
+SCPI is a text-based command language used to control instruments and provides a common language to simplify the interface between devices and instruments mirrowing the intrument physical inputs and utilities. Since SCPI is hardware independent, SCPI strings can be sent over any interface that supports it. [Keysight Command Expert](https://www.keysight.com/find/commandexpert) allows to search the neccesary SCPI strings interactively and provides seamless integrations with different VISA libraries. There are two types of SCPI strings:
 
 * **Command String:** `:KEY <parameter>`
 * **Query String:** `:KEY?`
 
-Command strings are reserved for writing only while Query strings are reserved for reading data back from the instrument. The *KEY* represents the name of the instrument feature to adjust while < parameter > is the value to be sent to the instrument. Complex SCPI strings can be made y combining several KEYs and parameters into one string, i.e. `:KEY1:KEY2:KEY3? <parameter 1> <parameter 2>`.
+Command strings are reserved for writing only while Query strings are reserved for reading data back from the instrument. The `KEY` represents the name of the instrument feature to adjust while < parameter > is the value to be sent to the instrument. Complex SCPI strings can be made y combining several KEYs and parameters into one string, i.e. `:KEY1:KEY2:KEY3? <parameter 1> <parameter 2>`.
 
 ### Transitioning Code from VISA Interface to VISAdev Interface
 

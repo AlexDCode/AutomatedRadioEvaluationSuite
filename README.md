@@ -14,17 +14,15 @@
 [![License](https://img.shields.io/github/license/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
 
-The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
+The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. Please note that the app is still in development, and some features may not be available in this release. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
 
 ## Table of Contents
 
 - [Table of Contents](#table-of-contents)
 - [Features](#features)
 - [TODO](#todo)
-- [Install](#install)
-  - [Download](#download)
-  - [Requirements](#requirements)
 - [Usage](#usage)
+  - [Installing ARES](#installing-ares)
   - [PA Measurement Tutorial](#pa-measurement-tutorial)
   - [Antenna Measurement Tutorial](#antenna-measurement-tutorial)
 - [Contributions](#contributions)
@@ -42,8 +40,8 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
 - Measure antenna return loss (magnitude and phase).
 - Save and recall measurements in standardized file formats for data analysis.
-- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export currently unsupported for polar plots)
 - Plot measurement results within the app for quick visualization.
+- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export unsupported for polar plots)
 
 ## TODO
 
@@ -52,26 +50,9 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
 - **FAQ**: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and troubleshooting common difficulties.
 
-## Install
-
-[Getting Started Guide](https://aresapp.readthedocs.io/latest/getting_started.html) is available in the documentation.
-
-### Download
-
-- Download the latest release of the Automated Radio Evaluation Suite from [releases](https://github.com/bolanosv/AutomatedRadioEvaluationSuite/releases).
-  - **For the MATLAB App**: Follow the instructions in the [Packaging and Installing MATLAB Apps Guide](https://www.mathworks.com/videos/packaging-and-installing-matlab-apps-70404.html).
-
-### Requirements
-
-To run the app, you will need:
-
-- [MATLAB](https://www.mathworks.com/products/matlab.html)
-- [MATLAB Instrument Control Toolbox](https://www.mathworks.com/products/instrument.html) (for VISA control functions)
-- [MATLAB RF Toolbox](https://www.mathworks.com/products/rftoolbox.html) (to read and analyze S-parameter data)
-- [MATLAB Antenna Toolbox](https://www.mathworks.com/products/antenna.html) (to plot 3D radiation patterns)
-- [Keysight Connection Expert](https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html) (for VISA drivers; Install the pre-requisite first, then the main installer)
-
 ## Usage
+
+### [Installing ARES](https://aresapp.readthedocs.io/latest/getting_started.html)
 
 ### [PA Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_PA.html)
 
