@@ -1,6 +1,8 @@
+# Tutorials
+
 ```{toctree}
 :maxdepth: 2
-:caption: Contents
+:caption:Tutorials
 
 tutorial_ant.md
 tutorial_PA.md
