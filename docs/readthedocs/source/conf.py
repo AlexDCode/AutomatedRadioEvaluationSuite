@@ -39,7 +39,7 @@ html_static_path = ['_static']
 html_logo = ARES_logo
 html_favicon = ARES_favicon
 html_title = "ARES"
-master_doc = "home"
+master_doc = "index"
 html_theme_options = {
     "source_repository": "https://github.com/AlexDCode/AutomatedRadioEvaluationSuite",
     "source_branch": "main",
