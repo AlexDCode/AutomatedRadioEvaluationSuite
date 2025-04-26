@@ -4,7 +4,54 @@ The Antenna module performs parametric measurements varying the position of the 
 
 ## Theory
 
-Friis Path Loss, Gain Comparison method, Gain transfer method. 
+### Foundational Equations
+
+Friis Transmission Equaton:
+
+$$
+\frac{P_r}{P_t} = G_t G_r \left( \frac{\lambda}{4 \pi d} \right)^2
+$$
+
+Where:
+* $P_r$: Received power
+* $P_t$: Transmitted power
+* $G_t$: Transmitter Antenna Gain
+* $G_r$: Receiver Antenna Gain
+* $\lambda$ Wavelength
+* $d$: Distance between transmitter and receiver
+
+Which can be expressed in dB scale as:
+$$
+P_r^{[dB]} = P_t^{[dB]} + G_t^{[dBi]} + G_r^{[dBi]} + 20 \log \left( \frac{\lambda}{4 \pi d} \right)
+$$
+
+The Free Space Path Loss (FSPL) factor is given by:
+$$
+FSPL = 20 \log\bigg( \frac{\lambda}{4 \pi d} \bigg)
+$$
+
+The ratio of received to transmitted power will be the measured magnitude $S_{21}$
+$$
+S_{21}^{[dB]} = \frac{P_r}{P_t} = P_r^{[dB]} - P_t^{[dB]}
+$$
+
+### Gain Comparison Method
+
+In the gain comparison method (i.e., two antenna method), the reference antenna gain is known. Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$, calculated $FSPL$, and reference antenna gain $G_{REF}^{[dBi]}$.
+
+$$
+G_{DUT}^{[dBi]} = S_{21}^{[dB]} - FSPL - G_{REF}^{[dBi]}
+$$
+
+
+### Gain Transfer Method
+
+In the gain transfer method (i.e., one antenna method), the DUT and reference antenna are identical ($G_t^{[dBi]} = G_r^{[dBi]}$). Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$ and calculated $FSPL$.
+
+$$
+G_{DUT}^{[dBi]} = \frac{S_{21}^{[dB]} - FSPL}{2}
+$$
+
 
 ## Performing the Measurement
 
@@ -42,7 +89,7 @@ After validating all the settings, click on *Start Test* to begin the measuremen
 * Scan $\theta$ ($1^{\circ}$ step) with fixed $\phi$: ~16 minutes
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
-* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours
+* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
 
 The *2D Radiation Pattern* results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the *Frequency*, *$\theta$* cut, and *$\phi$* cut dropdowns.
 

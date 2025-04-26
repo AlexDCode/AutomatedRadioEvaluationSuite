@@ -4,8 +4,33 @@ The Power Amplifier (PA) module performs parametric measurements varying frequen
 
 ## Theory
 
-Figures of Merit: Gain, -1 dB compression point (P-1dB), -3 dB compression point (P-3dB), output saturation power (Psat), drain efficiency (DE), power added efficiency (PAE).
+### Gain and Efficiency
 
+Drain Efficiency:
+$$
+DE = \frac{P_{out}}{P_{DC}}
+$$
+
+Power Added Efficiency:
+$$
+PAE = \frac{P_{out} - P_{in}}{P_{DC}}
+$$
+
+Gain:
+$$
+G = \frac{P_{out}}{P_{in}} = P_{out}^{[dB]} - P_{in}^{[dB]}
+$$
+
+Where,
+* $P_{out}$: RF output power
+* $P_{in}$: RF input power
+* $P_{DC}$: DC supply (drain) power
+
+### Gain Compression Points
+
+The gain compression points refer to the output power at a certain level after the maximum gain, typically -1 dB compression ($P_{-1 dB}$) and -3 dB compression ($P_{-1 dB}$). The absolute maximum output power is the saturation power  ($P_{sat}$). These values are refered to the output power of the PA but linear gain or low-noise amplifiers may use input-refered compression points. This Figure of Merit refers to the linearity of the DUT.
+
+### Calibration
 Calibration: (Direct Measure) Fixed, Small-Signal (passive) S-param, Large-signal driver measurement.
 
 Calibration: (Indirect Measure) Not available. (TODO: Connect to two signal analyzers, one for the input and one for the output, measuring with -X dB couplers for 'coupled measurement').
