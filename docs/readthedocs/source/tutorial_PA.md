@@ -1,6 +1,6 @@
 # PA Tutorial
 
-The Power Amplifier (PA) module performs parametric measurements varying frequency, input RF power, and controlling up to four power supplies. The program will capture the measurements, calculate figures of merit (FoM), save the data, and plot the results.
+The Power Amplifier (PA) module performs parametric measurements varying frequency, input RF power, and controlling up to four power supplies. The program will capture the measurements, calculate figures of merit (FoM), save the data, and plot the results. Note the test does not need to be run every time as the data can be loaded into the app. Sample data is available in [data/PA](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA).
 
 ## Theory
 
@@ -15,7 +15,7 @@ Calibration: (Indirect Measure) Not available. (TODO: Connect to two signal anal
 
 ### Connect to the instruments
 
-The first step is to select the relevant instruments in each dropdown of the *Instruments* tab. Power supply selection is optinal but will limit the FoM that can be calculated. Select *None: NA* for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the instrument database (comming soon...).
+The first step is to select the relevant instruments in each dropdown of the *Instruments* tab. Power supply selection is optinal but will limit the FoM that can be calculated. Select *None: NA* for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the [instrument database](https://aresapp.readthedocs.io/latest/tutorial_instr.html).
 
 ![Connect Insruments](./assets/PA/connect_inst.png){witdh=1920px align=center}
 

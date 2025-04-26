@@ -41,3 +41,5 @@ The app has been tested and is compatible with the following instruments:
 - **Hewlett-Packard E4433B** Signal Generator
 - **ETS Lindgren EMCenter** Position Controller
 - **ETS Lindgren Linear Slider**
+
+Other instruments may be compatible given that they use the same SCPI commands as the listed devices.
