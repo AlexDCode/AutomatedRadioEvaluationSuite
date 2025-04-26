@@ -63,13 +63,16 @@ function plotAntenna3DRadiationPattern(app)
         % 1) 3D Radiation Pattern Plot
         % Using the internal spherical renderer for true polar axes from 
         % Antenna Toolbox.
-        hPlot = antennashared.internal.radiationpattern3D(ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
+        pause(0.1); % Settling time for ax.
+        antennashared.internal.radiationpattern3D(ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
         ylabel(colorbar(ax), 'Gain (dBi)');
         axis(ax, 'tight');
 
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(ax, 'LineThickness', 2);
 
+        % Create and assign context menu to save the plot as a PNG or JPEG.
+        setupContextMenuFor3DPlot(app);
     catch ME
         app.displayError(ME);
     end
