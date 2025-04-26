@@ -30,10 +30,11 @@ function extract_docs(folder_path,output_filename, headerStr)
 
         try
             docString = help(file.name);
-            if ~isempty(strtrim(docString))
-                relPath = strrep(fullfile(file.folder, file.name), [folder_path filesep], '');
-                fprintf(fid_out, '## %s\n`File path: %s`\n%s\n\n', file.name, relPath, docString);
+            if isempty(strtrim(docString))
+                docString = 'No documentation provided.';
             end
+            relPath = strrep(fullfile(file.folder, file.name), [fullfile(pwd) filesep], '');
+            fprintf(fid_out, '## %s\n`File path: %s`\n%s\n\n', file.name, relPath, docString);
         catch ME
             warning('Could not extract help from %s: %s', file.name, ME.message);
         end

@@ -1,7 +1,7 @@
 # Power Amplifier Functions
 
 ## createPAParametersTable.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\createPAParametersTable.m`
+`File path: src\support\PAFunctions\createPAParametersTable.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a parameter sweep table for power amplifier 
   (PA) testing, generating all possible combinations of frequency, 
@@ -21,7 +21,7 @@
 
 
 ## createPAResultsTable.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\createPAResultsTable.m`
+`File path: src\support\PAFunctions\createPAResultsTable.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a results table for power amplifier (PA)
   measurements, dynamically adjusting the column headers based on the 
@@ -41,7 +41,7 @@
 
 
 ## deembedPA.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\deembedPA.m`
+`File path: src\support\PAFunctions\deembedPA.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function de-embeds PA measurements by removing the effects of 
   passive and active devices. It generates calibration factors in dB 
@@ -64,7 +64,7 @@
 
 
 ## enablePSUChannels.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\enablePSUChannels.m`
+`File path: src\support\PAFunctions\enablePSUChannels.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function enables or disables channels on two power supply units 
   (PSU A and PSU B) based on the provided state. The channels are 
@@ -85,7 +85,7 @@
 
 
 ## measureRFOutputandDCPower.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\measureRFOutputandDCPower.m`
+`File path: src\support\PAFunctions\measureRFOutputandDCPower.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function measures the output RF power, the DC drain power, and 
   the DC gate power.
@@ -108,7 +108,7 @@
 
 
 ## measureRFParameters.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\measureRFParameters.m`
+`File path: src\support\PAFunctions\measureRFParameters.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates the RF Gain, the Drain Efficiency (DE), and 
   the Power Added Efficiency (PAE) based on the input/output RF power, 
@@ -127,7 +127,7 @@
 
 
 ## measureRFParametersPeaks.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\measureRFParametersPeaks.m`
+`File path: src\support\PAFunctions\measureRFParametersPeaks.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates peak RF performance metrics from power 
   amplifier (PA) measurement data, including saturation power, 
@@ -156,7 +156,7 @@
 
 
 ## plotPASingleMeasurement.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\plotPASingleMeasurement.m`
+`File path: src\support\PAFunctions\plotPASingleMeasurement.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots gain, drain efficiency (DE), and 
   power-added efficiency (PAE) versus RF output power for a single 
@@ -180,7 +180,7 @@
 
 
 ## plotPASweepMeasurement.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\plotPASweepMeasurement.m`
+`File path: src\support\PAFunctions\plotPASweepMeasurement.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots performance metrics from a frequency 
   sweep power amplifier (PA) measurement, including gain, saturation 
@@ -206,7 +206,7 @@
 
 
 ## populatePSUChannels.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\populatePSUChannels.m`
+`File path: src\support\PAFunctions\populatePSUChannels.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function checks the modes and configurations of power supply 
   channels and determines which channels are "filled," meaning their 
@@ -227,7 +227,7 @@
 
 
 ## resetPSUChannels.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\resetPSUChannels.m`
+`File path: src\support\PAFunctions\resetPSUChannels.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function resets all power supply unit (PSU) channels to their
   default state, which includes setting current and voltage to 0 and 
@@ -249,7 +249,7 @@
 
 
 ## runPAMeasurement.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\runPAMeasurement.m`
+`File path: src\support\PAFunctions\runPAMeasurement.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function executes a full RF power amplifier (PA) measurement 
   sweep across defined power levels and frequencies, including:
@@ -289,7 +289,7 @@
 
 
 ## setPSUChannels.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\setPSUChannels.m`
+`File path: src\support\PAFunctions\setPSUChannels.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets the voltage and current for a specified channel 
   on a power supply unit (PSU). It selects the appropriate PSU based 
@@ -314,7 +314,7 @@
 
 
 ## validatePSUChannels.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\PAFunctions\validatePSUChannels.m`
+`File path: src\support\PAFunctions\validatePSUChannels.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function validates the configuration of power supply unit (PSU) 
   channels based on the selected supply mode and the connected devices. 

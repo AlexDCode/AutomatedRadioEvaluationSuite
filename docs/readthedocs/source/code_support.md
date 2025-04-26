@@ -1,7 +1,7 @@
 # Supporting Functions
 
 ## A2dB.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\A2dB.m`
+`File path: src\support\SupportFunctions\A2dB.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   A2dB Converts magnitudes (voltage or current) to dB.
  
@@ -14,7 +14,7 @@
 
 
 ## dBm2W.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\dBm2W.m`
+`File path: src\support\SupportFunctions\dBm2W.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   dBm2mag Converts dBm to W
  
@@ -27,13 +27,13 @@
 
 
 ## extract_docs.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\extract_docs.m`
+`File path: src\support\SupportFunctions\extract_docs.m`
  EXTRACT_DOCS Extracts help comments from all .m files in a folder.
     extract_docs('path/to/your/folder', 'path/to/your/outputfile','Header String')
 
 
 ## improveAxesAppearance.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\improveAxesAppearance.m`
+`File path: src\support\SupportFunctions\improveAxesAppearance.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function improves the appearance of axes in MATLAB App Designer,
   handles plots containing two graphs one on the left y axis and the 
@@ -49,7 +49,7 @@
 
 
 ## loadData.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\loadData.m`
+`File path: src\support\SupportFunctions\loadData.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function loads data in from a CSV or Excel file containing a 
   single or sweep PA test measurement, or an Antenna test measurement. 
@@ -68,7 +68,7 @@
 
 
 ## saveData.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\saveData.m`
+`File path: src\support\SupportFunctions\saveData.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function saves data from the application into either a CSV or
   Excel file. The user passes in the combined test data and combined 
@@ -83,7 +83,7 @@
 
 
 ## setupContextMenuFor3DPlot.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\setupContextMenuFor3DPlot.m`
+`File path: src\support\SupportFunctions\setupContextMenuFor3DPlot.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets up a context menu for the 3D radiation pattern
   plot created using Antenna Toolbox's internal renderer.
@@ -101,7 +101,7 @@
 
 
 ## waitForInstrument.m
-`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\SupportFunctions\waitForInstrument.m`
+`File path: src\support\SupportFunctions\waitForInstrument.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function waits for an instrument to complete its operation 
   before proceeding. It continuously queries the instrument's operation
