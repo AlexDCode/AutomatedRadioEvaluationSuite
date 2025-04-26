@@ -1,7 +1,7 @@
 # Supporting Functions
 
 
-`src\support\SupportFunctions\A2dB.m`
+## src\support\SupportFunctions\A2dB.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   A2dB Converts magnitudes (voltage or current) to dB.
  
@@ -15,7 +15,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\dBm2W.m`
+## src\support\SupportFunctions\dBm2W.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   dBm2mag Converts dBm to W
  
@@ -29,12 +29,12 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\extract_docs.m`
+## src\support\SupportFunctions\extract_docs.m
  EXTRACT_DOCS Extracts help comments from all .m files in a folder.
     extract_docs('path/to/your/folder')
 
 
-`src\support\SupportFunctions\improveAxesAppearance.m`
+## src\support\SupportFunctions\improveAxesAppearance.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function improves the appearance of axes in MATLAB App Designer,
   handles plots containing two graphs one on the left y axis and the 
@@ -49,7 +49,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\loadData.m`
+## src\support\SupportFunctions\loadData.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function loads data in from a CSV or Excel file containing a 
   single or sweep PA test measurement, or an Antenna test measurement. 
@@ -67,7 +67,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\saveData.m`
+## src\support\SupportFunctions\saveData.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function saves data from the application into either a CSV or
   Excel file. The user passes in the combined test data and combined 
@@ -81,7 +81,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\setupContextMenuFor3DPlot.m`
+## src\support\SupportFunctions\setupContextMenuFor3DPlot.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets up a context menu for the 3D radiation pattern
   plot created using Antenna Toolbox's internal renderer.
@@ -98,7 +98,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\SupportFunctions\waitForInstrument.m`
+## src\support\SupportFunctions\waitForInstrument.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function waits for an instrument to complete its operation 
   before proceeding. It continuously queries the instrument's operation
@@ -114,3 +114,5 @@
   OUTPUT PARAMETERS
     None
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

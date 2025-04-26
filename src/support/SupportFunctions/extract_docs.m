@@ -24,7 +24,7 @@ function extract_docs(folder_path,output_filename)
             docString = help(file.name);
             if ~isempty(strtrim(docString))
                 relPath = strrep(fullfile(file.folder, file.name), [folder_path filesep], '');
-                fprintf(fid_out, '`%s`\n%s\n\n', relPath, docString);
+                fprintf(fid_out, '## %s\n%s\n\n', relPath, docString);
             end
         catch ME
             warning('Could not extract help from %s: %s', file.name, ME.message);

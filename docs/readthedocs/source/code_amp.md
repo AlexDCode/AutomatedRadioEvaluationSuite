@@ -1,7 +1,7 @@
 # Power Amplifier Functions
 
 
-`src\support\PAFunctions\createPAParametersTable.m`
+## src\support\PAFunctions\createPAParametersTable.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a parameter sweep table for power amplifier 
   (PA) testing, generating all possible combinations of frequency, 
@@ -20,7 +20,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\createPAResultsTable.m`
+## src\support\PAFunctions\createPAResultsTable.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a results table for power amplifier (PA)
   measurements, dynamically adjusting the column headers based on the 
@@ -39,7 +39,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\deembedPA.m`
+## src\support\PAFunctions\deembedPA.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function de-embeds PA measurements by removing the effects of 
   passive and active devices. It generates calibration factors in dB 
@@ -61,7 +61,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\enablePSUChannels.m`
+## src\support\PAFunctions\enablePSUChannels.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function enables or disables channels on two power supply units 
   (PSU A and PSU B) based on the provided state. The channels are 
@@ -81,7 +81,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\measureRFOutputandDCPower.m`
+## src\support\PAFunctions\measureRFOutputandDCPower.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function measures the output RF power, the DC drain power, and 
   the DC gate power.
@@ -103,7 +103,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\measureRFParameters.m`
+## src\support\PAFunctions\measureRFParameters.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates the RF Gain, the Drain Efficiency (DE), and 
   the Power Added Efficiency (PAE) based on the input/output RF power, 
@@ -121,7 +121,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\measureRFParametersPeaks.m`
+## src\support\PAFunctions\measureRFParametersPeaks.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates peak RF performance metrics from power 
   amplifier (PA) measurement data, including saturation power, 
@@ -149,7 +149,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\plotPASingleMeasurement.m`
+## src\support\PAFunctions\plotPASingleMeasurement.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots gain, drain efficiency (DE), and 
   power-added efficiency (PAE) versus RF output power for a single 
@@ -172,7 +172,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\plotPASweepMeasurement.m`
+## src\support\PAFunctions\plotPASweepMeasurement.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots performance metrics from a frequency 
   sweep power amplifier (PA) measurement, including gain, saturation 
@@ -197,7 +197,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\populatePSUChannels.m`
+## src\support\PAFunctions\populatePSUChannels.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function checks the modes and configurations of power supply 
   channels and determines which channels are "filled," meaning their 
@@ -217,7 +217,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\resetPSUChannels.m`
+## src\support\PAFunctions\resetPSUChannels.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function resets all power supply unit (PSU) channels to their
   default state, which includes setting current and voltage to 0 and 
@@ -238,7 +238,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\runPAMeasurement.m`
+## src\support\PAFunctions\runPAMeasurement.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function executes a full RF power amplifier (PA) measurement 
   sweep across defined power levels and frequencies, including:
@@ -277,7 +277,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\setPSUChannels.m`
+## src\support\PAFunctions\setPSUChannels.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets the voltage and current for a specified channel 
   on a power supply unit (PSU). It selects the appropriate PSU based 
@@ -301,7 +301,7 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-`src\support\PAFunctions\validatePSUChannels.m`
+## src\support\PAFunctions\validatePSUChannels.m
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function validates the configuration of power supply unit (PSU) 
   channels based on the selected supply mode and the connected devices. 
