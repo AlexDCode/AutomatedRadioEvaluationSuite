@@ -1,6 +1,11 @@
 function extract_docs(folder_path,output_filename, headerStr)
     %EXTRACT_DOCS Extracts help comments from all .m files in a folder.
     %   extract_docs('path/to/your/folder', 'path/to/your/outputfile','Header String')
+
+    % Example use for this project:
+    % extract_docs('./src/support/AntennaFunctions/','./docs/readthedocs/source/code_antenna.md', 'Antenna Functions')
+    % extract_docs('./src/support/PAFunctions/','./docs/readthedocs/source/code_amp.md', 'Power Amplifier Functions')
+    % extract_docs('./src/support/SupportFunctions/','./docs/readthedocs/source/code_support.md', 'Supporting Functions')
     
     if nargin < 1
         folder_path = pwd;  % Default to current directory
