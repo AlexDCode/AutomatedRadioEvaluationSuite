@@ -7,8 +7,6 @@ function P = dBm2W(PdBm)
     %
     % OUTPUT PARAMETERS
     %   P:    Power in (W)
-    %
-    % Credit: Alex D. Santiago Vargas, PhD
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     P = 10.^((PdBm-30)/10);
 end

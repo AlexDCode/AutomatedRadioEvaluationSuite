@@ -1,6 +1,6 @@
-function extract_docs(folder_path,output_filename)
+function extract_docs(folder_path,output_filename, headerStr)
     %EXTRACT_DOCS Extracts help comments from all .m files in a folder.
-    %   extract_docs('path/to/your/folder')
+    %   extract_docs('path/to/your/folder', 'path/to/your/outputfile','Header String')
     
     if nargin < 1
         folder_path = pwd;  % Default to current directory
@@ -11,8 +11,16 @@ function extract_docs(folder_path,output_filename)
     
     % Get all .m files recursively
     files = dir(fullfile(folder_path, '**', '*.m'));
-    output_file = fullfile(folder_path, output_filename);
-    fid_out = fopen(output_file, 'w');
+    fid_out = fopen(output_filename, 'w');
+
+    if fid_out == -1
+        error('Could not open markdown file for writing.');
+    end
+
+    if nargin == 3
+        fprintf(fid_out, '# %s\n\n', headerStr);
+    end
+
     
     % Add root folder and all subfolders to path temporarily
     addpath(genpath(folder_path));
@@ -24,7 +32,7 @@ function extract_docs(folder_path,output_filename)
             docString = help(file.name);
             if ~isempty(strtrim(docString))
                 relPath = strrep(fullfile(file.folder, file.name), [folder_path filesep], '');
-                fprintf(fid_out, '## %s\n%s\n\n', relPath, docString);
+                fprintf(fid_out, '## %s\n`File path: %s`\n%s\n\n', file.name, relPath, docString);
             end
         catch ME
             warning('Could not extract help from %s: %s', file.name, ME.message);
@@ -32,5 +40,5 @@ function extract_docs(folder_path,output_filename)
     end
     
     fclose(fid_out);
-    fprintf('Documentation saved to: %s\n', output_file);
+    fprintf('Documentation saved to: %s\n', output_filename);
 end

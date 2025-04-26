@@ -7,8 +7,6 @@ function AdB = A2dB(A)
     %
     % OUTPUT PARAMETERS:
     %   AdB: Magnitude in decibels (dB)
-    %
-    % Credit: Alex D. Santiago Vargas, PhD
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     AdB = 20*log10(A);
 end

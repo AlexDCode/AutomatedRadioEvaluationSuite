@@ -1,7 +1,7 @@
 # Antenna Functions
 
-
-## src\support\AntennaFunctions\createAntennaParametersTable.m
+## createAntennaParametersTable.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\createAntennaParametersTable.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a parameter sweep table for antenna testing,
   generating all possible combinations of Theta and Phi.
@@ -16,7 +16,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\createAntennaResultsTable.m
+## createAntennaResultsTable.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\createAntennaResultsTable.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function initializes the results table for storing
   antenna test measurements.
@@ -39,7 +40,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\measureAntennaGain.m
+## measureAntennaGain.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\measureAntennaGain.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates the gain of a test antenna in decibels 
   relative to an isotropic radiator (dBi) based on the input frequency,
@@ -66,7 +68,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\measureSParameters.m
+## measureSParameters.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\measureSParameters.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   Measure 2-port S-Parameters (Magnitude in dB and Phase in degrees)
   Supports smoothed or raw measurements using FDATA/SDATA.
@@ -82,7 +85,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m
+## plotAntenna2DRadiationPattern.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the 2D antenna measurement data:
     - Gain vs. Frequency at a fixed theta/phi angle
@@ -101,7 +105,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m
+## plotAntenna3DRadiationPattern.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the 3D antenna radiation pattern for a given 
   frequency:
@@ -121,7 +126,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\plotReferenceAntenna.m
+## plotReferenceAntenna.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\plotReferenceAntenna.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the gain and return loss characteristics of 
   the reference antenna over frequency. Used as a baseline for 
@@ -139,7 +145,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\runAntennaMeasurement.m
+## runAntennaMeasurement.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\runAntennaMeasurement.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function executes a full 2D antenna gain measurement sweep by 
   controlling a dual-axis positioner (Theta and Phi) and capturing RF 
@@ -178,7 +185,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\setLinearSlider.m
+## setLinearSlider.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\setLinearSlider.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets the speed preset of the linear slider, and moves
   it to the target position specified by the user.
@@ -190,7 +198,8 @@
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-## src\support\AntennaFunctions\validateAntennaMeasurement.m
+## validateAntennaMeasurement.m
+`File path: C:\Users\davis\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\validateAntennaMeasurement.m`
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function validates the configuration of antenna test setup 
   settings based on the user's inputs.
@@ -222,3 +231,5 @@
     isValid:   A boolean value indicating whether the antenna setup 
                configuration is valid (true) or not (false).
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
