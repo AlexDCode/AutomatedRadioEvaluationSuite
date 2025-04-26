@@ -8,7 +8,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = 'ARES'
-copyright = '%Y, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
+copyright = '2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
 author = 'Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
 release = '1.0'
 ARES_logo = './../../../src/support/ARES Icon.png'
@@ -39,7 +39,7 @@ html_static_path = ['_static']
 html_logo = ARES_logo
 html_favicon = ARES_favicon
 html_title = "ARES"
-master_doc = "index"
+master_doc = "home"
 html_theme_options = {
     "source_repository": "https://github.com/AlexDCode/AutomatedRadioEvaluationSuite",
     "source_branch": "main",

@@ -1,6 +1,5 @@
 # Home
 
-
 [![Latest Release](https://img.shields.io/github/v/release/AlexDCode/AutomatedRadioEvaluationSuite?label=Latest%20Release)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases)
 [![Star on GitHub](https://img.shields.io/github/stars/AlexDCode/AutomatedRadioEvaluationSuite?style=social)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/AlexDCode/AutomatedRadioEvaluationSuite?style=social)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/network/members)
@@ -9,7 +8,8 @@
 [![Contributors](https://img.shields.io/github/contributors/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/graphs/contributors)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
-The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the getting started guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release.
+
+The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the getting started guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release.
 
 ## Features
 
@@ -28,7 +28,8 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## Contributors
 
-![ARES Logo](./../../../docs/assets/ARES_logo.jpg){witdh=240px}
+<img src="./../../../docs/assets/ARES_logo.jpg" alt="ARES Lab Logo" width="400px">
+
 
 - Author: José Abraham Bolaños Vargas ([@bolanosv](http://github.com/bolanosv))
 - Mentor: Alex David Santiago Vargas ([@AlexDCode](http://github.com/AlexDCode), [Google Scholar](https://scholar.google.com/citations?user=n_pFUoEAAAAJ&hl=en))
