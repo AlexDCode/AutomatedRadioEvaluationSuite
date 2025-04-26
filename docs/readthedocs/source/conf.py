@@ -17,8 +17,10 @@ ARES_favicon = './../../../src/support/ARES Icon.png'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['myst_parser']
-
+extensions = [
+    'sphinx.ext.mathjax',  # For HTML math rendering
+    'myst_parser',         # If you use Markdown (MyST)
+]
 templates_path = ['_templates']
 exclude_patterns = []
 
@@ -27,6 +29,8 @@ myst_enable_extensions = [
     # "html_admonition",  # Allows HTML admonitions
     "html_image",  # Allows HTML images
     "attrs_inline",  # Allows inline attributes
+    "dollarmath",  # Enables $...$ and $$...$$
+    "amsmath",     # Enables amsmath environments
 ]
 
 latex_engine = 'pdflatex'
