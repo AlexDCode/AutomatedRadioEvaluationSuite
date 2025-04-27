@@ -53,6 +53,7 @@ function runPAMeasurement(app)
         
         % Create a progress dialog to inform the user of the progress.
         d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
+        measurementStartTime = datetime('now');
         tic; runTime = 0;
 
         for i = 1:totalMeasurements
@@ -185,6 +186,12 @@ function runPAMeasurement(app)
 
         % Close progress dialog.
         close(d);
+
+        measurementEndTime = datetime('now');
+        measurementDuration = measurementEndTime - measurementStartTime;
+        
+        % Log measurement completion time.
+        logMeasurementTime(app, 'PA', measurementStartTime, measurementEndTime, measurementDuration, totalMeasurements);
         
         % Turn off the signal generator.
         writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));

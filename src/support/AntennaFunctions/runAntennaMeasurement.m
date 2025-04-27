@@ -1,6 +1,6 @@
 function runAntennaMeasurement(app) 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function executes a full 2D antenna gain measurement sweep by 
+    % This function executes a full antenna gain measurement sweep by 
     % controlling a dual-axis positioner (Theta and Phi) and capturing RF 
     % gain and return loss data from a VNA across a defined frequency 
     % range.
@@ -75,6 +75,7 @@ function runAntennaMeasurement(app)
 
         % Create a progress dialog to inform the user of the progress.
         d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
+        measurementStartTime = datetime('now'); 
         tic; lastTime = toc; totalTime = 0;
 
         for i = 1:totalPositions
@@ -186,6 +187,12 @@ function runAntennaMeasurement(app)
 
         % If the measurement was not canceled.
         if ~d.CancelRequested
+            measurementEndTime = datetime('now');
+            measurementDuration = measurementEndTime - measurementStartTime;
+            
+            % Log measurement completion time.
+            logMeasurementTime(app, 'Antenna', measurementStartTime, measurementEndTime, measurementDuration, totalPositions);
+
             % Save the complete measurement data.
             fullFilename = saveData(resultsTable);
 
