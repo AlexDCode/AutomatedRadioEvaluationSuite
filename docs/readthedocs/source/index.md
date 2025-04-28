@@ -8,6 +8,6 @@ getting_started.md
 tutorials.md
 code_reference.md
 gallery.md
-FAQ.md
+faq.md
 GitHub Repository <https://github.com/AlexDCode/AutomatedRadioEvaluationSuite>
 ```
