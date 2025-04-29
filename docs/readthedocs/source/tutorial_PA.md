@@ -91,6 +91,11 @@ In the *Calibration* tab, it is optional to specify the input and output attenua
 
 After validating all the settings, click on *Start Test* to begin the measurement. The progress window will display the time taken and estimated to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the *Load Test* button.
 
+```{important} Measurement Time
+* The average measurement time is less than 1s per data point.
+```
+
+
 For each *PSU Channel* dropdown, select the corresponding *Channe; Voltage* to plot. The *Single* results view window will display the gain, efficiency, and compression points for the selected PSU voltages and value of the *Frequency* dropdown.
 
 ![Signal Analysis Configuration](./assets/PA/demo_single.png){witdh=1920px align=center}

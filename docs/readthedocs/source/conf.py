@@ -26,7 +26,7 @@ exclude_patterns = []
 
 myst_enable_extensions = [
     "colon_fence",  # Allows ::: for directives
-    # "html_admonition",  # Allows HTML admonitions
+    "html_admonition",  # Allows HTML admonitions
     "html_image",  # Allows HTML images
     "attrs_inline",  # Allows inline attributes
     "dollarmath",  # Enables $...$ and $$...$$
