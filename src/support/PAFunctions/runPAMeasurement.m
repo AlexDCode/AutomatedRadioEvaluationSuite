@@ -180,7 +180,7 @@ function runPAMeasurement(app)
             
             for ch = 1:length(app.FilledPSUChannels)
                 resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i) = parametersTable.(sprintf('Channel %d Voltage', ch))(i);
-                resultsTable.(sprintf('Channel %d DC Power (W)', ch))(i) = DCDrainPower(1,ch);
+                resultsTable.(sprintf('Channel %d DC Power (W)', ch))(i) = DCDrainPower(1, ch);
             end
         end
 
@@ -190,7 +190,7 @@ function runPAMeasurement(app)
         measurementEndTime = datetime('now');
         measurementDuration = measurementEndTime - measurementStartTime;
         
-        % Log measurement completion time.
+        % Log measurement completion time to the user path.
         logMeasurementTime(app, 'PA', measurementStartTime, measurementEndTime, measurementDuration, totalMeasurements);
         
         % Turn off the signal generator.
@@ -215,11 +215,11 @@ function runPAMeasurement(app)
         plotPASingleMeasurement(app);
         plotPASweepMeasurement(app);
     catch ME
-        app.displayError(ME);
         % If an error occurs during the PA test measurement, then
         % for safety reasons the instruments will be turned off.
         enablePSUChannels(app, app.FilledPSUChannels, false);
         writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
         writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+        app.displayError(ME);
     end
 end
