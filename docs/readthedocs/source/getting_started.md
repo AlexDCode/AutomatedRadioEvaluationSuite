@@ -7,17 +7,18 @@ To run the app, you will need:
 - [MATLAB](https://www.mathworks.com/products/matlab.html) R2023b or above.
 - [MATLAB Instrument Control Toolbox](https://www.mathworks.com/products/instrument.html) (for VISA control functions)
 - [MATLAB RF Toolbox](https://www.mathworks.com/products/rftoolbox.html) (to read and analyze S-parameter data)
+- [MATLAB Antenna Toolbox](https://www.mathworks.com/products/antenna.html) (to view and plot 3D radiation patterns)
 - [Keysight Connection Expert](https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html) (for VISA drivers; Install the pre-requisite first, then the main installer)
 
 ## Download and Install
 
-- Download the latest release of the Automated Radio Evaluation Suite from [releases](https://github.com/bolanosv/AutomatedRadioEvaluationSuite/releases).
+- Download the latest Automated Radio Evaluation Suite release from [releases](https://github.com/bolanosv/AutomatedRadioEvaluationSuite/releases).
   - **For the MATLAB App**: Follow the instructions in the [Packaging and Installing MATLAB Apps Guide](https://www.mathworks.com/videos/packaging-and-installing-matlab-apps-70404.html).
 
 
 ## Network Configuration
 
-If the app is only being used to plot, this can be skipped. If it will be usead for measurement, it is required.
+If the app is only used to plot, this can be skipped. If it will be used for measurement, it is required.
 
 1. **WiFi or Ethernet**: Connect to the same network as the devices.
 2. **IP Configuration**: Ensure your device’s IP address is set up with the following network settings to connect to the instruments within the ARES Lab:
@@ -26,7 +27,7 @@ If the app is only being used to plot, this can be skipped. If it will be usead 
    - **Subnet Mask**: 255.255.0.0 (This enables accessing instruments with IP addresses in 192.168.XXX.XXX)
    - **DNS Servers**: Primary: 128.210.11.5, Alternate: 128.210.11.57.
 
-To test the network, ping the IP address of the intended instrument in the command window. If this is successful for the desired instruments the network settings are appropiate.
+To test the network, ping the IP address of the intended instrument in the command window. If this is successful for the desired instruments, the network settings are appropriate.
 
 ## Compatibility
 
@@ -42,4 +43,4 @@ The app has been tested and is compatible with the following instruments:
 - **ETS Lindgren EMCenter** Position Controller
 - **ETS Lindgren Linear Slider**
 
-Other instruments may be compatible given that they use the same SCPI commands as the listed devices.
+Other instruments may be compatible, given that they use the same SCPI commands as the listed devices.
