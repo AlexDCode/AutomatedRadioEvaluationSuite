@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Example Gallery" href="gallery.html" /><link rel="prev" title="Power Amplifier Measurement Tutorial" href="tutorial_PA.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Instrument Interfacing" href="instr_interface.html" /><link rel="prev" title="PA Tutorial" href="tutorial_PA.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Code Reference - ARES</title>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_ant.html">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_PA.html">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Code Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current has-children current-page"><a class="current reference internal" href="#">Code Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -253,8 +265,64 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="code-reference">
+          <section class="tex2jax_ignore mathjax_ignore" id="code-reference">
 <h1>Code Reference<a class="headerlink" href="#code-reference" title="Link to this heading">¶</a></h1>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html#visa-library">VISA Library</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html#scpi-strings">SCPI Strings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="instr_interface.html#transitioning-code-from-visa-interface-to-visadev-interface">Transitioning Code from VISA Interface to VISAdev Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instr_interface.html#common-scpi-strings-across-instruments">Common SCPI Strings Across Instruments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instr_interface.html#specific-scpi-strings-across-pa-instruments">Specific SCPI Strings Across PA Instruments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="instr_interface.html#specific-scpi-strings-across-antenna-instruments">Specific SCPI Strings Across Antenna Instruments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_antenna.html">Antenna Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#createantennaparameterstable-m">createAntennaParametersTable.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#createantennaresultstable-m">createAntennaResultsTable.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#measureantennagain-m">measureAntennaGain.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#measuresparameters-m">measureSParameters.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#plotantenna2dradiationpattern-m">plotAntenna2DRadiationPattern.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#plotantenna3dradiationpattern-m">plotAntenna3DRadiationPattern.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#plotreferenceantenna-m">plotReferenceAntenna.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#runantennameasurement-m">runAntennaMeasurement.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#setlinearslider-m">setLinearSlider.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html#validateantennameasurement-m">validateAntennaMeasurement.m</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#createpaparameterstable-m">createPAParametersTable.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#createparesultstable-m">createPAResultsTable.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#deembedpa-m">deembedPA.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#enablepsuchannels-m">enablePSUChannels.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#measurerfoutputanddcpower-m">measureRFOutputandDCPower.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#measurerfparameters-m">measureRFParameters.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#measurerfparameterspeaks-m">measureRFParametersPeaks.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#plotpasinglemeasurement-m">plotPASingleMeasurement.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#plotpasweepmeasurement-m">plotPASweepMeasurement.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#populatepsuchannels-m">populatePSUChannels.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#resetpsuchannels-m">resetPSUChannels.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#runpameasurement-m">runPAMeasurement.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#setpsuchannels-m">setPSUChannels.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html#validatepsuchannels-m">validatePSUChannels.m</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_support.html">Supporting Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#a2db-m">A2dB.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#dbm2w-m">dBm2W.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#extract-docs-m">extract_docs.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#improveaxesappearance-m">improveAxesAppearance.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#loaddata-m">loadData.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#savedata-m">saveData.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#setupcontextmenufor3dplot-m">setupContextMenuFor3DPlot.m</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html#waitforinstrument-m">waitForInstrument.m</a></li>
+</ul>
+</li>
+</ul>
+</div>
 </section>
 
         </article>
@@ -262,12 +330,12 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="gallery.html">
+          <a class="next-page" href="instr_interface.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Example Gallery</div>
+                <div class="title">Instrument Interfacing</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -278,7 +346,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Power Amplifier Measurement Tutorial</div>
+                <div class="title">PA Tutorial</div>
                 
               </div>
             </a>
@@ -286,7 +354,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -325,7 +393,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

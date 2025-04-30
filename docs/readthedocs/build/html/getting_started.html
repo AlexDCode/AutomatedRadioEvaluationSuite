@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Antenna Measurement Tutorial" href="tutorial_ant.html" /><link rel="prev" title="Automated Radio Evaluation Suite Documentation" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorials" href="tutorials.html" /><link rel="prev" title="Home" href="home.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Getting Started - ARES</title>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_ant.html">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_PA.html">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="code_reference.html">Code Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -253,13 +265,13 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="getting-started">
+          <section class="tex2jax_ignore mathjax_ignore" id="getting-started">
 <h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
 <section id="requirements">
 <h2>Requirements<a class="headerlink" href="#requirements" title="Link to this heading">¶</a></h2>
 <p>To run the app, you will need:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https://www.mathworks.com/products/matlab.html">MATLAB</a></p></li>
+<li><p><a class="reference external" href="https://www.mathworks.com/products/matlab.html">MATLAB</a> R2023b or above.</p></li>
 <li><p><a class="reference external" href="https://www.mathworks.com/products/instrument.html">MATLAB Instrument Control Toolbox</a> (for VISA control functions)</p></li>
 <li><p><a class="reference external" href="https://www.mathworks.com/products/rftoolbox.html">MATLAB RF Toolbox</a> (to read and analyze S-parameter data)</p></li>
 <li><p><a class="reference external" href="https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html">Keysight Connection Expert</a> (for VISA drivers; Install the pre-requisite first, then the main installer)</p></li>
@@ -305,6 +317,7 @@
 <li><p><strong>ETS Lindgren EMCenter</strong> Position Controller</p></li>
 <li><p><strong>ETS Lindgren Linear Slider</strong></p></li>
 </ul>
+<p>Other instruments may be compatible given that they use the same SCPI commands as the listed devices.</p>
 </section>
 </section>
 
@@ -313,16 +326,16 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tutorial_ant.html">
+          <a class="next-page" href="tutorials.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Antenna Measurement Tutorial</div>
+                <div class="title">Tutorials</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="index.html">
+          <a class="prev-page" href="home.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
@@ -337,7 +350,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -398,7 +411,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

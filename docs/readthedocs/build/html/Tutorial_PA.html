@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Code Reference" href="code_reference.html" /><link rel="prev" title="Antenna Measurement Tutorial" href="tutorial_ant.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Code Reference" href="code_reference.html" /><link rel="prev" title="Antenna Tutorial" href="tutorial_ant.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Power Amplifier Measurement Tutorial - ARES</title>
+        <title>PA Tutorial - ARES</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_ant.html">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="code_reference.html">Code Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -247,14 +259,112 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="power-amplifier-measurement-tutorial">
-<h1>Power Amplifier Measurement Tutorial<a class="headerlink" href="#power-amplifier-measurement-tutorial" title="Link to this heading">¶</a></h1>
+          <section class="tex2jax_ignore mathjax_ignore" id="pa-tutorial">
+<h1>PA Tutorial<a class="headerlink" href="#pa-tutorial" title="Link to this heading">¶</a></h1>
+<p>The Power Amplifier (PA) module performs parametric measurements varying frequency, input RF power, and controlling up to four power supplies. The program will capture the measurements, calculate figures of merit (FoM), save the data, and plot the results. Note the test does not need to be run every time as the data can be loaded into the app. Sample data is available in <a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA">data/PA</a>.</p>
+<section id="theory">
+<h2>Theory<a class="headerlink" href="#theory" title="Link to this heading">¶</a></h2>
+<section id="gain-and-efficiency">
+<h3>Gain and Efficiency<a class="headerlink" href="#gain-and-efficiency" title="Link to this heading">¶</a></h3>
+<p>Drain Efficiency:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+DE = \frac{P_{out}}{P_{DC}}
+\]</div>
+</div>
+<p>Power Added Efficiency:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+PAE = \frac{P_{out} - P_{in}}{P_{DC}}
+\]</div>
+</div>
+<p>Gain:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+G = \frac{P_{out}}{P_{in}} = P_{out}^{[dB]} - P_{in}^{[dB]}
+\]</div>
+</div>
+<p>Where,</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P_{out}\)</span>: RF output power</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{in}\)</span>: RF input power</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_{DC}\)</span>: DC supply (drain) power</p></li>
+</ul>
+</section>
+<section id="gain-compression-points">
+<h3>Gain Compression Points<a class="headerlink" href="#gain-compression-points" title="Link to this heading">¶</a></h3>
+<p>The gain compression points refer to the output power at a certain level after the maximum gain, typically -1 dB compression (<span class="math notranslate nohighlight">\(P_{-1 dB}\)</span>) and -3 dB compression (<span class="math notranslate nohighlight">\(P_{-1 dB}\)</span>). The absolute maximum output power is the saturation power  (<span class="math notranslate nohighlight">\(P_{sat}\)</span>). These values are refered to the output power of the PA but linear gain or low-noise amplifiers may use input-refered compression points. This Figure of Merit refers to the linearity of the DUT.</p>
+</section>
+<section id="calibration">
+<h3>Calibration<a class="headerlink" href="#calibration" title="Link to this heading">¶</a></h3>
+<p>Calibration: (Direct Measure) Fixed, Small-Signal (passive) S-param, Large-signal driver measurement.</p>
+<p>Calibration: (Indirect Measure) Not available. (TODO: Connect to two signal analyzers, one for the input and one for the output, measuring with -X dB couplers for ‘coupled measurement’).</p>
+</section>
+</section>
+<section id="performing-the-measurement">
+<h2>Performing the Measurement<a class="headerlink" href="#performing-the-measurement" title="Link to this heading">¶</a></h2>
+<section id="connect-to-the-instruments">
+<h3>Connect to the instruments<a class="headerlink" href="#connect-to-the-instruments" title="Link to this heading">¶</a></h3>
+<p>The first step is to select the relevant instruments in each dropdown of the <em>Instruments</em> tab. Power supply selection is optinal but will limit the FoM that can be calculated. Select <em>None: NA</em> for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the <a class="reference external" href="https://aresapp.readthedocs.io/latest/tutorial_instr.html">instrument database</a>.</p>
+<p><img alt="Connect Insruments" class="align-center" src="_images/connect_inst.png" /></p>
+<p>Once all the addresses have been populated, click on <em>Connect</em> in the bottom to establish the connection to each instrument and <em>Disconnect</em> to clear all the connections. The <em>Measurement Delay</em> can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and before capturing the data.</p>
+<p><img alt="Connected Insruments" class="align-center" src="_images/connected_inst.png" /></p>
+</section>
+<section id="configure-the-dc-power-supplies">
+<h3>Configure the DC Power Supplies<a class="headerlink" href="#configure-the-dc-power-supplies" title="Link to this heading">¶</a></h3>
+<p>Configure the DC Power Supplies (PSU) in the <em>Power Supply</em> tab. Select the appropiate <em>Supply Mode</em> depending on the number of PSUs needed and connected to in the <em>Instruments</em> tab. The app allows to connect up to two dual-output PSU. These supply mode options are the following:</p>
+<ul class="simple">
+<li><p><em>No Supply:</em> Will not control or take measurement to any supply even if connected.</p></li>
+<li><p><em>Single Supply:</em> Will use a single output of one PSU.</p></li>
+<li><p><em>Dual Supply:</em> will use two outputs of one or two PSUs.</p></li>
+<li><p><em>Quad Supply:</em> Will use all outputs of both dual-output PSUs.</p></li>
+</ul>
+<p><img alt="DC Power Supply Mode" class="align-center" src="_images/psu_mode.png" /></p>
+<p>Each output will have a supply name (A or B) followed by the output number (1 or 2). Assign the corresponding settings for each output in the <em>Supply Channel</em> dropdown. Select if the supply is connected to the drain or gate (for efficiency calculations) and set if the supply will be static or swept. Set the <em>Current Limit</em> and <em>Start Volage</em> for static outputs. For multiple voltage levels, fill out the <em>Step Voltage</em> and <em>Stop Voltage</em> in addition to the static output inputs.</p>
+<p><img alt="DC Power Supply Mode" class="align-center" src="_images/psu_config.png" /></p>
+</section>
+<section id="configure-the-signal-generator-and-analyzer">
+<h3>Configure the signal generator and analyzer<a class="headerlink" href="#configure-the-signal-generator-and-analyzer" title="Link to this heading">¶</a></h3>
+<p>Configure the RF input signal in the <em>Signal Analysis</em> tab. Select in the <em>Measurement Type</em> dropdown if the measurement will be a <em>Single</em> or <em>Swept Frequencies</em>. In the <em>Signal Generator Settings Section</em>, fill out the <em>Start Frequency</em>, <em>Step Frequency</em>, and <em>Step Frequency</em> according to the measurement type. Set the <em>Start Power</em>, <em>Step Power</em>, and <em>Stop Power</em>. These settings are limited to the capabilites of the instruments (i.e., frequency and power range).</p>
+<p>In the <em>Spectrum Analyzer Settings</em>, select an appropiate <em>Span</em>, number of <em>Sweep Points</em> and <em>Reference Level</em>. Default values should be feasable for most constant-wave (CW) measurements. The app will automatically change the center frequency of the signal analyzer to the same frequency as the signal generator.</p>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/signal_config.png" /></p>
+</section>
+<section id="configure-the-measurement-calibration">
+<h3>Configure the measurement calibration<a class="headerlink" href="#configure-the-measurement-calibration" title="Link to this heading">¶</a></h3>
+<p>In the <em>Calibration</em> tab, it is optional to specify the input and output attenuations and load driver reference measurements. In the <em>Calibration Mode</em> dropdown, select one of the follwing modes:</p>
+<ul class="simple">
+<li><p><em>None:</em> No</p></li>
+<li><p><em>Fixed:</em> Specify static input and output attenuation in decibels which will be applied equally to all frequencies. Used for passives (i.e., cables, attenuators, etc.).</p></li>
+<li><p><em>Small Signal:</em> Load an s-parameter measurement  (*.s2p file) for the input and output to specify a frequency-dependent attenuation. This is used for passives (i.e., cables, attenuators, etc.). The fixed attenuation options are still available and it will added to the s-parameter attenuations.</p></li>
+<li><p><em>Large Signal:</em> In addition to the small-signal calibration options, load a driver amplifier measurement following the same data format in the app. The DUT input power will be calculated by adding the input attenuation and grabing the output power of the driver at this input power and frequency. Intermediary values are linearly interpolated.</p></li>
+</ul>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/calibration.png" /></p>
+</section>
+<section id="run-the-test-and-plot-the-results">
+<h3>Run the test and plot the results<a class="headerlink" href="#run-the-test-and-plot-the-results" title="Link to this heading">¶</a></h3>
+<p>After validating all the settings, click on <em>Start Test</em> to begin the measurement. The progress window will display the time taken and estimated to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the <em>Load Test</em> button.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Measurement Time</p>
+<ul class="simple">
+<li><p>The average measurement time is less than 1s per data point.</p></li>
+</ul>
+</div>
+<p>For each <em>PSU Channel</em> dropdown, select the corresponding <em>Channe; Voltage</em> to plot. The <em>Single</em> results view window will display the gain, efficiency, and compression points for the selected PSU voltages and value of the <em>Frequency</em> dropdown.</p>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/demo_single.png" /></p>
+<p>The <em>Sweep</em> results view window will display all the gain curves, peak gain, efficiency, and compression points for each measured frequency. Right click on a plot for options to save it in the preffered format.</p>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/demo_sweep.png" /></p>
+</section>
+</section>
 </section>
 
         </article>
@@ -278,7 +388,7 @@
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Antenna Measurement Tutorial</div>
+                <div class="title">Antenna Tutorial</div>
                 
               </div>
             </a>
@@ -286,7 +396,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -319,15 +429,49 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">PA Tutorial</a><ul>
+<li><a class="reference internal" href="#theory">Theory</a><ul>
+<li><a class="reference internal" href="#gain-and-efficiency">Gain and Efficiency</a></li>
+<li><a class="reference internal" href="#gain-compression-points">Gain Compression Points</a></li>
+<li><a class="reference internal" href="#calibration">Calibration</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performing-the-measurement">Performing the Measurement</a><ul>
+<li><a class="reference internal" href="#connect-to-the-instruments">Connect to the instruments</a></li>
+<li><a class="reference internal" href="#configure-the-dc-power-supplies">Configure the DC Power Supplies</a></li>
+<li><a class="reference internal" href="#configure-the-signal-generator-and-analyzer">Configure the signal generator and analyzer</a></li>
+<li><a class="reference internal" href="#configure-the-measurement-calibration">Configure the measurement calibration</a></li>
+<li><a class="reference internal" href="#run-the-test-and-plot-the-results">Run the test and plot the results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

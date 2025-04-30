@@ -45,10 +45,10 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## TODO
 
-- **Detailed Tutorials**: Improve the tutorials for each app functionality.
 - **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
-- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
 - **FAQ**: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and troubleshooting common difficulties.
+- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
+- **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
 
 ## Usage
 
@@ -58,7 +58,6 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ### [Antenna Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_ant.html)
 
-You can find the detailed tutorial for performing antenna measurements using ARES [here](docs/assets/Tutorials/Antenna%20Tutorial.pdf).
 
 ## Contributions
 

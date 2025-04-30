@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Code Reference" href="code_reference.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="FAQ" href="faq.html" /><link rel="prev" title="Supporting Functions" href="code_support.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>Example Gallery - ARES</title>
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_ant.html">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_PA.html">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="code_reference.html">Code Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -247,14 +259,30 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="example-gallery">
+          <section class="tex2jax_ignore mathjax_ignore" id="example-gallery">
 <h1>Example Gallery<a class="headerlink" href="#example-gallery" title="Link to this heading">¶</a></h1>
+<section id="antenna-example-data">
+<h2>Antenna Example Data<a class="headerlink" href="#antenna-example-data" title="Link to this heading">¶</a></h2>
+<p>Reference Antenna</p>
+<p><img alt="Reference Antenna" class="align-center" src="_images/demo_refAnt.png" /></p>
+<p>Measured Antenna 2D Radiation Pattern</p>
+<p><img alt="Antenna 2D Radiation Pattern" class="align-center" src="_images/demo_2Dpattern.png" /></p>
+<p>Measured Antenna 3D Radiation Pattern</p>
+<p><img alt="Antenna 3D Radiation Pattern" class="align-center" src="_images/demo_3Dpattern.png" /></p>
+</section>
+<section id="pa-example-data">
+<h2>PA Example Data<a class="headerlink" href="#pa-example-data" title="Link to this heading">¶</a></h2>
+<p>Single Results View</p>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/demo_single.png" /></p>
+<p>Sweep Results View</p>
+<p><img alt="Signal Analysis Configuration" class="align-center" src="_images/demo_sweep.png" /></p>
+</section>
 </section>
 
         </article>
@@ -262,15 +290,23 @@
       <footer>
         
         <div class="related-pages">
-          
-          <a class="prev-page" href="code_reference.html">
+          <a class="next-page" href="faq.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">FAQ</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="code_support.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Code Reference</div>
+                <div class="title">Supporting Functions</div>
                 
               </div>
             </a>
@@ -278,7 +314,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -311,13 +347,33 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Example Gallery</a><ul>
+<li><a class="reference internal" href="#antenna-example-data">Antenna Example Data</a></li>
+<li><a class="reference internal" href="#pa-example-data">PA Example Data</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

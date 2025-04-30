@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Power Amplifier Measurement Tutorial" href="tutorial_PA.html" /><link rel="prev" title="Getting Started" href="getting_started.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="PA Tutorial" href="tutorial_PA.html" /><link rel="prev" title="Instrument Database Tutorial" href="tutorial_instr.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>Antenna Measurement Tutorial - ARES</title>
+        <title>Antenna Tutorial - ARES</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_PA.html">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a></li>
+<li class="toctree-l1 current has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="code_reference.html">Code Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -247,14 +259,133 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="antenna-measurement-tutorial">
-<h1>Antenna Measurement Tutorial<a class="headerlink" href="#antenna-measurement-tutorial" title="Link to this heading">¶</a></h1>
+          <section class="tex2jax_ignore mathjax_ignore" id="antenna-tutorial">
+<h1>Antenna Tutorial<a class="headerlink" href="#antenna-tutorial" title="Link to this heading">¶</a></h1>
+<p>The Antenna module performs parametric measurements varying the position of the DUT and acquires the frequency response. The program will capture the measurements, calculate the gain, save the data, and plot the results. Note the test does not need to be run every time as the data can be loaded into the app. Sample data is available in <a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna">data/Antenna</a>.</p>
+<section id="theory">
+<h2>Theory<a class="headerlink" href="#theory" title="Link to this heading">¶</a></h2>
+<section id="foundational-equations">
+<h3>Foundational Equations<a class="headerlink" href="#foundational-equations" title="Link to this heading">¶</a></h3>
+<p>Friis Transmission Equation:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+\frac{P_r}{P_t} = G_t G_r \left( \frac{\lambda}{4 \pi d} \right)^2
+\]</div>
+</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(P_r\)</span>: Received power</p></li>
+<li><p><span class="math notranslate nohighlight">\(P_t\)</span>: Transmitted power</p></li>
+<li><p><span class="math notranslate nohighlight">\(G_t\)</span>: Transmitter Antenna Gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(G_r\)</span>: Receiver Antenna Gain</p></li>
+<li><p><span class="math notranslate nohighlight">\(\lambda\)</span> Wavelength</p></li>
+<li><p><span class="math notranslate nohighlight">\(d\)</span>: Distance between transmitter and receiver</p></li>
+</ul>
+<p>Which can be expressed in dB scale as:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+P_r^{[dB]} = P_t^{[dB]} + G_t^{[dBi]} + G_r^{[dBi]} + 20 \log \left( \frac{\lambda}{4 \pi d} \right)
+\]</div>
+</div>
+<p>The Free Space Path Loss (FSPL) factor is given by:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+FSPL = 20 \log\bigg( \frac{\lambda}{4 \pi d} \bigg)
+\]</div>
+</div>
+<p>The ratio of received to transmitted power will be the measured magnitude:</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+S_{21} = \frac{P_r}{P_t} 
+\]</div>
+</div>
+</section>
+<section id="gain-comparison-method">
+<h3>Gain Comparison Method<a class="headerlink" href="#gain-comparison-method" title="Link to this heading">¶</a></h3>
+<p>In the gain comparison method (i.e., two antenna method), the reference antenna gain is known. Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters <span class="math notranslate nohighlight">\(S_{21}^{[dB]}\)</span>, calculated <span class="math notranslate nohighlight">\(FSPL\)</span>, and reference antenna gain <span class="math notranslate nohighlight">\(G_{REF}^{[dBi]}\)</span>.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+G_{DUT}^{[dBi]} = S_{21}^{[dB]} - FSPL - G_{REF}^{[dBi]}
+\]</div>
+</div>
+</section>
+<section id="gain-transfer-method">
+<h3>Gain Transfer Method<a class="headerlink" href="#gain-transfer-method" title="Link to this heading">¶</a></h3>
+<p>In the gain transfer method (i.e., one antenna method), the DUT and reference antenna are identical (<span class="math notranslate nohighlight">\(G_t^{[dBi]} = G_r^{[dBi]}\)</span>). Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters <span class="math notranslate nohighlight">\(S_{21}^{[dB]}\)</span> and calculated <span class="math notranslate nohighlight">\(FSPL\)</span>.</p>
+<div class="math-wrapper docutils container">
+<div class="math notranslate nohighlight">
+\[
+G_{DUT}^{[dBi]} = \frac{S_{21}^{[dB]} - FSPL}{2}
+\]</div>
+</div>
+</section>
+</section>
+<section id="performing-the-measurement">
+<h2>Performing the Measurement<a class="headerlink" href="#performing-the-measurement" title="Link to this heading">¶</a></h2>
+<section id="calibration">
+<h3>Calibration<a class="headerlink" href="#calibration" title="Link to this heading">¶</a></h3>
+<p>To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Ensure the frequency range and number of points (or step size) are as desired before caliration. Using an eCal is highly recommended as shown in the <a class="reference external" href="https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf">demonstration</a>.</p>
+</section>
+<section id="connect-to-the-instruments">
+<h3>Connect to the instruments<a class="headerlink" href="#connect-to-the-instruments" title="Link to this heading">¶</a></h3>
+<p>The first step is to select the relevant instruments in each dropdown of the <em>Instruments</em> tab. Select <em>None: NA</em> for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the <a class="reference external" href="https://aresapp.readthedocs.io/latest/tutorial_instr.html">instrument database</a>. Once all the addresses have been populated, click on <em>Connect</em> in the bottom to establish the connection to each instrument and <em>Disconnect</em> to clear all the connections. The <em>Measurement Delay</em> can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and before capturing the data.</p>
+<p><img alt="Instrument Configuration" class="align-center" src="_images/instr_conf.png" /></p>
+</section>
+<section id="load-reference-antenna-data-for-gain-comparison-method">
+<h3>Load Reference Antenna Data (for Gain Comparison Method)<a class="headerlink" href="#load-reference-antenna-data-for-gain-comparison-method" title="Link to this heading">¶</a></h3>
+<p>For the <a class="reference internal" href="#gain-comparison-method"><span class="xref myst">Gain Comparison Method</span></a>, the reference antenna gain needs to be loaded using the same data format for measured antennas. In the <em>Reference Antenna</em> window, click on <em>Browse Reference File</em> and select the data for the reference antenna. Only the boresight gain (<span class="math notranslate nohighlight">\(\theta = 0\)</span>, <span class="math notranslate nohighlight">\(\phi = 0\)</span>) is required from the reference antenna. The boresight gain and return loss magnitude over frequency cill be plotted in the results view window. To remove the file, click on <em>Clear Reference</em>.</p>
+<p><img alt="Reference Antenna" class="align-center" src="_images/demo_refAnt.png" /></p>
+</section>
+<section id="configure-the-vna">
+<h3>Configure the VNA<a class="headerlink" href="#configure-the-vna" title="Link to this heading">¶</a></h3>
+<p>Configure the Vector Network Analyzer (VNA) in the <em>VNA</em> tab. When connecting to the instruments, the app will load the current settings to the app. If you change any of the <em>Start Frequency</em>, <em>Step Frequency</em>, and <em>Step Frequency</em> the calibration might not be valid anymore. To prevent this, calibrate before connecting and leave the loaded values. These settings are limited to the capabilites of the instruments (i.e., frequency and power range). In addition, the app can load the smoothened data from the VNA, which utilizes a moving average filter with the given number of samples. If the <em>Smoothing Percentage</em> is set to zero, the smoothing will be turned off.</p>
+<p><img alt="VNA Configuration" class="align-center" src="_images/vna_conf.png" /></p>
+</section>
+<section id="configure-the-table-theta-axis">
+<h3>Configure the table (theta axis)<a class="headerlink" href="#configure-the-table-theta-axis" title="Link to this heading">¶</a></h3>
+<p>Configure the theta axis in the <em>Table</em> tab. Select between a static or parametric sweep. Select the <em>Table Speed</em> using the slider. Then enter the appropiate <em>Start Angle</em>, <em>Angle Step Size</em>, and <em>Stop Angle</em>. Note the software inputs are between <span class="math notranslate nohighlight">\(-180^\circ\)</span> and <span class="math notranslate nohighlight">\(180^\circ\)</span>. Since the table is configured to take angles between <span class="math notranslate nohighlight">\(0^\circ\)</span> and <span class="math notranslate nohighlight">\(360^\circ\)</span>, the software will translate to the appropiate values. If the user desired to control the table from the software, enter the target position and click on <em>Move to Angle</em>. To stop the movement at any time, click on <em>Stop Table</em>.</p>
+<p><img alt="Table Configuration" class="align-center" src="_images/table_conf.png" /></p>
+</section>
+<section id="configure-the-tower-phi-axis">
+<h3>Configure the tower (phi axis)<a class="headerlink" href="#configure-the-tower-phi-axis" title="Link to this heading">¶</a></h3>
+<p>Configure the tower axis in the <em>Tower</em> tab. Select between a static or parametric sweep. Select the <em>Tower Speed</em> using the slider. Then enter the appropiate <em>Start Angle</em>, <em>Angle Step Size</em>, and <em>Stop Angle</em>. Note the software inputs are between <span class="math notranslate nohighlight">\(-180^\circ\)</span> and <span class="math notranslate nohighlight">\(180^\circ\)</span>. If the user desired to control the table from the software, enter the target position and click on <em>Move to Angle</em>. To stop the movement at any time, click on <em>Stop Tower</em>.</p>
+<p><img alt="Tower Configuration" class="align-center" src="_images/tower_conf.png" /></p>
+</section>
+<section id="configure-the-linear-slider">
+<h3>Configure the linear slider<a class="headerlink" href="#configure-the-linear-slider" title="Link to this heading">¶</a></h3>
+<p>In the <em>Linear Slider</em> tab, set the <em>Antenna Offset</em>, which is adding the lengths of the DUT and reference antenna with respect to the mounting fixtures. The linear slider <em>Speed Preset</em> and <em>Slider Position</em> can be controlled from this tab. To move the slider, enter the target position and clock on <em>Move to Position</em>. The <em>Slider Position</em> will display the current position of the slider while the <em>Current Spacing</em> will display the current antenna separation, which takes into account the slider position and antenna offset. Options to <em>Home</em>, <em>Scan</em>, and <em>Stop</em> the slider are available.</p>
+<p><img alt="Linear Slider Configuration" class="align-center" src="_images/slider_conf.png" /></p>
+</section>
+<section id="run-the-test-and-plot-the-results">
+<h3>Run the test and plot the results<a class="headerlink" href="#run-the-test-and-plot-the-results" title="Link to this heading">¶</a></h3>
+<p>After validating all the settings, click on <em>Start Test</em> to begin the measurement. The progress window will display the time taken and estimated to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the <em>Load Test</em> button.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>Measurement Time</p>
+<ul class="simple">
+<li><p>Scan <span class="math notranslate nohighlight">\(\theta\)</span> (<span class="math notranslate nohighlight">\(1^{\circ}\)</span> step) with fixed <span class="math notranslate nohighlight">\(\phi\)</span>: ~16 minutes</p></li>
+<li><p>Scan <span class="math notranslate nohighlight">\(\theta\)</span> (<span class="math notranslate nohighlight">\(3^{\circ}\)</span> step) with fixed <span class="math notranslate nohighlight">\(\phi\)</span>: ~8 minutes</p></li>
+<li><p>Scan <span class="math notranslate nohighlight">\(\theta\)</span> (<span class="math notranslate nohighlight">\(5^{\circ}\)</span> step) with fixed <span class="math notranslate nohighlight">\(\phi\)</span>: ~6 minutes</p></li>
+<li><p>3D scan (<span class="math notranslate nohighlight">\(3^{\circ}\)</span> step for both <span class="math notranslate nohighlight">\(\theta\)</span> and <span class="math notranslate nohighlight">\(\phi\)</span>): ~20 hours, ~380 MB for 201 frequency points</p></li>
+</ul>
+</div>
+<p>The <em>2D Radiation Pattern</em> results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the <em>Frequency</em>, <em><span class="math notranslate nohighlight">\(\theta\)</span></em> cut, and <em><span class="math notranslate nohighlight">\(\phi\)</span></em> cut dropdowns.</p>
+<p><img alt="Antenna Radiation Pattern" class="align-center" src="_images/demo_2Dpattern.png" /></p>
+<p>The <em>3D Radiation Pattern</em> results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the <em>Frequency</em> dropdown.</p>
+<p><img alt="Antenna Radiation Pattern" class="align-center" src="_images/demo_3Dpattern.png" /></p>
+</section>
+</section>
 </section>
 
         </article>
@@ -267,18 +398,18 @@
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Power Amplifier Measurement Tutorial</div>
+                <div class="title">PA Tutorial</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="getting_started.html">
+          <a class="prev-page" href="tutorial_instr.html">
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Getting Started</div>
+                <div class="title">Instrument Database Tutorial</div>
                 
               </div>
             </a>
@@ -286,7 +417,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -319,15 +450,52 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer no-toc">
+    <aside class="toc-drawer">
       
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Antenna Tutorial</a><ul>
+<li><a class="reference internal" href="#theory">Theory</a><ul>
+<li><a class="reference internal" href="#foundational-equations">Foundational Equations</a></li>
+<li><a class="reference internal" href="#gain-comparison-method">Gain Comparison Method</a></li>
+<li><a class="reference internal" href="#gain-transfer-method">Gain Transfer Method</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#performing-the-measurement">Performing the Measurement</a><ul>
+<li><a class="reference internal" href="#calibration">Calibration</a></li>
+<li><a class="reference internal" href="#connect-to-the-instruments">Connect to the instruments</a></li>
+<li><a class="reference internal" href="#load-reference-antenna-data-for-gain-comparison-method">Load Reference Antenna Data (for Gain Comparison Method)</a></li>
+<li><a class="reference internal" href="#configure-the-vna">Configure the VNA</a></li>
+<li><a class="reference internal" href="#configure-the-table-theta-axis">Configure the table (theta axis)</a></li>
+<li><a class="reference internal" href="#configure-the-tower-phi-axis">Configure the tower (phi axis)</a></li>
+<li><a class="reference internal" href="#configure-the-linear-slider">Configure the linear slider</a></li>
+<li><a class="reference internal" href="#run-the-test-and-plot-the-results">Run the test and plot the results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
       
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>

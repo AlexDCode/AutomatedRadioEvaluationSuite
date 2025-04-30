@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Getting Started" href="getting_started.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Home" href="home.html" />
 
     <link rel="shortcut icon" href="_static/ARES Icon.png"/><!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
         <title>ARES</title>
@@ -178,7 +178,7 @@
           <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
         </button>
       </div>
-      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
         <div class="visually-hidden">Toggle table of contents sidebar</div>
         <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
       </label>
@@ -203,11 +203,23 @@
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_ant.html">Antenna Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_PA.html">Power Amplifier Measurement Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="tutorials.html">Tutorials</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Tutorials</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="code_reference.html">Code Reference</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of Code Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
 </ul>
 
@@ -247,69 +259,66 @@
               <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
             </button>
           </div>
-          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+          <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
             <div class="visually-hidden">Toggle table of contents sidebar</div>
             <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="automated-radio-evaluation-suite-documentation">
-<h1>Automated Radio Evaluation Suite Documentation<a class="headerlink" href="#automated-radio-evaluation-suite-documentation" title="Link to this heading">¶</a></h1>
-<!-- File Tree -->
+          <!-- File Tree -->
 <div class="toctree-wrapper compound">
-</div>
-<p><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/stargazers"><img alt="Star on GitHub" src="https://img.shields.io/github/stars/AlexDCode/AutomatedRadioEvaluationSuite?style=social" /></a>
-<a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/network/members"><img alt="GitHub Forks" src="https://img.shields.io/github/forks/AlexDCode/AutomatedRadioEvaluationSuite?style=social" /></a>
-<a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/issues"><img alt="GitHub Issues" src="https://img.shields.io/github/issues/AlexDCode/AutomatedRadioEvaluationSuite" /></a>
-<a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/pulls"><img alt="GitHub Pull Requests" src="https://img.shields.io/github/issues-pr/AlexDCode/AutomatedRadioEvaluationSuite" /></a>
-<a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/AlexDCode/AutomatedRadioEvaluationSuite" /></a></p>
-<p>The <strong>Automated Radio Evaluation Suite (ARES)</strong> enables automated RF measurements for power amplifiers and antennas. Unlike commercial software, this app is open-source, customizable, and free. Download the <a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases">latest release</a> and follow the getting started guide to learn how to use it. Please note that the app is still in development, and some features may not be available in this release.</p>
-<section id="features">
-<h2>Features<a class="headerlink" href="#features" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p>VISA Instrument Control for multiple Keysight and ETS-Lindgren instruments by GPIB and LAN</p></li>
-<li><p>Measure RF power amplifier Figures of Merit (FoM) over one or multiple frequencies</p>
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
 <ul>
-<li><p>Gain</p></li>
-<li><p>Output Power</p></li>
-<li><p>Drain Efficiency</p></li>
-<li><p>Power Added Efficiency</p></li>
+<li class="toctree-l1"><a class="reference internal" href="home.html">Home</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="home.html#features">Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="home.html#contributors">Contributors</a></li>
 </ul>
 </li>
-<li><p>Measure antenna gain characteristics by the Gain Comparison Method (i.e., Two-Antenna Method) and the Gain Transfer Method (i.e., Comparison Antenna Method) using a reference gain file</p></li>
-<li><p>Measure antenna return loss (magnitude and phase)</p></li>
-<li><p>Save and recall measurements in standardized file formats for data analysis</p></li>
-<li><p>Plot measurement results within the app for quick visualization</p></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#download-and-install">Download and Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#network-configuration">Network Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started.html#compatibility">Compatibility</a></li>
 </ul>
-</section>
-<section id="todo">
-<h2>TODO<a class="headerlink" href="#todo" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><strong>Faster Antenna Scanning</strong>: Improve scanning by measuring positive angles first and returning to the origin at the end of the measurement.</p></li>
-<li><p><strong>Stop button</strong>: for PA tests.</p></li>
-<li><p><strong>3D Radiation Pattern</strong>: Include 3D patterns if more than two cuts are included.</p></li>
-<li><p><strong>Create Tutorials</strong>: Add more tutorials for different app functionalities (one tutorial available for now).</p></li>
-<li><p><strong>Error Handling</strong>: Error handling is in place for the PA side, including error messages displayed in the GUI. An error log function is still needed.</p></li>
-<li><p><strong>Export Plots</strong>: Save images in standard formats and in tikz for publication.</p></li>
-<li><p><strong>How It Works</strong>: Provide an overview of the app’s inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.</p></li>
-<li><p><strong>Advanced Features</strong>: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.</p></li>
-<li><p><strong>Troubleshooting</strong>: Add a section for common issues users might encounter, such as connection issues or instrument compatibility, with suggested solutions.</p></li>
-<li><p><strong>FAQ</strong>: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and difficulties.</p></li>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_instr.html">Instrument Database Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_ant.html">Antenna Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_PA.html">PA Tutorial</a></li>
 </ul>
-</section>
-</section>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code_reference.html">Code Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="instr_interface.html">Instrument Interfacing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_antenna.html">Antenna Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_amp.html">Power Amplifier Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code_support.html">Supporting Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gallery.html">Example Gallery</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gallery.html#antenna-example-data">Antenna Example Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gallery.html#pa-example-data">PA Example Data</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">FAQ</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#how-to-obtain-the-instrument-address">How to obtain the instrument address?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faq.html#the-instrument-is-not-available">The instrument is not available?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/AlexDCode/AutomatedRadioEvaluationSuite">GitHub Repository</a></li>
+</ul>
+</div>
 
         </article>
       </div>
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="getting_started.html">
+          <a class="next-page" href="home.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Getting Started</div>
+                <div class="title">Home</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -318,7 +327,7 @@
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2025, Alex Santiago
+                Copyright &#169; 2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -351,35 +360,17 @@
         
       </footer>
     </div>
-    <aside class="toc-drawer">
+    <aside class="toc-drawer no-toc">
       
-      
-      <div class="toc-sticky toc-scroll">
-        <div class="toc-title-container">
-          <span class="toc-title">
-            On this page
-          </span>
-        </div>
-        <div class="toc-tree-container">
-          <div class="toc-tree">
-            <ul>
-<li><a class="reference internal" href="#">Automated Radio Evaluation Suite Documentation</a><ul>
-<li><a class="reference internal" href="#features">Features</a></li>
-<li><a class="reference internal" href="#todo">TODO</a></li>
-</ul>
-</li>
-</ul>
-
-          </div>
-        </div>
-      </div>
       
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=f2a433a1"></script>
+</div><script src="_static/documentation_options.js?v=d6b6a36a"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     </body>
 </html>
