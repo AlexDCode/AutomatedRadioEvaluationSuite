@@ -108,8 +108,8 @@ This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB 
 
 This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to display the following plots:
 
-- Gain vs. Frequency at a fixed theta/phi angle.
-- Gain vs. Angle (both θ and φ cuts) at a fixed frequency.
+- Gain vs. Frequency at a fixed θ/φ angle.
+- Gain vs. Angle (θ and φ cuts) at a fixed frequency.
 - Return Loss vs. Frequency at a fixed θ/φ angle.
 - Polar Radiation Pattern (θ and φ cuts).
 
@@ -117,6 +117,12 @@ This function generates and displays several 2D plots related to antenna measure
 :class: note
 
 - app  - Application object containing the antenna measurement data and plot handles.
+```
+
+```{admonition} Output
+:class: note
+
+- None
 ```
 
 ## plotAntenna3DRadiationPattern.m
@@ -137,15 +143,21 @@ This function generates a 3D radiation pattern plot for the antenna based on the
 - app  - Application object containing the antenna measurement data and plot handles.
 ```
 
+```{admonition} Output
+:class: note
+
+- None
+```
+
 ## plotReferenceAntenna.m
 `File path: src\support\AntennaFunctions\plotReferenceAntenna.m`
 
 **DESCRIPTION:**
 
-Plots the reference antenna's gain and return loss versus frequency, serving as a baseline for comparison with DUT (Device Under Test) measurements. The function does the following:
+Plots the reference antenna's gain and return loss versus frequency, serving as a baseline for comparison with DUT (Device Under Test) measurements. The function:
 
 - Clears existing plots for gain and return loss.
-- Plots gain (dBi) vs frequency (MHz) for the reference antenna.
+- Plots gain (dBi) vs frequency (MHz).
 - Plots return loss (dB) vs frequency (MHz).
 - Enhances visual appearance of plots using standardized formatting.
 
@@ -204,6 +216,12 @@ This function controls the movement of the EMCenter linear slider by setting its
 
 - speedPreset    - An integer between 1 (slowest) and 8 (fastest) that sets the speed of the linear slider.
 - targetPosition - Target position in cm (0 - 200 cm) for the slider to move to.
+```
+
+```{admonition} Output
+:class: note
+
+- None
 ```
 
 ## validateAntennaMeasurement.m
