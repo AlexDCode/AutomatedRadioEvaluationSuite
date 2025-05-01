@@ -25,7 +25,7 @@ This function generates a table of all possible combinations of Theta and Phi an
 
 **DESCRIPTION:**
 
-This function initializes and preallocates a results table for storing antenna test measurements. The results table is designed to hold various antenna parameters for a given number of measurements. It contains the following columns.
+This function initializes and preallocates a results table for storing antenna test measurements. The results table is designed to hold various antenna parameters for a given number of measurements. It contains the following columns:
 
 - Theta (deg): The theta angle in degrees.
 - Phi (deg): The phi angle in degrees.
@@ -106,22 +106,17 @@ This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB 
 
 **DESCRIPTION:**
 
-This function plots the 2D antenna measurement data:
+This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to display the following plots:
 
-- Gain vs. Frequency at a fixed theta/phi angle
-- Gain vs. Angle at a fixed frequency
-- Return Loss vs. Frequency
-- 2D polar radiation pattern (θ and φ cuts)
+- Gain vs. Frequency at a fixed theta/phi angle.
+- Gain vs. Angle (both θ and φ cuts) at a fixed frequency.
+- Return Loss vs. Frequency at a fixed θ/φ angle.
+- Polar Radiation Pattern (θ and φ cuts).
 
 ```{admonition} Input
 :class: note
 
-- app  - Application object containing antenna data and plot handles.
-- This function:
-- - Extracts data based on selected θ, φ, and frequency values
-- - Updates four app axes with corresponding gain and return loss
-- - Enhances axes visuals using helper formatting functions
-- - Catches and displays errors using the app's error handler
+- app  - Application object containing the antenna measurement data and plot handles.
 ```
 
 ## plotAntenna3DRadiationPattern.m
@@ -129,21 +124,17 @@ This function plots the 2D antenna measurement data:
 
 **DESCRIPTION:**
 
-This function plots the 3D antenna radiation pattern for a given frequency: for polar axes.
+This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, phi, and gain values in the application UI. The function:
 
-- 3D Radiation Pattern based on theta, phi, and magnitude values.
-- The plot uses the Antenna Toolbox's internal spherical renderer
+- Extracts the antenna gain data for the specified frequency.
+- Ensures consistency in angle data (handling edge cases like -180 and 180 degrees).
+- Creates and displays the 3D radiation pattern plot.
+- Displays appropriate error or warning messages if data is inconsistent or invalid.
 
 ```{admonition} Input
 :class: note
 
-- app  - Application object containing antenna data and plot handles.
-- This function:
-- - Extracts gain data based on the selected frequency
-- - Ensures the angle data is consistent
-- - Creates a 3D radiation pattern plot
-- - Enhances axes visuals using helper formatting functions
-- - Catches and displays errors using the app's error handler
+- app  - Application object containing the antenna measurement data and plot handles.
 ```
 
 ## plotReferenceAntenna.m
