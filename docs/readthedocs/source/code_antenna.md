@@ -193,7 +193,7 @@ This function executes a full antenna gain measurement sweep by controlling a du
 
 **HOW IT WORKS:**
 
-This function controls the movement of the linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
+This function controls the movement of the EMCenter linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
 
 ```{admonition} Input
 :class: note
@@ -207,11 +207,8 @@ This function controls the movement of the linear slider by setting its speed pr
 
 **HOW IT WORKS:**
 
-This function performs the following validation checks on the antenna test setup. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
+This function performs the following validation checks on the antenna test setup. Whether the VNA, EMCenter, and EMSlider are connected. Whether the start and end frequencies are specified and not equal. Whether the number of sweep points is defined. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
 
-- - Whether the VNA, EMCenter, and EMSlider are connected.
-- - Whether the start and end frequencies are specified and not equal.
-- - Whether the number of sweep points is defined.
 - - Whether the antenna's physical size is specified.
 - - Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
 - - Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
