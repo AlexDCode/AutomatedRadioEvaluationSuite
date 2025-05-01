@@ -55,14 +55,40 @@ This function improves the appearance of axes in MATLAB App Designer, handles pl
 
 **DESCRIPTION:**
 
-This function loads data in from a CSV or Excel file containing a single or sweep PA test measurement, or an Antenna test measurement. PARAMETERS RFcomponenet: Either 'PA' or 'Antenna' depending on which type of measurement is being loaded. FileName:     The name of the file that will be loaded into the application. RETURNS combinedData: A struct containing all the data from each column of the loaded file. User can acces specific data by accesing the array's fields.
+This function loads data from a CSV or Excel file containing a single or sweep PA test measurement, or an Antenna test measurement.
+
+```{admonition} Input
+:class: note
+
+- RFcomponent  - Either 'PA', 'Antenna', or 'AntennaReference' depending on which type of measurement is being loaded.
+- FileName     - The name of the file that will be loaded into the application.
+```
+
+```{admonition} Output
+:class: note
+
+- combinedData - A struct containing all the data from each column of the loaded file.
+```
 
 ## saveData.m
 `File path: src\support\SupportFunctions\saveData.m`
 
 **DESCRIPTION:**
 
-This function saves data from the application into either a CSV or Excel file. The user passes in the combined test data and combined test variable names, the function saves and organizes the data. PARAMETERS combinedData:  Cell array containing the data for all measurement variables. Example: {testFrequency, testGain, ...} combinedNames: Cell array containing the titles of the measurement variables. Example: {'Frequency Hz', 'Gain dB', ...}
+This function saves test data to either a CSV or Excel (.xlsx) file, depending on size and user selection. If the data exceeds Excel's row/column limits, only the CSV option is offered.
+
+```{admonition} Input
+:class: note
+
+- combinedData  - Either a table or a cell array of measurement vectors (e.g., {frequency, gain, ...}).
+- combinedNames - Cell array of variable names corresponding to the data (e.g., {'Frequency (Hz)', 'Gain (dB)', ...}).
+```
+
+```{admonition} Output
+:class: note
+
+- fullFilename  - Full path to the saved file, or an empty string if the user cancels the save dialog.
+```
 
 ## setupContextMenuFor3DPlot.m
 `File path: src\support\SupportFunctions\setupContextMenuFor3DPlot.m`
