@@ -215,6 +215,7 @@ This function performs the following validation checks on the antenna test setup
 - Whether the antenna's physical size is specified.
 - Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
 - Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
+
 ```{admonition} Input
 :class: note
 
