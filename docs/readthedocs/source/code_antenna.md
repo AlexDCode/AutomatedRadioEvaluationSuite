@@ -55,22 +55,25 @@ This function initializes and preallocates a results table for storing antenna t
 
 **DESCRIPTION:**
 
-This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi) based on the input frequency, S-Parameters, and spacing between the antennas. The function offers two ways of calculating antenna gain. If both test antennas are identical the function uses the Two-Antenna method (Friss Equation), else the Comparison Antenna Method is used, using the provided reference gain and frequency.
+This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods: values with the free-space path loss (FSPL) and interpolating the reference gain at the test frequencies. Friss Equation (adjusted by FSPL).
+
+- **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by adjusting the S-parameter
+- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical and calculates the gain using the
 
 ```{admonition} Input
 :class: note
 
-- TestFrequency: - A scalar or vector of frequency values in (Hz) at which the antenna gain is measured.
-- sParameter_dB: - A scalar or vector of S21 in (dB) values representing the magnitude of power transfer between two antennas.
-- Spacing:       - A scalar, the distance in (m) between the two antennas being tested.
-- RefGain:       - A vector containing the reference antenna gain.
-- RefFreq:       - A vector containing the reference frequencies.
+- TestFrequency   - A scalar or vector of frequency values in Hz at which the antenna gain is measured.
+- sParameter_dB   - A scalar or vector of S21 values (in dB), representing the magnitude of power transfer between two antennas.
+- Spacing         - A scalar value representing the distance in meters between the two antennas being tested.
+- ReferenceGain   - (Optional) A vector of reference antenna gain values (in dBi). Used for the Comparison Antenna Method.
+- ReferenceFrequency - (Optional) A vector of frequencies (in Hz) corresponding to the reference antenna gain values.
 ```
 
 ```{admonition} Output
 :class: note
 
-- antennaGain:   - Vector containing the antenna gain in (dBi) of the test antenna.
+- antennaGain     - A vector containing the calculated antenna gain in dBi for the test antenna, at the specified test frequencies.
 ```
 
 ## measureSParameters.m
@@ -78,21 +81,24 @@ This function calculates the gain of a test antenna in decibels relative to an i
 
 **DESCRIPTION:**
 
-This function measures 2-port S-Parameters (mag in dB and phase in degrees). It supports smoothed or raw measurements using FDATA/SDATA.
+This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data. magnitude and phase data (using `FDATA`). of complex S-parameters (using `SDATA`) and calculates the magnitude and phase from the complex data.
+
+- **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed
+- **Raw Data**: If smoothing is disabled (smoothingPercentage == 0), the function retrieves raw data in the form
 
 ```{admonition} Input
 :class: note
 
-- VNA                 - Instrument object for the VNA
-- smoothingPercentage - Percentage smoothing aperture (0 = off)
+- VNA                 - The instrument object for the VNA, used for communication and measurement control.
+- smoothingPercentage - The percentage of smoothing applied to the S-parameters data.
 ```
 
 ```{admonition} Output
 :class: note
 
-- sParameters_dB      - Cell array of magnitude data (in dB)
-- sParameters_Phase   - Cell array of phase data (in degrees)
-- freqValues          - Frequency sweep values (Hz)
+- sParamdB            - A cell array containing the magnitude data (in dB) for each S-parameter.
+- sParamPhase         - A cell array containing the phase data (in degrees) for each S-parameter.
+- freqValues          - A vector containing the frequency sweep values (in Hz) corresponding to the S-parameters.
 ```
 
 ## plotAntenna2DRadiationPattern.m
