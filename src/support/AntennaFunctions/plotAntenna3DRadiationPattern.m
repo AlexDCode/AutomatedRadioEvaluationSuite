@@ -21,6 +21,7 @@ function plotAntenna3DRadiationPattern(app)
         % Clear current plot, and its associated colorbar.
         cla(app.RadiationPlot3DPattern);
         ax = app.RadiationPlot3DPattern;
+        app.RadiationPlot3DLabel.Text = '';
         colorbar(ax, 'delete');
 
         % Specified frequency plotting index.
@@ -56,14 +57,24 @@ function plotAntenna3DRadiationPattern(app)
         linearIdx = sub2ind(size(gainMatrix), phiIdx, thetaIdx);
         gainMatrix(linearIdx) = gainValues;
 
+        % Check for NaN Values
         if any(isnan(gainMatrix(:)))
-            uialert(app.UIFigure, 'Matrix has NaN values.', 'Data Error', 'Icon', 'error');
+            app.RadiationPlot3DLabel.FontWeight = 'bold';
+            app.RadiationPlot3DLabel.Text = 'Warning: The gain matrix contains invalid (NaN) values.';
+            return;
         end
-        
+        % Check for Matrix Dimensions 
+        % GAIN MATRIX NEEDS TO BE NXM where N,M is >= 2
+        if size(gainMatrix, 1) < 2 || size(gainMatrix, 2) < 2
+            app.RadiationPlot3DLabel.FontWeight = 'bold';
+            app.RadiationPlot3DLabel.Text = 'Error: The gain matrix must have at least 2 rows and 2 columns.';
+            return;
+        end
+
         % 1) 3D Radiation Pattern Plot
         % Using the internal spherical renderer for true polar axes from 
         % Antenna Toolbox.
-        pause(0.1); % Settling time for ax.
+        pause(0.1); 
         antennashared.internal.radiationpattern3D(ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
         ylabel(colorbar(ax), 'Gain (dBi)');
         axis(ax, 'tight');
