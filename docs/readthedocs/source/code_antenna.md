@@ -10,7 +10,6 @@ This function creates a parameter sweep table for antenna testing, generating al
 ```{admonition} Input
 :class: note
 
-INPUT:
 Theta: - Vector of theta angles (in degrees).
 Phi:   - Vector of phi angles (in degrees).
 
@@ -19,7 +18,6 @@ Phi:   - Vector of phi angles (in degrees).
 ```{admonition} Output
 :class: note
 
-OUTPUT:
 paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -36,7 +34,6 @@ antenna test measurements.
 ```{admonition} Input
 :class: note
 
-INPUT:
 totalMeasurements: Number of measurements (rows) to allocate
 
 ```
@@ -44,7 +41,6 @@ totalMeasurements: Number of measurements (rows) to allocate
 ```{admonition} Output
 :class: note
 
-OUTPUT:
 ResultsTable: Preallocated table with the following columns:
 - Theta (deg)
 - Phi (deg)
