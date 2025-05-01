@@ -17,9 +17,7 @@ This function generates a table of all possible combinations of Theta and Phi an
 ```{admonition} Output
 :class: note
 
-- paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees). The table will have the following columns:
-- - Theta (deg): The theta angle (in degrees).
-- - Phi (deg): The phi angle (in degrees).
+- ParametersTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
 ```
 
 ## createAntennaResultsTable.m
@@ -27,28 +25,29 @@ This function generates a table of all possible combinations of Theta and Phi an
 
 **DESCRIPTION:**
 
-This function initializes the results table for storing antenna test measurements.
+This function initializes and preallocates a results table for storing antenna test measurements. The results table is designed to hold various antenna parameters for a given number of measurements. It contains the following columns.
+
+- Theta (deg): The theta angle in degrees.
+- Phi (deg): The phi angle in degrees.
+- Frequency (MHz): The frequency in MHz.
+- Gain (dBi): The gain in decibels isotropic (dBi).
+- Return Loss (dB): The return loss in decibels.
+- Return Loss (deg): The return loss in degrees.
+- Return Loss Reference (dB): The reference return loss in decibels.
+- Return Loss Reference (deg): The reference return loss in degrees.
+- Path Loss (dB): The path loss in decibels.
+- Path Loss (deg): The path loss in degrees.
 
 ```{admonition} Input
 :class: note
 
-- totalMeasurements: Number of measurements (rows) to allocate
+- totalMeasurements - The total number of measurements (rows) to allocate in the results table.
 ```
 
 ```{admonition} Output
 :class: note
 
-- ResultsTable: Preallocated table with the following columns:
-- - Theta (deg)
-- - Phi (deg)
-- - Frequency (MHz)
-- - Gain (dBi)
-- - Return Loss (dB)
-- - Return Loss (deg)
-- - Return Loss Reference (dB)
-- - Return Loss Reference (deg)
-- - Path Loss (dB)
-- - Path Loss (deg)
+- ResultsTable      - The preallocated table.
 ```
 
 ## measureAntennaGain.m
