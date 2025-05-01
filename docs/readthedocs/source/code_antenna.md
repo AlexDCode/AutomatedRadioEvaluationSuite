@@ -7,7 +7,7 @@
 This function creates a parameter sweep table for antenna testing, generating all possible combinations of Theta and Phi.
 
 
-```{admonition} Input
+```{admonition} 
 :class: note
 
 INPUT:
@@ -16,7 +16,7 @@ Phi:   - Vector of phi angles (in degrees).
 
 ```
 
-```{admonition} Output
+```{admonition} 
 :class: note
 
 OUTPUT:
@@ -33,7 +33,7 @@ This function initializes the results table for storing
 antenna test measurements.
 
 
-```{admonition} Input
+```{admonition} 
 :class: note
 
 INPUT:
@@ -41,7 +41,7 @@ totalMeasurements: Number of measurements (rows) to allocate
 
 ```
 
-```{admonition} Output
+```{admonition} 
 :class: note
 
 OUTPUT:
