@@ -198,10 +198,8 @@ This function controls the movement of the linear slider by setting its speed pr
 ```{admonition} Input
 :class: note
 
-- speedPreset    - An integer value between 1 and 8, where 1 represents the minimum speed and 8 represents the
-- maximum speed.
-- targetPosition - The target position (cm) to which the linear slider will move. The value should be within the
-- operational range of the slider (0 - 200 cm).
+- speedPreset    - An integer between 1 (slowest) and 8 (fastest) that sets the speed of the linear slider.
+- targetPosition - Target position in cm (0 - 200 cm) for the slider to move to.
 ```
 
 ## validateAntennaMeasurement.m
@@ -214,7 +212,7 @@ This function performs the following validation checks on the antenna test setup
 - - Whether the VNA, EMCenter, and EMSlider are connected.
 - - Whether the start and end frequencies are specified and not equal.
 - - Whether the number of sweep points is defined.
-- - Whether the antenna physical size is specified.
+- - Whether the antenna's physical size is specified.
 - - Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
 - - Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
 
@@ -227,6 +225,6 @@ This function performs the following validation checks on the antenna test setup
 ```{admonition} Output
 :class: note
 
-- isValid - Logical value. `true` if configuration is valid; otherwise, `false`.
+- isValid - Logical value. `true` if the configuration is valid; otherwise, `false`.
 ```
 
