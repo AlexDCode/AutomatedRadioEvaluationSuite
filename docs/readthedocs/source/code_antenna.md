@@ -207,11 +207,19 @@ This function controls the movement of the EMCenter linear slider by setting its
 
 **HOW IT WORKS:**
 
-This function performs the following validation checks on the antenna test setup. Whether the VNA, EMCenter, and EMSlider are connected. Whether the start and end frequencies are specified and not equal. Whether the number of sweep points is defined. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
+This function performs the following validation checks on the antenna test setup. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
 
-- - Whether the antenna's physical size is specified.
-- - Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
-- - Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
+- Whether the VNA, EMCenter, and EMSlider are connected.
+
+- Whether the start and end frequencies are specified and not equal.
+
+- Whether the number of sweep points is defined.
+
+- Whether the antenna's physical size is specified.
+
+- Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
+
+- Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
 
 ```{admonition} Input
 :class: note
