@@ -5,7 +5,7 @@
 
 **DESCRIPTION:**
 
-This function generates a table of all possible combinations of Theta and Phi angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
+This function generates a table of all possible combinations of θ and φ angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
 
 ```{admonition} Input
 :class: note
@@ -84,7 +84,7 @@ This function calculates the gain of a test antenna in decibels relative to an i
 This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
 
 - **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
-- **Raw Data**: If smoothing is disabled (smoothingPercentage == 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
+- **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
 
 ```{admonition} Input
 :class: note
