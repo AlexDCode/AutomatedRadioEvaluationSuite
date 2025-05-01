@@ -13,3 +13,9 @@
 * Check that the device shares the same network as the instrument
 * Confirm that the network settings are appropiate (compatible subnet mask and IP addresses of both device and instruments)
 * Try pining the device IP address in the terminal/command prompt (```ping XXX.XXX.XXX.XXX```)
+
+## Show Hidden Tabs
+
+Right-click and hold on the tab browsing menu to expand all the tabs available.
+
+![Expand Menu Tabs](./assets/FAQ/expand_options.png){witdh=1920px align=center}
