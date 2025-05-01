@@ -8,14 +8,18 @@ This function creates a parameter sweep table for antenna testing,
 generating all possible combinations of Theta and Phi.
 
 
-```{note}
+```{admonition} INPUT PARAMETERS
+:class: note
+
 INPUT PARAMETERS:
 Theta:  Vector of theta angles (in degrees).
 Phi:    Vector of phi angles (in degrees).
 
 ```
 
-```{note}
+```{admonition} OUTPUT PARAMETERS
+:class: note
+
 OUTPUT PARAMETERS:
 paramTable - A table containing all combinations of Theta in (deg)
 and Phi in (deg).
@@ -106,7 +110,9 @@ This function plots the 2D antenna measurement data:
 - 2D polar radiation pattern (θ and φ cuts)
 
 
-```{note}
+```{admonition} INPUT PARAMETERS
+:class: note
+
 INPUT PARAMETERS:
 app:  Application object containing antenna data and plot handles.
 
@@ -130,7 +136,9 @@ frequency:
 for polar axes.
 
 
-```{note}
+```{admonition} INPUT PARAMETERS
+:class: note
+
 INPUT PARAMETERS:
 app: Application object containing antenna data and plot handles.
 
@@ -153,7 +161,9 @@ the reference antenna over frequency. Used as a baseline for
 comparison with DUT measurements.
 
 
-```{note}
+```{admonition} INPUT PARAMETERS
+:class: note
+
 INPUT PARAMETERS:
 app:  Application object containing the reference antenna data and
 plot handles.
@@ -177,7 +187,9 @@ gain and return loss data from a VNA across a defined frequency
 range.
 
 
-```{note}
+```{admonition} INPUT PARAMETERS
+:class: note
+
 INPUT PARAMETERS:
 app:  Application object containing: hardware interfaces,
 user-defined settings, UI components, and other setup parameters.
@@ -203,7 +215,9 @@ combinations.
 
 ```
 
-```{note}
+```{admonition} OUTPUT PARAMETERS
+:class: note
+
 OUTPUT PARAMETERS:
 None
 
