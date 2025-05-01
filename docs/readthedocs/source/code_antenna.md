@@ -55,10 +55,10 @@ This function initializes and preallocates a results table for storing antenna t
 
 **DESCRIPTION:**
 
-This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods: values with the free-space path loss (FSPL) and interpolating the reference gain at the test frequencies. Friss Equation (adjusted by FSPL).
+This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods:
 
-- **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by adjusting the S-parameter
-- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical and calculates the gain using the
+- **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by adjusting the S-parameter values with the free-space path loss (FSPL) and interpolating the reference gain at the test frequencies.
+- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical and calculates the gain using the Friss Equation (adjusted by FSPL).
 
 ```{admonition} Input
 :class: note
@@ -81,10 +81,10 @@ This function calculates the gain of a test antenna in decibels relative to an i
 
 **DESCRIPTION:**
 
-This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data. magnitude and phase data (using `FDATA`). of complex S-parameters (using `SDATA`) and calculates the magnitude and phase from the complex data.
+This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
 
-- **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed
-- **Raw Data**: If smoothing is disabled (smoothingPercentage == 0), the function retrieves raw data in the form
+- **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data (using `FDATA`).
+- **Raw Data**: If smoothing is disabled (smoothingPercentage == 0), the function retrieves raw data in the form of complex S-parameters (using `SDATA`) and calculates the magnitude and phase from the complex data.
 
 ```{admonition} Input
 :class: note
