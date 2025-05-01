@@ -178,30 +178,21 @@ Plots the reference antenna's gain and return loss versus frequency, serving as 
 
 **DESCRIPTION:**
 
-Executes a full 2D antenna gain measurement sweep using a dual-axis positioner (Theta and Phi) and a VNA. The function automates rotation, measurement, data logging, and visualization of antenna radiation patterns. The sweep is performed across a user-defined frequency range and angular grid, capturing S-parameters and calculating gain, return loss, and path loss. Data is saved to disk and loaded into the app for plotting.
+This function executes a 2D antenna gain measurement sweep using a dual-axis positioner (Theta and Phi) and a VNA. The function automates rotation, measurement, data logging, and visualization of antenna radiation patterns. The sweep is performed across a user-defined frequency range and angular grid, capturing S-parameters and calculating gain, return loss, and path loss. Data is saved to the disk and loaded into the app for plotting. Additionally the user is able to manually stop the test run from within the application. If an error occurs:
+
+- The errors are caught, reported via the app interface, and saved to the error log.
+- Positioners are safely stopped in case of interruption or failure.
 
 ```{admonition} Input
 :class: note
 
 - app - Application object that holds hardware interfaces, user settings, UI elements, and measurement parameters.
-- PROCESS OVERVIEW:
-- 1. Extracts sweep settings from the UI (frequency, angles, speeds).
-- 2. Generates a grid of measurement points (Theta, Phi).
-- 3. For each position:
-- - Rotates table and tower to target angles
-- - Waits for motors to finish
-- - Aborts early if user requests stop
-- - Measures S-parameters via VNA
-- - Computes antenna gain
-- - Stores measurement data (gain, return loss, path loss)
-- 4. Returns positioners to 0° after sweep
-- 5. If completed:
-- - Saves data to disk
-- - Loads results into app
-- - Plots 2D radiation pattern
-- ERROR HANDLING:
-- - Errors are caught and reported via the app interface.
-- - Positioners are safely stopped in case of interruption or failure.
+```
+
+```{admonition} Output
+:class: note
+
+- None
 ```
 
 ## setLinearSlider.m
