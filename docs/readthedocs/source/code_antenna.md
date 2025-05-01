@@ -2,6 +2,8 @@
 
 ## createAntennaParametersTable.m
 `File path: src\support\AntennaFunctions\createAntennaParametersTable.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function creates a parameter sweep table for antenna testing,
   generating all possible combinations of Theta and Phi.
@@ -15,9 +17,12 @@
                  and Phi in (deg).
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## createAntennaResultsTable.m
 `File path: src\support\AntennaFunctions\createAntennaResultsTable.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function initializes the results table for storing
   antenna test measurements.
@@ -39,9 +44,12 @@
                   - Path Loss (deg)
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## measureAntennaGain.m
 `File path: src\support\AntennaFunctions\measureAntennaGain.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function calculates the gain of a test antenna in decibels 
   relative to an isotropic radiator (dBi) based on the input frequency,
@@ -67,9 +75,12 @@
                     test antenna.
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## measureSParameters.m
 `File path: src\support\AntennaFunctions\measureSParameters.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   Measure 2-port S-Parameters (Magnitude in dB and Phase in degrees)
   Supports smoothed or raw measurements using FDATA/SDATA.
@@ -84,9 +95,12 @@
     freqValues         - Frequency sweep values (Hz)
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## plotAntenna2DRadiationPattern.m
 `File path: src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the 2D antenna measurement data:
     - Gain vs. Frequency at a fixed theta/phi angle
@@ -104,9 +118,12 @@
     - Catches and displays errors using the app's error handler
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## plotAntenna3DRadiationPattern.m
 `File path: src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the 3D antenna radiation pattern for a given 
   frequency:
@@ -125,9 +142,12 @@
     - Catches and displays errors using the app's error handler
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## plotReferenceAntenna.m
 `File path: src\support\AntennaFunctions\plotReferenceAntenna.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function plots the gain and return loss characteristics of 
   the reference antenna over frequency. Used as a baseline for 
@@ -144,11 +164,14 @@
     - Enhances plot appearance using a standardized format
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## runAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\runAntennaMeasurement.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  This function executes a full 2D antenna gain measurement sweep by 
+  This function executes a full antenna gain measurement sweep by 
   controlling a dual-axis positioner (Theta and Phi) and capturing RF 
   gain and return loss data from a VNA across a defined frequency 
   range.
@@ -184,9 +207,12 @@
     Positioners are stopped safely on user interruption or error.
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## setLinearSlider.m
 `File path: src\support\AntennaFunctions\setLinearSlider.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function sets the speed preset of the linear slider, and moves
   it to the target position specified by the user.
@@ -197,9 +223,12 @@
   targetPosition: Position to move linear slider into.
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## validateAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\validateAntennaMeasurement.m`
+
+```{note}
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   This function validates the configuration of antenna test setup 
   settings based on the user's inputs.
@@ -232,4 +261,5 @@
                configuration is valid (true) or not (false).
  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
