@@ -13,6 +13,9 @@ INPUT PARAMETERS:
 Theta:  Vector of theta angles (in degrees).
 Phi:    Vector of phi angles (in degrees).
 
+```
+
+```{note}
 OUTPUT PARAMETERS:
 paramTable - A table containing all combinations of Theta in (deg)
 and Phi in (deg).
@@ -198,6 +201,9 @@ combinations.
 - Loads data back into the app
 - Plots the 2D antenna gain measurement
 
+```
+
+```{note}
 OUTPUT PARAMETERS:
 None
 
