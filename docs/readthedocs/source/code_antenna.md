@@ -205,15 +205,14 @@ This function sets the speed preset of the linear slider, and moves it to the ta
 
 **HOW IT WORKS:**
 
-- The function performs the following validation checks on the antenna test setup:
+The function performs the following validation checks on the antenna test setup: If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
+
 - - Whether the VNA, EMCenter, and EMSlider are connected.
 - - Whether the start and end frequencies are specified and not equal.
 - - Whether the number of sweep points is defined.
 - - Whether the antenna physical size is specified.
 - - Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
 - - Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
-- If any condition is not met, the function displays an appropriate message
-- and prompts the user to correct the configuration.
 
 ```{admonition} Input
 :class: note
