@@ -1,21 +1,21 @@
 function plotAntenna3DRadiationPattern(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function plots the 3D antenna radiation pattern for a given 
-    % frequency:
-    %   - 3D Radiation Pattern based on theta, phi, and magnitude values.
-    %   - The plot uses the Antenna Toolbox's internal spherical renderer 
-    %     for polar axes.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It
+    % uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, 
+    % phi, and gain values in the application UI. The function:
+    % 
+    %   - Extracts the antenna gain data for the specified frequency.
+    %   - Ensures consistency in angle data (handling edge cases like -180 and 180 degrees).
+    %   - Creates and displays the 3D radiation pattern plot.
+    %   - Displays appropriate error or warning messages if data is inconsistent or invalid.
     %
-    % INPUT PARAMETERS:
-    %   app: Application object containing antenna data and plot handles.
+    % INPUT:
+    %   app  - Application object containing the antenna measurement data and plot handles.
     %
-    % This function:
-    %   - Extracts gain data based on the selected frequency
-    %   - Ensures the angle data is consistent
-    %   - Creates a 3D radiation pattern plot
-    %   - Enhances axes visuals using helper formatting functions
-    %   - Catches and displays errors using the app's error handler
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     try
         % Clear current plot, and its associated colorbar.

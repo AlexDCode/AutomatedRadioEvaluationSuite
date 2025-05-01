@@ -1,35 +1,23 @@
 function isValid = validateAntennaMeasurement(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function validates the configuration of antenna test setup 
-    % settings based on the user's inputs.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function performs the following validation checks on the antenna test setup.
     %
-    % It checks for the following conditions:
-    %   - Whether the VNA, EMCenter, EMSlider are connected.
-    %   - Whether the start and end frequencies are set and different.
-    %   - Whether the number of sweep points is set.
-    %   - Whether the antenna physical size is specified.
-    %   - Whether the turntable settings (scan mode, start angle, step 
-    %     angle, end angle) are configured.
-    %   - Whether the tower settings (scan mode, start angle, step angle, 
-    %     end angle) are configured.
+    %   - Whether the VNA, EMCenter, and EMSlider are connected.
+    %   - Whether the start and end frequencies are specified and not equal.
+    %   - Whether the number of sweep points is defined.
+    %   - Whether the antenna's physical size is specified.
+    %   - Whether the turntable scan settings (mode, start angle, step angle, end angle) are configured.
+    %   - Whether the tower scan settings (mode, start angle, step angle, end angle) are configured.
+    % 
+    % If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
     %
-    % If any of these conditions fail, the function will display 
-    % appropriate messages and prompt the user to correct the 
-    % configuration.
+    % INPUT:
+    %   app     - Application object containing the antenna setup configuration.
     %
-    % INSTRUMENTS
-    %   Vector Network Analyzer: PNA-L N5232B
-    %   EMCenter
-    %   EMSlider
-    %
-    % INPUT PARAMETERS
-    %   app:       The application object containing the antenna setup 
-    %              configuration and associated parameters.
-    %
-    % OUTPUT PARAMETERS
-    %   isValid:   A boolean value indicating whether the antenna setup 
-    %              configuration is valid (true) or not (false).
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   isValid - Logical value. `true` if the configuration is valid; otherwise, `false`.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables.
     startFrequency = app.VNAStartFrequency.Value;

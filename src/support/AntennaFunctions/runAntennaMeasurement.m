@@ -1,40 +1,21 @@
 function runAntennaMeasurement(app) 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function executes a full antenna gain measurement sweep by 
-    % controlling a dual-axis positioner (Theta and Phi) and capturing RF 
-    % gain and return loss data from a VNA across a defined frequency 
-    % range.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function executes a 2D antenna gain measurement sweep using a dual-axis positioner (Theta and Phi) and a
+    % VNA. The function automates rotation, measurement, data logging, and visualization of antenna radiation patterns.
+    % The sweep is performed across a user-defined frequency range and angular grid, capturing S-parameters 
+    % and calculating gain, return loss, and path loss. Data is saved to the disk and loaded into the app for plotting.
+    % Additionally the user is able to manually stop the test run from within the application. If an error occurs:
     %
-    % INPUT PARAMETERS:
-    %   app:  Application object containing: hardware interfaces,
-    %   user-defined settings, UI components, and other setup parameters.
+    %   - The errors are caught, reported via the app interface, and saved to the error log.
+    %   - Positioners are safely stopped in case of interruption or failure.
     %
-    % PROCESS OVERVIEW:
-    %   1. Initializes sweep parameters based on UI input:
-    %       - Frequency range and sweep points
-    %       - Theta and Phi angle vectors
-    %   2. Generates a parameter sweep table for all Theta/Phi 
-    %      combinations.
-    %   3. For each test position:
-    %       - Rotates the table and tower to the specified angles
-    %       - Waits for motors to finish moving
-    %       - Checks for user stop request
-    %       - Measures S-parameters using the VNA
-    %       - Calculates antenna gain
-    %       - Stores results: frequency, gain, return loss, path loss
-    %   4. Returns the positioners to 0°.
-    %   5. If not stopped by the user:
-    %       - Saves results to disk
-    %       - Loads data back into the app
-    %       - Plots the 2D antenna gain measurement
+    % INPUT:
+    %   app - Application object that holds hardware interfaces, user settings, UI elements, and measurement parameters.
     %
-    % OUTPUT PARAMETERS:
-    %   None 
-    %
-    % ERROR HANDLING:
-    %   Any error is caught and displayed via the app interface. 
-    %   Positioners are stopped safely on user interruption or error.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables from the application.
     smoothingPercentage = app.SmoothingPercentage.Value;

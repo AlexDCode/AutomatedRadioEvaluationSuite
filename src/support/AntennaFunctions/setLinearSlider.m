@@ -1,14 +1,17 @@
 function setLinearSlider(speedPreset, targetPosition)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function sets the speed preset of the linear slider, and moves
-    % it to the target position specified by the user.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function controls the movement of the EMCenter linear slider by setting its speed preset and moving it to 
+    % a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target
+    % position, ensuring precise control over the motion.
     %
-    % INPUT PARAMETERS
-    % speedPreset:    Takes integers [1,8] with 8 the maximum speed and 1 
-    %                 the minimum speed
-    % targetPosition: Position to move linear slider into.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+    % INPUT:
+    %   speedPreset    - An integer between 1 (slowest) and 8 (fastest) that sets the speed of the linear slider.
+    %   targetPosition - Target position in cm (0 - 200 cm) for the slider to move to.
+    %
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Connect to the device.
     LinearSlider = tcpclient('192.168.0.100', 1206);

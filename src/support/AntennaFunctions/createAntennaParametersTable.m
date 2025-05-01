@@ -1,16 +1,16 @@
-function paramTable = createAntennaParametersTable(Theta, Phi)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function creates a parameter sweep table for antenna testing,
-    % generating all possible combinations of Theta and Phi.
+function ParametersTable = createAntennaParametersTable(Theta, Phi)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function generates a table of all possible combinations of θ and φ angles for antenna testing. The
+    % function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
     %
-    % INPUT PARAMETERS:
-    %   Theta:  Vector of theta angles (in degrees).
-    %   Phi:    Vector of phi angles (in degrees).
+    % INPUT:
+    %   Theta      - A vector of theta angles (in degrees). The angles can range from -180 to 180.
+    %   Phi        - A vector of phi angles (in degrees). The angles can range from -180 to 180.
     %
-    % OUTPUT PARAMETERS:
-    %   paramTable - A table containing all combinations of Theta in (deg)
-    %                and Phi in (deg).
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   ParametersTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % -180 maps to 180 in the EMCenter hardware we remove it from the list.
     if ismember(-180, Theta) && ismember(180, Theta)
@@ -25,16 +25,16 @@ function paramTable = createAntennaParametersTable(Theta, Phi)
     varNames = horzcat(varNames{:});
 
     % Create the table with combinations of theta and phi.
-    paramTable = combinations(Theta, Phi);
-    paramTable.Properties.VariableNames = varNames;
+    ParametersTable = combinations(Theta, Phi);
+    ParametersTable.Properties.VariableNames = varNames;
 
     % Movement angles for sorting (-180/180) range to (0-360 range).
-    paramTable.MovementAngle = mod(paramTable.("Theta (deg)"), 360);
+    ParametersTable.MovementAngle = mod(ParametersTable.("Theta (deg)"), 360);
 
     % Sort by movement angle for efficient turntable rotation.
-    [~, idx] = sort(paramTable.MovementAngle);
-    paramTable = paramTable(idx, :);
+    [~, idx] = sort(ParametersTable.MovementAngle);
+    ParametersTable = ParametersTable(idx, :);
      
     % Remove the temporary movement angles column used for sorting.
-    paramTable.MovementAngle = [];
+    ParametersTable.MovementAngle = [];
 end

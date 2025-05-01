@@ -1,17 +1,21 @@
-function [sParameters_dB, sParameters_Phase, freqValues] = measureSParameters(VNA, smoothingPercentage)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % Measure 2-port S-Parameters (Magnitude in dB and Phase in degrees)
-    % Supports smoothed or raw measurements using FDATA/SDATA.
+function [sParamdB, sParamPhase, freqValues] = measureSParameters(VNA, smoothingPercentage)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a 
+    % Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
     %
-    % INPUTS:
-    %   VNA                - Instrument object for the VNA
-    %   smoothingPercentage - Percentage smoothing aperture (0 = off)
+    %   - **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
+    %   - **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
     %
-    % OUTPUTS:
-    %   sParameters_dB     - Cell array of magnitude data (in dB)
-    %   sParameters_Phase  - Cell array of phase data (in degrees)
-    %   freqValues         - Frequency sweep values (Hz)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   VNA                 - The instrument object for the VNA, used for communication and measurement control.
+    %   smoothingPercentage - The percentage of smoothing applied to the S-parameters data.
+    %
+    % OUTPUT:
+    %   sParamdB            - A cell array containing the magnitude data (in dB) for each S-parameter. 
+    %   sParamPhase         - A cell array containing the phase data (in degrees) for each S-parameter. 
+    %   freqValues          - A vector containing the frequency sweep values (in Hz) corresponding to the S-parameters.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Clear buffer and status.
     flush(VNA);
@@ -22,8 +26,8 @@ function [sParameters_dB, sParameters_Phase, freqValues] = measureSParameters(VN
     numMeasurements = length(measLabels);
 
     % Initialize output arrays.
-    sParameters_dB = cell(1, numMeasurements);
-    sParameters_Phase = cell(1, numMeasurements);
+    sParamdB = cell(1, numMeasurements);
+    sParamPhase = cell(1, numMeasurements);
 
     % Perform a single continuos sweep and wait for the VNA to finish.
     writeline(VNA, 'SENS1:SWE:MODE SING');
@@ -37,14 +41,14 @@ function [sParameters_dB, sParameters_Phase, freqValues] = measureSParameters(VN
             % Magnitude
             writeline(VNA, sprintf('CALC1:PAR:MNUM %d', traceIndex));
             writeline(VNA, 'CALC1:DATA? FDATA');
-            sParameters_dB{i} = readbinblock(VNA, 'double');
+            sParamdB{i} = readbinblock(VNA, 'double');
             flush(VNA);
     
             % Phase
             traceIndex = traceIndex + 1;
             writeline(VNA, sprintf('CALC:PAR:MNUM %d', traceIndex));
             writeline(VNA, 'CALC1:DATA? FDATA');
-            sParameters_Phase{i} = readbinblock(VNA, 'double');
+            sParamPhase{i} = readbinblock(VNA, 'double');
             flush(VNA);
 
             % Next magnitude/phase pair.
@@ -58,7 +62,7 @@ function [sParameters_dB, sParameters_Phase, freqValues] = measureSParameters(VN
             writeline(VNA, 'CALC1:DATA? SDATA');
             data = readbinblock(VNA, 'double');
             complexData = data(1:2:end) + 1i * data(2:2:end);
-            sParameters_dB{i} = 20 * log10(abs(complexData));
+            sParamdB{i} = 20 * log10(abs(complexData));
             flush(VNA);
 
             % Phase
@@ -67,7 +71,7 @@ function [sParameters_dB, sParameters_Phase, freqValues] = measureSParameters(VN
             writeline(VNA, 'CALC1:DATA? SDATA');
             data = readbinblock(VNA, 'double');
             complexData = data(1:2:end) + 1i * data(2:2:end);
-            sParameters_Phase{i} = rad2deg(angle(complexData));
+            sParamPhase{i} = rad2deg(angle(complexData));
             flush(VNA);
 
             % Next magnitude/phase pair.

@@ -1,19 +1,20 @@
 function plotReferenceAntenna(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function plots the gain and return loss characteristics of 
-    % the reference antenna over frequency. Used as a baseline for 
-    % comparison with DUT measurements.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % Plots the reference antenna's gain and return loss versus frequency, serving as a baseline for comparison
+    % with DUT (Device Under Test) measurements. The function:
     %
-    % INPUT PARAMETERS:
-    %   app:  Application object containing the reference antenna data and 
-    %         plot handles.
+    %   - Clears existing plots for gain and return loss.
+    %   - Plots gain (dBi) vs frequency (MHz).
+    %   - Plots return loss (dB) vs frequency (MHz).
+    %   - Enhances visual appearance of plots using standardized formatting.
     %
-    % The function performs the following actions:
-    %   - Clears the existing Gain vs Frequency and Return Loss plots
-    %   - Plots the reference antenna gain in (dBi) over frequency in (MHz)
-    %   - Plots the return loss in (dB) over frequency in (MHz)
-    %   - Enhances plot appearance using a standardized format
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   app - Application object containing the reference antenna measurement data and associated plot handles.
+    %
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     % Clear current plots.
     cla(app.GainvsFrequencyBoresight);

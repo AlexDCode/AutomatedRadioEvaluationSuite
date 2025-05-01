@@ -1,20 +1,21 @@
 function plotAntenna2DRadiationPattern(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function plots the 2D antenna measurement data:
-    %   - Gain vs. Frequency at a fixed theta/phi angle
-    %   - Gain vs. Angle at a fixed frequency
-    %   - Return Loss vs. Frequency
-    %   - 2D polar radiation pattern (θ and φ cuts)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant
+    % antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to 
+    % display the following plots:
     %
-    % INPUT PARAMETERS:
-    %   app:  Application object containing antenna data and plot handles.
+    %   - Gain vs. Frequency at a fixed θ/φ angle.
+    %   - Gain vs. Angle (θ and φ cuts) at a fixed frequency.
+    %   - Return Loss vs. Frequency at a fixed θ/φ angle.
+    %   - Polar Radiation Pattern (θ and φ cuts).
     %
-    % This function:
-    %   - Extracts data based on selected θ, φ, and frequency values
-    %   - Updates four app axes with corresponding gain and return loss
-    %   - Enhances axes visuals using helper formatting functions
-    %   - Catches and displays errors using the app's error handler
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   app  - Application object containing the antenna measurement data and plot handles.
+    %
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     try
         % Clear current plots.

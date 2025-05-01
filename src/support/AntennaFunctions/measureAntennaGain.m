@@ -1,28 +1,23 @@
 function antennaGain = measureAntennaGain(TestFrequency, sParameter_dB, Spacing, ReferenceGain, ReferenceFrequency)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function calculates the gain of a test antenna in decibels 
-    % relative to an isotropic radiator (dBi) based on the input frequency,
-    % S-parameters, and spacing between the antennas. The function offers 
-    % two ways of calculating antenna gain. If both test antennas are 
-    % identical the function uses the Two-Antenna method (Friss Equation), 
-    % else the Comparison Antenna Method is used, using the provided
-    % reference gain and frequency.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi).
+    % The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas.
+    % The function calculates the antenna gain using one of two methods:
     %
-    % INPUT PARAMETERS
-    %   TestFrequency:  A scalar or vector of frequency values in (Hz) at 
-    %                   which the antenna gain is measured. 
-    %   sParameter_dB:  A scalar or vector of S21 in (dB) values 
-    %                   representing the magnitude of power transfer 
-    %                   between two antennas.
-    %   Spacing:        A scalar, the distance in (m) between the two 
-    %                   antennas being tested.
-    %   RefGain:        A vector containing the reference antenna gain.
-    %   RefFreq:        A vector containing the reference frequencies. 
+    %   - **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by interpolating the reference gain at the test frequencies.
+    %   - **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
     %
-    % OUTPUT PARAMETERS 
-    %   antennaGain:    Vector containing the antenna gain in (dBi) of the 
-    %                   test antenna.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   TestFrequency   - A scalar or vector of frequency values in Hz at which the antenna gain is measured.
+    %   sParameter_dB   - A scalar or vector of S21 values (in dB), representing the magnitude of power transfer between two antennas.
+    %   Spacing         - A scalar value representing the distance in meters between the two antennas being tested.
+    %   ReferenceGain   - (Optional) A vector of reference antenna gain values (in dBi). Used for the Comparison Antenna Method.
+    %   ReferenceFrequency - (Optional) A vector of frequencies (in Hz) corresponding to the reference antenna gain values. 
+    %
+    % OUTPUT:
+    %   antennaGain     - A vector containing the calculated antenna gain in dBi for the test antenna, at the specified test frequencies.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if nargin < 4
         ReferenceGain = [];
@@ -37,11 +32,11 @@ function antennaGain = measureAntennaGain(TestFrequency, sParameter_dB, Spacing,
     FSPL_dB = 20 * log10(lambda / (4*pi*Spacing));
 
     if ~isempty(ReferenceGain)  
-        % Non-identical Antenna Gain (dBi).
+        % Comparison Antenna Method: Use reference antenna data.
         interpolatedRefGain = interp1(ReferenceFrequency, ReferenceGain, TestFrequency, 'spline');
         antennaGain = sParameter_dB - FSPL_dB - interpolatedRefGain;
     else                  
-        % Identical Antenna Gain (dBi).
+        % Two-Antenna Method: Assume test antennas are identical.
         antennaGain = (sParameter_dB - FSPL_dB) / 2;
     end
 end
