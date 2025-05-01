@@ -10,17 +10,17 @@ This function creates a parameter sweep table for antenna testing, generating al
 ```{admonition} Input
 :class: note
 
-Theta: - Vector of theta angles (in degrees).
-Phi:   - Vector of phi angles (in degrees).
-
+- Theta      - Vector of theta angles (in degrees).
+- Phi        - Vector of phi angles (in degrees).
+- 
 ```
 
 ```{admonition} Output
 :class: note
 
-paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+- paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
+- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+- 
 ```
 
 ## createAntennaResultsTable.m
@@ -34,26 +34,26 @@ antenna test measurements.
 ```{admonition} Input
 :class: note
 
-totalMeasurements: Number of measurements (rows) to allocate
-
+- totalMeasurements: Number of measurements (rows) to allocate
+- 
 ```
 
 ```{admonition} Output
 :class: note
 
-ResultsTable: Preallocated table with the following columns:
-- Theta (deg)
-- Phi (deg)
-- Frequency (MHz)
-- Gain (dBi)
-- Return Loss (dB)
-- Return Loss (deg)
-- Return Loss Reference (dB)
-- Return Loss Reference (deg)
-- Path Loss (dB)
-- Path Loss (deg)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+- ResultsTable: Preallocated table with the following columns:
+- - Theta (deg)
+- - Phi (deg)
+- - Frequency (MHz)
+- - Gain (dBi)
+- - Return Loss (dB)
+- - Return Loss (deg)
+- - Return Loss Reference (dB)
+- - Return Loss Reference (deg)
+- - Path Loss (dB)
+- - Path Loss (deg)
+- %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+- 
 ```
 
 ## measureAntennaGain.m
