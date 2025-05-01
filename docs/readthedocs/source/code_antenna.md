@@ -203,33 +203,26 @@ This function sets the speed preset of the linear slider, and moves it to the ta
 ## validateAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\validateAntennaMeasurement.m`
 
-This function validates the configuration of antenna test setup settings based on the user's inputs.
-It checks for the following conditions:
-- Whether the VNA, EMCenter, EMSlider are connected.
-- Whether the start and end frequencies are set and different.
-- Whether the number of sweep points is set.
+HOW IT WORKS:
+The function performs the following validation checks on the antenna test setup:
+- Whether the VNA, EMCenter, and EMSlider are connected.
+- Whether the start and end frequencies are specified and not equal.
+- Whether the number of sweep points is defined.
 - Whether the antenna physical size is specified.
-- Whether the turntable settings (scan mode, start angle, step
-angle, end angle) are configured.
-- Whether the tower settings (scan mode, start angle, step angle,
-end angle) are configured.
-If any of these conditions fail, the function will display
-appropriate messages and prompt the user to correct the
-configuration.
-INSTRUMENTS
-Vector Network Analyzer: PNA-L N5232B
-EMCenter
-EMSlider
+- Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
+- Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
+If any condition is not met, the function displays an appropriate message
+and prompts the user to correct the configuration.
 
 ```{admonition} Input
 :class: note
 
-- app     - The application object containing the antenna setup configuration and associated parameters.
+- app     - Application object containing the antenna setup configuration.
 ```
 
 ```{admonition} Output
 :class: note
 
-- isValid - A boolean value indicating whether the antenna setup configuration is valid (true) or not (false).
+- isValid - Logical value. `true` if configuration is valid; otherwise, `false`.
 ```
 
