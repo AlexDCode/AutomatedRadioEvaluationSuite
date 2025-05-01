@@ -57,8 +57,8 @@ This function initializes and preallocates a results table for storing antenna t
 
 This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods:
 
-- **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by adjusting the S-parameter values with the free-space path loss (FSPL) and interpolating the reference gain at the test frequencies.
-- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical and calculates the gain using the Friss Equation (adjusted by FSPL).
+- **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by interpolating the reference gain at the test frequencies.
+- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
 
 ```{admonition} Input
 :class: note
