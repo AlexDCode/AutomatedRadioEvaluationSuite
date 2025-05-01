@@ -3,24 +3,29 @@
 ## createAntennaParametersTable.m
 `File path: src\support\AntennaFunctions\createAntennaParametersTable.m`
 
-This function creates a parameter sweep table for antenna testing, generating all possible combinations of
-Theta and Phi.
+**DESCRIPTION:**
+
+This function generates a table of all possible combinations of Theta and Phi angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
 
 ```{admonition} Input
 :class: note
 
-- Theta      - Vector of theta angles (in degrees).
-- Phi        - Vector of phi angles (in degrees).
+- Theta      - A vector of theta angles (in degrees). The angles can range from -180 to 180.
+- Phi        - A vector of phi angles (in degrees). The angles can range from -180 to 180.
 ```
 
 ```{admonition} Output
 :class: note
 
-- paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
+- paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees). The table will have the following columns:
+- - Theta (deg): The theta angle (in degrees).
+- - Phi (deg): The phi angle (in degrees).
 ```
 
 ## createAntennaResultsTable.m
 `File path: src\support\AntennaFunctions\createAntennaResultsTable.m`
+
+**DESCRIPTION:**
 
 This function initializes the results table for storing antenna test measurements.
 
@@ -49,10 +54,9 @@ This function initializes the results table for storing antenna test measurement
 ## measureAntennaGain.m
 `File path: src\support\AntennaFunctions\measureAntennaGain.m`
 
-This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi) based
-on the input frequency, S-Parameters, and spacing between the antennas. The function offers two ways of
-calculating antenna gain. If both test antennas are identical the function uses the Two-Antenna method
-(Friss Equation), else the Comparison Antenna Method is used, using the provided reference gain and frequency.
+**DESCRIPTION:**
+
+This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi) based on the input frequency, S-Parameters, and spacing between the antennas. The function offers two ways of calculating antenna gain. If both test antennas are identical the function uses the Two-Antenna method (Friss Equation), else the Comparison Antenna Method is used, using the provided reference gain and frequency.
 
 ```{admonition} Input
 :class: note
@@ -73,8 +77,9 @@ calculating antenna gain. If both test antennas are identical the function uses 
 ## measureSParameters.m
 `File path: src\support\AntennaFunctions\measureSParameters.m`
 
-This function measures 2-port S-Parameters (mag in dB and phase in degrees). It supports smoothed or raw
-measurements using FDATA/SDATA.
+**DESCRIPTION:**
+
+This function measures 2-port S-Parameters (mag in dB and phase in degrees). It supports smoothed or raw measurements using FDATA/SDATA.
 
 ```{admonition} Input
 :class: note
@@ -94,7 +99,10 @@ measurements using FDATA/SDATA.
 ## plotAntenna2DRadiationPattern.m
 `File path: src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m`
 
+**DESCRIPTION:**
+
 This function plots the 2D antenna measurement data:
+
 - Gain vs. Frequency at a fixed theta/phi angle
 - Gain vs. Angle at a fixed frequency
 - Return Loss vs. Frequency
@@ -114,11 +122,12 @@ This function plots the 2D antenna measurement data:
 ## plotAntenna3DRadiationPattern.m
 `File path: src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
 
-This function plots the 3D antenna radiation pattern for a given
-frequency:
+**DESCRIPTION:**
+
+This function plots the 3D antenna radiation pattern for a given frequency: for polar axes.
+
 - 3D Radiation Pattern based on theta, phi, and magnitude values.
 - The plot uses the Antenna Toolbox's internal spherical renderer
-for polar axes.
 
 ```{admonition} Input
 :class: note
@@ -135,8 +144,9 @@ for polar axes.
 ## plotReferenceAntenna.m
 `File path: src\support\AntennaFunctions\plotReferenceAntenna.m`
 
-This function plots the gain and return loss characteristics of the reference antenna over frequency. Used as
-a baseline for comparison with DUT measurements.
+**DESCRIPTION:**
+
+This function plots the gain and return loss characteristics of the reference antenna over frequency. Used as a baseline for comparison with DUT measurements.
 
 ```{admonition} Input
 :class: note
@@ -152,8 +162,9 @@ a baseline for comparison with DUT measurements.
 ## runAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\runAntennaMeasurement.m`
 
-This function executes a full antenna gain measurement sweep by controlling a dual-axis positioner
-(Theta and Phi) and capturing RF gain and return loss data from a VNA across a defined frequency range.
+**DESCRIPTION:**
+
+This function executes a full antenna gain measurement sweep by controlling a dual-axis positioner (Theta and Phi) and capturing RF gain and return loss data from a VNA across a defined frequency range.
 
 ```{admonition} Input
 :class: note
@@ -191,7 +202,7 @@ This function executes a full antenna gain measurement sweep by controlling a du
 ## setLinearSlider.m
 `File path: src\support\AntennaFunctions\setLinearSlider.m`
 
-**HOW IT WORKS:**
+**DESCRIPTION:**
 
 This function controls the movement of the EMCenter linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
 
@@ -205,7 +216,7 @@ This function controls the movement of the EMCenter linear slider by setting its
 ## validateAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\validateAntennaMeasurement.m`
 
-**HOW IT WORKS:**
+**DESCRIPTION:**
 
 This function performs the following validation checks on the antenna test setup. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
 
@@ -213,8 +224,8 @@ This function performs the following validation checks on the antenna test setup
 - Whether the start and end frequencies are specified and not equal.
 - Whether the number of sweep points is defined.
 - Whether the antenna's physical size is specified.
-- Whether turntable scan settings (mode, start angle, step angle, end angle) are configured.
-- Whether tower scan settings (mode, start angle, step angle, end angle) are configured.
+- Whether the turntable scan settings (mode, start angle, step angle, end angle) are configured.
+- Whether the tower scan settings (mode, start angle, step angle, end angle) are configured.
 
 ```{admonition} Input
 :class: note
