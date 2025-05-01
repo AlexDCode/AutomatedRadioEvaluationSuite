@@ -4,25 +4,23 @@
 `File path: src\support\AntennaFunctions\createAntennaParametersTable.m`
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-This function creates a parameter sweep table for antenna testing,
-generating all possible combinations of Theta and Phi.
+This function creates a parameter sweep table for antenna testing, generating all possible combinations of Theta and Phi.
 
 
-```{admonition} INPUT PARAMETERS
+```{admonition} Input
 :class: note
 
-INPUT PARAMETERS:
-Theta:  Vector of theta angles (in degrees).
-Phi:    Vector of phi angles (in degrees).
+INPUT:
+Theta: - Vector of theta angles (in degrees).
+Phi:   - Vector of phi angles (in degrees).
 
 ```
 
-```{admonition} OUTPUT PARAMETERS
+```{admonition} Output
 :class: note
 
-OUTPUT PARAMETERS:
-paramTable - A table containing all combinations of Theta in (deg)
-and Phi in (deg).
+OUTPUT:
+paramTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 ```
@@ -34,8 +32,17 @@ and Phi in (deg).
 This function initializes the results table for storing
 antenna test measurements.
 
+
+```{admonition} Input
+:class: note
+
 INPUT:
 totalMeasurements: Number of measurements (rows) to allocate
+
+```
+
+```{admonition} Output
+:class: note
 
 OUTPUT:
 ResultsTable: Preallocated table with the following columns:
@@ -51,6 +58,7 @@ ResultsTable: Preallocated table with the following columns:
 - Path Loss (deg)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+```
 
 ## measureAntennaGain.m
 `File path: src\support\AntennaFunctions\measureAntennaGain.m`
@@ -109,10 +117,6 @@ This function plots the 2D antenna measurement data:
 - Return Loss vs. Frequency
 - 2D polar radiation pattern (θ and φ cuts)
 
-
-```{admonition} INPUT PARAMETERS
-:class: note
-
 INPUT PARAMETERS:
 app:  Application object containing antenna data and plot handles.
 
@@ -123,7 +127,6 @@ This function:
 - Catches and displays errors using the app's error handler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-```
 
 ## plotAntenna3DRadiationPattern.m
 `File path: src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
@@ -134,10 +137,6 @@ frequency:
 - 3D Radiation Pattern based on theta, phi, and magnitude values.
 - The plot uses the Antenna Toolbox's internal spherical renderer
 for polar axes.
-
-
-```{admonition} INPUT PARAMETERS
-:class: note
 
 INPUT PARAMETERS:
 app: Application object containing antenna data and plot handles.
@@ -150,7 +149,6 @@ This function:
 - Catches and displays errors using the app's error handler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-```
 
 ## plotReferenceAntenna.m
 `File path: src\support\AntennaFunctions\plotReferenceAntenna.m`
@@ -159,10 +157,6 @@ This function:
 This function plots the gain and return loss characteristics of
 the reference antenna over frequency. Used as a baseline for
 comparison with DUT measurements.
-
-
-```{admonition} INPUT PARAMETERS
-:class: note
 
 INPUT PARAMETERS:
 app:  Application object containing the reference antenna data and
@@ -175,7 +169,6 @@ The function performs the following actions:
 - Enhances plot appearance using a standardized format
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-```
 
 ## runAntennaMeasurement.m
 `File path: src\support\AntennaFunctions\runAntennaMeasurement.m`
@@ -185,10 +178,6 @@ This function executes a full antenna gain measurement sweep by
 controlling a dual-axis positioner (Theta and Phi) and capturing RF
 gain and return loss data from a VNA across a defined frequency
 range.
-
-
-```{admonition} INPUT PARAMETERS
-:class: note
 
 INPUT PARAMETERS:
 app:  Application object containing: hardware interfaces,
@@ -213,11 +202,6 @@ combinations.
 - Loads data back into the app
 - Plots the 2D antenna gain measurement
 
-```
-
-```{admonition} OUTPUT PARAMETERS
-:class: note
-
 OUTPUT PARAMETERS:
 None
 
@@ -226,7 +210,6 @@ Any error is caught and displayed via the app interface.
 Positioners are stopped safely on user interruption or error.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-```
 
 ## setLinearSlider.m
 `File path: src\support\AntennaFunctions\setLinearSlider.m`
