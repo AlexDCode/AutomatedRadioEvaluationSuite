@@ -142,17 +142,23 @@ This function generates a 3D radiation pattern plot for the antenna based on the
 
 **DESCRIPTION:**
 
-This function plots the gain and return loss characteristics of the reference antenna over frequency. Used as a baseline for comparison with DUT measurements.
+Plots the reference antenna's gain and return loss versus frequency, serving as a baseline for comparison with DUT (Device Under Test) measurements. The function does the following:
+
+- Clears existing plots for gain and return loss.
+- Plots gain (dBi) vs frequency (MHz) for the reference antenna.
+- Plots return loss (dB) vs frequency (MHz).
+- Enhances visual appearance of plots using standardized formatting.
 
 ```{admonition} Input
 :class: note
 
-- app - Application object containing the reference antenna data and plot handles.
-- The function performs the following actions:
-- - Clears the existing Gain vs Frequency and Return Loss plots
-- - Plots the reference antenna gain in (dBi) over frequency in (MHz)
-- - Plots the return loss in (dB) over frequency in (MHz)
-- - Enhances plot appearance using a standardized format
+- app - Application object containing the reference antenna measurement data and associated plot handles.
+```
+
+```{admonition} Output
+:class: note
+
+- None
 ```
 
 ## runAntennaMeasurement.m
@@ -160,39 +166,30 @@ This function plots the gain and return loss characteristics of the reference an
 
 **DESCRIPTION:**
 
-This function executes a full antenna gain measurement sweep by controlling a dual-axis positioner (Theta and Phi) and capturing RF gain and return loss data from a VNA across a defined frequency range.
+Executes a full 2D antenna gain measurement sweep using a dual-axis positioner (Theta and Phi) and a VNA. The function automates rotation, measurement, data logging, and visualization of antenna radiation patterns. The sweep is performed across a user-defined frequency range and angular grid, capturing S-parameters and calculating gain, return loss, and path loss. Data is saved to disk and loaded into the app for plotting.
 
 ```{admonition} Input
 :class: note
 
-- app   - Application object containing the hardware interfaces, user-defined settings, UI components, and other setup parameters.
-```
-
-```{admonition} Output
-:class: note
-
-- None
+- app - Application object that holds hardware interfaces, user settings, UI elements, and measurement parameters.
 - PROCESS OVERVIEW:
-- 1. Initializes sweep parameters based on UI input:
-- - Frequency range and sweep points
-- - Theta and Phi angle vectors
-- 2. Generates a parameter sweep table for all Theta/Phi
-- combinations.
-- 3. For each test position:
-- - Rotates the table and tower to the specified angles
-- - Waits for motors to finish moving
-- - Checks for user stop request
-- - Measures S-parameters using the VNA
-- - Calculates antenna gain
-- - Stores results: frequency, gain, return loss, path loss
-- 4. Returns the positioners to 0°.
-- 5. If not stopped by the user:
-- - Saves results to disk
-- - Loads data back into the app
-- - Plots the 2D antenna gain measurement
+- 1. Extracts sweep settings from the UI (frequency, angles, speeds).
+- 2. Generates a grid of measurement points (Theta, Phi).
+- 3. For each position:
+- - Rotates table and tower to target angles
+- - Waits for motors to finish
+- - Aborts early if user requests stop
+- - Measures S-parameters via VNA
+- - Computes antenna gain
+- - Stores measurement data (gain, return loss, path loss)
+- 4. Returns positioners to 0° after sweep
+- 5. If completed:
+- - Saves data to disk
+- - Loads results into app
+- - Plots 2D radiation pattern
 - ERROR HANDLING:
-- Any error is caught and displayed via the app interface.
-- Positioners are stopped safely on user interruption or error.
+- - Errors are caught and reported via the app interface.
+- - Positioners are safely stopped in case of interruption or failure.
 ```
 
 ## setLinearSlider.m
