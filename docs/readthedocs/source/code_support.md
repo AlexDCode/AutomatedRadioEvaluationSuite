@@ -69,17 +69,42 @@ This function saves data from the application into either a CSV or Excel file. T
 
 **DESCRIPTION:**
 
-This function sets up a context menu for the 3D radiation pattern plot created using Antenna Toolbox's internal renderer. INPUT PARAMETERS: app: Application object containing plot handles and export logic. This function: plots
+This function sets up a right-click context menu for the 3D radiation pattern plot, allowing the user to export the visualization to image formats (PNG and JPG). This is particularly useful because plots rendered using the Antenna Toolbox may have limited export options or reduced visual quality by default.
 
-- Creates a right-click context menu on the 3D radiation plot
-- Adds export options (PNG, JPG) to the context menu
-- Assigns the menu to the axes and all child graphics objects
-- Ensures export functionality works even with toolbox-rendered
+```{admonition} Input
+:class: note
+
+- app - Application object containing the 3D plot handle and export logic.
+```
+
+```{admonition} Output
+:class: note
+
+- None
+```
 
 ## waitForInstrument.m
 `File path: src\support\SupportFunctions\waitForInstrument.m`
 
 **DESCRIPTION:**
 
-This function waits for an instrument to complete its operation before proceeding. It continuously queries the instrument's operation status and checks if it is ready, or if a specified timeout duration has passed. If the instrument is not ready within the timeout period, the function will exit. INPUT PARAMETERS app:         The application object, which contains settings like the measurement delay value. Instrument:  The instrument object to query for its operation status. OUTPUT PARAMETERS None
+The function waits for a connected instrument to complete its current operation by polling its status using the `*OPC?` SCPI query. This ensures that subsequent operations only proceed once the instrument is ready. The function enforces a timeout (default 15 seconds). The function:
+
+- Starts a timer.
+- Continuously queries instrument status via '*OPC?'.
+- Waits between queries using app-defined delay.
+- Exits if instrument reports ready (status == 1) or timeout is exceeded.
+
+```{admonition} Input
+:class: note
+
+- app        - Application object that provides the delay setting between polls.
+- Instrument - VISA-compatible instrument object supporting '*OPC?' queries.
+```
+
+```{admonition} Output
+:class: note
+
+- None
+```
 
