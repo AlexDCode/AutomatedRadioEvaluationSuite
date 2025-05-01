@@ -191,13 +191,17 @@ This function executes a full antenna gain measurement sweep by controlling a du
 ## setLinearSlider.m
 `File path: src\support\AntennaFunctions\setLinearSlider.m`
 
-This function sets the speed preset of the linear slider, and moves it to the target position specified by the user.
+**HOW IT WORKS:**
+
+This function controls the movement of the linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
 
 ```{admonition} Input
 :class: note
 
-- speedPreset:   - Takes integers [1,8] with 8 the maximum speed and 1the minimum speed.
-- targetPosition - Position to move linear slider into.
+- speedPreset    - An integer value between 1 and 8, where 1 represents the minimum speed and 8 represents the
+- maximum speed.
+- targetPosition - The target position (cm) to which the linear slider will move. The value should be within the
+- operational range of the slider (0 - 200 cm).
 ```
 
 ## validateAntennaMeasurement.m
@@ -205,7 +209,7 @@ This function sets the speed preset of the linear slider, and moves it to the ta
 
 **HOW IT WORKS:**
 
-The function performs the following validation checks on the antenna test setup: If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
+This function performs the following validation checks on the antenna test setup. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
 
 - - Whether the VNA, EMCenter, and EMSlider are connected.
 - - Whether the start and end frequencies are specified and not equal.
