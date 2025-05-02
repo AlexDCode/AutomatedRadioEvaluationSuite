@@ -145,10 +145,10 @@ This function sets up a right-click context menu for the 3D radiation pattern pl
 
 The function waits for a connected instrument to complete its current operation by polling its status using the `*OPC?` SCPI query. This ensures that subsequent operations only proceed once the instrument is ready. The function enforces a timeout (default 15 seconds). The function:
 
-- - Starts a timer.
-- - Continuously queries instrument status via '*OPC?'.
-- - Waits between queries using app-defined delay.
-- - Exits if instrument reports ready (status == 1) or timeout is exceeded.
+- Starts a timer.
+- Continuously queries instrument status via '*OPC?'.
+- Waits between queries using app-defined delay.
+- Exits if instrument reports ready (status == 1) or timeout is exceeded.
 
 ```{admonition} Input Parameters
 :class: tip
