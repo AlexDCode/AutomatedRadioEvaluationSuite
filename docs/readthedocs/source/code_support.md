@@ -45,7 +45,12 @@ The function dBm2mag converts dBm to Watts (W).
 
 **Description:**
 
-Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows. PARAMETERS: folder_path      - Path to folder containing .m files (recursively searched)
+Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows.
+
+```{admonition} Input Parameters
+:class: tip
+- folder_path      - Path to folder containing .m files (recursively searched)
+```
 
 ```{admonition} Output Parameters
 :class: tip
