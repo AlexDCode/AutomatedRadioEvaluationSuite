@@ -15,7 +15,7 @@ This function generates a complete parameter sweep table for Power Amplifier (PA
 
 ```{admonition} Input Parameters
 :class: tip
-- app - App object containing configuration parameters for frequency, RF input power, and pwower supply settings.
+- app - App object containing configuration parameters for frequency, RF input power, and power supply settings.
 ```
 
 ```{admonition} Output Parameters
@@ -190,10 +190,10 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points. This function generates a dual y-axis plot with the left Y-axis having overlaid markers:
 
-- Left Y-axis: Gain (dB)
-- - Green X: Psat (saturation output power)
-- - Red X:   -1 dB and -3 dB gain compression points
 - Right Y-axis: DE and PAE (%)
+- Left Y-axis: Gain (dB)
+- Green X: Psat (saturation output power)
+- Red X:   -1 dB and -3 dB gain compression points
 
 ```{admonition} Input Parameters
 :class: tip
