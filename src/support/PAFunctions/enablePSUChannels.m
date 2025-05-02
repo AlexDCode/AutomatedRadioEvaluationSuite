@@ -11,7 +11,7 @@ function enablePSUChannels(app, channels, state)
     %  - enablePSUChannels(app, {'CH1'}, 0);        Disable channel CH1.
     % 
     % INPUT:
-    %   app:      - The application object containing the power supplies and the channel-to-device mapping.
+    %   app       - The application object containing the power supplies and the channel-to-device mapping.
     %   channels  - A cell array of channel names (e.g., {'CH1', 'CH2'}).
     %   state     - Channel state (1 for enable, 0 for disable).
     %

@@ -1,29 +1,22 @@
 function [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = measureRFParametersPeaks(app, idx)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function calculates peak RF performance metrics from power 
-    % amplifier (PA) measurement data, including saturation power, 
-    % peak gain, drain efficiency (DE), power-added efficiency (PAE), and 
-    % -1 dB and -3 dB compression points.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including
+    % saturation power, peak gain, peak drain efficiency (DE), peak power-added efficiency (PAE), and -1 dB 
+    % and -3 dB compression points.
     %
-    % INPUT PARAMETERS:
-    %   app:            Application object containing the PA measurement 
-    %                   data table.
-    %   idx:            Logical or numeric index used to filter the rows 
-    %                   of the PA_DataTable for analysis.
+    % INPUT:
+    %   app     - The application object containing the PA measurement data table.
+    %   idx     - Logical or numeric index used to filter the rows of the PA data table for analysis.
     %
-    % OUTPUT PARAMETERS:
-    %   Psat:            Table containing the maximum RF output power 
-    %                    (Psat) per frequency and corresponding gain.
-    %   peakGain:        Table of peak small-signal gain values per 
-    %                    frequency.
-    %   peakDE:          Table of maximum drain efficiency per frequency.
-    %   peakPAE:         Table of maximum power-added efficiency per 
-    %                    frequency.
-    %   compression1dB:  Table containing the -1 dB gain compression 
-    %                    points per frequency.
-    %   compression3dB:  Table containing the -3 dB gain compression  
-    %                    points per frequency.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   Psat            - Table containing the maximum RF output power (Psat) per frequency and corresponding gain.
+    %   peakGain        - Table of peak small-signal gain values per frequency.
+    %   peakDE          - Table of maximum drain efficiency per frequency.
+    %   peakPAE         - Table of maximum power-added efficiency per frequency.
+    %   compression1dB  - Table containing the -1 dB gain compression points per frequency.
+    %   compression3dB  - Table containing the -3 dB gain compression points per frequency.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Get the max output RF power per frequency.
     Psat = groupsummary(app.PA_DataTable(idx,:),'FrequencyMHz','max','RFOutputPowerdBm');

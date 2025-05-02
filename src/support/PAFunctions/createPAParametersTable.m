@@ -11,7 +11,7 @@ function ParametersTable = createPAParametersTable(app)
     %   - Voltage (V) and Current (A) per active PSU channel
     %
     % INPUT:
-    %   app - App object containing configuration parameters for frequency, RF input power, and pwower supply settings.
+    %   app - App object containing configuration parameters for frequency, RF input power, and power supply settings.
     %
     % OUTPUT:
     %   ParametersTable - The resulting parameters table containing all combinations of PA test settings.

@@ -1,39 +1,40 @@
 function resetPSUChannels(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function resets all power supply unit (PSU) channels to their
-    % default state, which includes setting current and voltage to 0 and 
-    % configuring each channel to 'Single' mode. It restores the default 
-    % settings for all channels and refreshes the GUI elements to reflect 
-    % these changes, ensuring the application returns to its initial 
-    % configuration.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function resets all power supply unit (PSU) channels to their default settings, including setting voltage
+    % and current values to 0 and configuring each channel to 'Single' mode. It also refreshes the GUI to reflect 
+    % these changes and ensures the PA side of the application returns to its initial state.
     %
-    % INSTRUMENTS
-    %   DC Power Supplies A/B: E36233A / E336234A
+    % INPUT:
+    %   app   - The application object containing the channel configurations.
     %
-    % INPUT PARAMETERS
-    %   app:       The application object containing the channel 
-    %              configurations.
-    %
-    % OUTPUT PARAMETERS
+    % OUTPUT:
     %   None
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Loop through all the channel and set the default values.
+    % Loop through all the channels and set the default values.
     channels = fieldnames(app.ChannelNames);
     for i = 1:length(channels)
-        app.ChannelNames.(channels{i}) = struct('Current', 0, 'Start', 0, 'Stop', 0, 'Step', 0, 'Mode', 'Single');
+        app.ChannelNames.(channels{i}) = struct( ...
+            'Current', 0, ...
+            'Start', 0, ...
+            'Stop', 0, ...
+            'Step', 0, ...
+            'Mode', 'Single' ...
+        );
     end
 
     % To invalidate the channel once its reset.
     populatePSUChannels(app); 
 
-    % Set all remaining GUI values and elements to their default 
-    % state.
+    % Reset all GUI values and elements to default.
     app.SupplyCurrentValueField.Value = 0;
     app.SupplyVoltageStartValueField.Value = 0;
     app.SupplyVoltageStopValueField.Value = 0;
     app.SupplyVoltageStepValueField.Value = 0;
     app.SingleSweepSwitch.Value = 'Single';
+
+    % Hide the voltage stop/step fields.
     app.SupplyVoltageStopValueField.Visible = 'off';
     app.SupplyVoltageStepValueField.Visible = 'off';
 end

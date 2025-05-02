@@ -1,21 +1,16 @@
 function populatePSUChannels(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function checks the modes and configurations of power supply 
-    % channels and determines which channels are "filled," meaning their 
-    % user-defined parameters are complete and ready for use. The filled 
-    % channels are stored in the app object for later processing or 
-    % interaction with the power supply units.
-    % 
-    % INSTRUMENTS
-    %   DC Power Supplies A/B: E36233A / E336234A
-    % 
-    % INPUT PARAMETERS
-    %   app:       The application object containing the channel 
-    %            configurations and the channel-to-device mapping.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function evaluates the configuration of power supply channels and identifies which channels are "filled,"
+    % meaning they have complete user-defined parameters (voltage, current, etc.) and are ready for use. These filled
+    % channels are stored in the app object for future processing or interaction with the PSU units.
     %
-    % OUTPUT PARAMETERS
+    % INPUT:
+    %   app   - The application object containing the channel configurations and channel-to-device mapping.
+    %
+    % OUTPUT:
     %   None
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     filledChannels = {};
     channelNames = fieldnames(app.ChannelNames); 
@@ -23,16 +18,18 @@ function populatePSUChannels(app)
     for channelName = channelNames'
         channel = app.ChannelNames.(channelName{1});
         
-        % Based on the channel mode single/sweep determine if the
-        % values entered by the user make it complete.
+        % Check if the channel is "filled" based on its mode and user input.
         if strcmp(channel.Mode, 'Single') && all([channel.Current, channel.Start] ~= 0)
-            filledChannels{end + 1} = channelName{1};
+            % "Single" mode channels require non-zero current and start voltage.
+            filledChannels{end + 1} = channelName{1}; %#ok<AGROW>
+
         elseif strcmp(channel.Mode, 'Sweep') && all([channel.Current, channel.Start, channel.Stop, channel.Step] ~= 0)
-            filledChannels{end + 1} = channelName{1};
+            % "Sweep" mode channels require non-zero current, start, stop, and step values.
+            filledChannels{end + 1} = channelName{1}; %#ok<AGROW>
+            
         end
     end
 
-    % Update the app's list of filled channels which holds the
-    % channels that should be passed on to the PSU object.
+    % Store the list of filled channels in the app object.
     app.FilledPSUChannels = filledChannels;
 end

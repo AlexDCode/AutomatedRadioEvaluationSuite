@@ -7,11 +7,10 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
     % based on the selected calibration mode and available data on the app. The function supports the following 
     % calibration modes:
     %
-    %   - 'None': In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
-    %   - 'Fixed Attenuation': The function directly applies the attenuation values set in the application for both input and output.
-    %   - 'Small Signal': Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
-    %   - 'Small + Large Signal': Combines fixed attenuation values, S-parameters, and driver response for a more comprehensive calibration.
-    %   - 'Small + Large Signal': Same behavior as 'Small Signal' but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
+    %   - **None**: No calibration is applied, and both input and output calibration factors are set to 0.
+    %   - **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
+    %   - **Small Signal**: Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
+    %   - **Small + Large Signal**: Same behavior as **Small Signal** but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
     %
     % INPUT:
     %   app            - The application object containing configuration settings and attenuation values for the PA setup.
@@ -19,8 +18,8 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
     %   RFInputPower   - The measured RF input power (dBm) at the specified frequency.
     %
     % OUTPUT:
-    %   inCal          - The input attenuation calibration factor (dB). Subtract this from the input RF power to obtain the corrected PA input power.
-    %   outCal         - The output attenuation calibration factor (dB). Add this to the measured output power to get the corrected PA output power.
+    %   inCal          - The input attenuation calibration factor (dB). Subtracts this from the input RF power to obtain the corrected PA input power.
+    %   outCal         - The output attenuation calibration factor (dB). Adds this to the measured output power to get the corrected PA output power.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     calMode = app.CalibrationModeDropDown.Value;
