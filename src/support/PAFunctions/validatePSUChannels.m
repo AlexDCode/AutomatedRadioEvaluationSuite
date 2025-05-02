@@ -1,127 +1,100 @@
 function isValid = validatePSUChannels(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function validates the configuration of power supply unit (PSU) 
-    % channels based on the selected supply mode and the connected devices. 
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function validates PSU channel configuration based on the selected mode. It checks:
     %
-    % It checks for the following conditions:
-    %   - Whether power supplies are connected.
-    %   - Whether the selected supply mode is compatible with the number
-    %     of connected power supplies.
-    %   - Whether enough channels are configured for the selected mode.
-    %   - Whether the number of configured channels exceeds the allowed 
-    %     number for the selected mode.
+    %   - That devices are connected.
+    %   - That the mode matches available devices.
+    %   - That enough channels are configured.
+    %   - That channel count does not exceed mode limits.
     %
-    % If any of these conditions fail, the function will display 
-    % appropriate messages and prompt the user to correct the 
-    % configuration.
+    % INPUT:
+    %   app     - App object with mode, device, and channel info
     %
-    % INSTRUMENTS
-    %   DC Power Supplies A/B: E36233A / E336234A
-    %
-    % INPUT PARAMETERS
-    %   app:     The application object containing the power supply 
-    %            configurations, the current mode, and the list of filled 
-    %            channels.
-    %
-    % OUTPUT PARAMETERS
-    %   isValid: A boolean value indicating whether the PSU configuration 
-    %            is valid (true) or not (false).
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   isValid - True if configuration is valid; otherwise false
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables.
+    isValid = false;
     filledChannels = app.FilledPSUChannels;
-    numfilledChannels = length(filledChannels);
-    currentMode = app.PSUMode;
-
-    % Standardize mode format so no MATLAB dropdown menu errors
-    % occur with the current mode variable type.
-    if isnumeric(currentMode)
-        modes = {'Single Supply', 'Dual Supply', 'Quad Supply'};
-        currentMode = modes{currentMode};
-    end
+    numChannels  = numel(filledChannels);
+    currentMode = resolvePSUMode(app.PSUMode);
 
     %% Validation Checks
     % Check if no power supplies are connected.
     if isempty(app.PowerSupplyA) && isempty(app.PowerSupplyB)
         uialert(app.UIFigure, 'No power supplies connected. Please connect at least one power supply before proceeding.', 'No Devices Connected');
-        isValid = false;
         return;
     end
 
-    % Check if quad supply mode is selected but less than two power 
-    % supplies are connected.
+    % Check if quad supply mode is selected but less than two power supplies are connected.
     if strcmp(currentMode, 'Quad Supply') && (isempty(app.PowerSupplyA) || isempty(app.PowerSupplyB))
         uialert(app.UIFigure, 'Quad Supply mode requires both PSUA and PSUB to be connected.', 'Invalid Configuration');
-        isValid = false;
         return;
     end
 
-    % Check if no channels are configured, and prompt for the minimum 
-    % channels required based on the selected mode.
-    if isempty(filledChannels)
-        switch currentMode
-            case 'Single Supply'
-                message = sprintf('Please configure voltage values for at least one channel before proceeding.');     
-            case 'Dual Supply'
-                message = sprintf('Please configure voltage values for at least two channels before proceeding.');      
-            case 'Quad Supply'
-                message = sprintf('Please configure voltage values for at least four channels before proceeding.');      
-        end
-        uialert(app.UIFigure, message, 'Insufficient Channels Configured');
-        isValid = false;
-        return;
-    end
+    % Check for minimum channel configuration
+    requiredChannels = modeChannelRequirement(currentMode);
 
-    % Determine the allowed number of channels for the selected mode.
-    switch currentMode
-        case 'Single Supply'
-            maxChannels = 1;
-        case 'Dual Supply'
-            maxChannels = 2;
-        case 'Quad Supply'
-            maxChannels = 4;
-        otherwise
-            maxChannels = 0;
+    if numChannels < requiredChannels
+        uialert(app.UIFigure, sprintf('At least %d channel(s) must be configured for %s mode.', requiredChannels, currentMode), 'Insufficient Channels');
+        return;
     end
 
     % Check if too many channels are selected for the chosen mode.
-    if numfilledChannels > maxChannels
-        message = sprintf(['Current mode %s allows %d channel(s).\n\n' ...
-            'Configured channels: %s\n\n' ...
-            'Would you like to:\n' ...
-            '1. Clear all channel values\n' ...
-            '2. Change PSU mode'], ...
-            currentMode, maxChannels, strjoin(filledChannels, ', '));
+    if numChannels > requiredChannels
+        message = sprintf(['%s mode allows a maximum of %d channel(s).\n\n' ...
+                           'Currently configured: %s\n\nWhat would you like to do?'], ...
+                           currentMode, requiredChannels, strjoin(filledChannels, ', '));
+
         choice = uiconfirm(app.UIFigure, message, 'Channel Configuration', ...
             'Options', {'Clear All Channels', 'Change Mode', 'Cancel'});
 
         switch choice
             case 'Clear All Channels'
-                % Reset all channel values.
                 resetPSUChannels(app);
-                isValid = false;
-                return;
             case 'Change Mode'
-                % Show menu with available modes based on the
-                % number of filled channels.
-                modes = {'Single Supply', 'Dual Supply', 'Quad Supply'};
-                validModes = modes(numfilledChannels <= [1 2 4]);
-                [idx, tf] = listdlg('ListString', validModes, ...
-                    'SelectionMode', 'single', ...
-                    'PromptString', 'Select new PSU mode:', ...
-                    'ListSize', [200, 100]);
+                validModes = getValidModes(numChannels);
+                [idx, tf] = listdlg('PromptString', 'Select new PSU mode:', ...
+                                    'ListString', validModes, ...
+                                    'SelectionMode', 'single', ...
+                                    'ListSize', [200 100]);
                 if tf
                     app.PowerSupplyModeDropDown.Value = validModes{idx};
-                    app.PSUChangeModeHandle(); 
+                    app.PSUChangeModeHandle();
                 end
-                isValid = false;
-                return;
-            otherwise % Cancel option.
-                isValid = false;
-                return;
+            otherwise
+                % Cancelled
         end
+        return;
     end
 
     % All validation checks passed.
     isValid = true;
+end
+
+%% Modular Helper Functions
+function mode = resolvePSUMode(value)
+    if isnumeric(value)
+        options = {'Single Supply', 'Dual Supply', 'Quad Supply'};
+        mode = options{value};
+    else
+        mode = char(value);
+    end
+end
+
+function n = modeChannelRequirement(mode)
+    switch mode
+        case 'Single Supply', n = 1;
+        case 'Dual Supply',   n = 2;
+        case 'Quad Supply',   n = 4;
+        otherwise,            n = 0;
+    end
+end
+
+function modes = getValidModes(channelCount)
+    allModes = {'Single Supply', 'Dual Supply', 'Quad Supply'};
+    limits = [1, 2, 4];
+    modes = allModes(channelCount <= limits);
 end

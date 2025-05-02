@@ -1,20 +1,21 @@
 function ParametersTable = createPAParametersTable(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function creates a parameter sweep table for power amplifier 
-    % (PA) testing, generating all possible combinations of frequency, 
-    % RF input power, voltage, and current based on the configured sweep 
-    % settings for each PSU channel.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function generates a complete parameter sweep table for Power Amplifier (PA) testing. It creates all 
+    % possible combinations of frequency, RF input power, voltage, and current based on the sweep settings 
+    % defined in the application for each active PSU channel. The resulting table is used to drive automated PA 
+    % characterization across various operating conditions, it contains the following columns:
     %
-    % INPUT PARAMETERS
-    %   app:  The application object containing frequency, power, and 
-    %       voltage/current sweep configurations.
+    %   - Frequency (Hz)
+    %   - RF Input Power (dBm)
+    %   - Voltage (V) and Current (A) per active PSU channel
     %
-    % OUTPUT PARAMETERS
-    %   paramTable:  The PA test paramaters table containing all 
-    %                combinations of frequencies in (Hz), RF input power 
-    %                in (dBm), voltages in (V), and currents in (A) for 
-    %                each active PSU channel.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   app - App object containing configuration parameters for frequency, RF input power, and pwower supply settings.
+    %
+    % OUTPUT:
+    %   ParametersTable - The resulting parameters table containing all combinations of PA test settings.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Frequency settings.
     if strcmp(app.PAFrequencyMeasurementMode, 'Sweep Frequencies')

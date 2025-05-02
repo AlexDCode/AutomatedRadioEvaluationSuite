@@ -1,20 +1,32 @@
 function ResultsTable = createPAResultsTable(app, totalMeasurements)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function creates a results table for power amplifier (PA)
-    % measurements, dynamically adjusting the column headers based on the 
-    % number of active power supply channels.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function initializes an empty results table for Power Amplifier (PA) measurements, with columns 
+    % dynamically generated based on the number of active PSU channels configured in the application. 
+    % The table is pre-allocated to the specified number of measurements and channels. For n channels:
     %
-    % INPUT PARAMETERS
-    %   app:               The application object containing configuration
-    %                      details, including the active PSU channels.
-    %   totalMeasurements: Total number of measurements to be recorded in
-    %                      the table.
+    %   - Frequency (MHz)
+    %   - Channel 1 Voltage (V) (if n = 1)
+    %   - ...
+    %   - Channel n Voltages (V)
+    %   - RF Input Power (dBm)
+    %   - RF Output Power (dBm)
+    %   - Gain
+    %   - Channel 1 DC Power (W) (if n = 1)
+    %   - ...
+    %   - Channel n DC Power (W)
+    %   - Total DC Drain Power (W)
+    %   - Total DC Gate Power (W)
+    %   - DE (%)
+    %   - PAE (%)
     %
-    % OUTPUT PARAMETERS
-    %   ResultsTable:      PA results table initialized with appropriate 
-    %                      columns for storing frequency, voltage, RF 
-    %                      power, DC power, gain, and efficiency metrics.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   app               - The app object containing configuration details, including active PSU channels.
+    %   totalMeasurements - Total number of rows to preallocate in the results table.
+    %
+    % OUTPUT:
+    %   ResultsTable      - An empty table with predefined variable names and types for storing PA test results.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Add frequency column.
     varNames = {'Frequency (MHz)'};
@@ -24,7 +36,7 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
 
     % Add voltage columns based on the number of active channels.
     for i = 1:numChannels
-        varNames{end+1} = sprintf('Channel %d Voltages (V)', i);
+        varNames{end+1} = sprintf('Channel %d Voltages (V)', i); %#ok<AGROW>
     end
     
     % Add measurement columns independent of active channels.
@@ -32,7 +44,7 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
     
     % Add DC power coumns based on the number of active channels.
     for i = 1:numChannels
-        varNames{end+1} = sprintf('Channel %d DC Power (W)', i);
+        varNames{end+1} = sprintf('Channel %d DC Power (W)', i); %#ok<AGROW>
     end
     
     % Add total DC drain power if there are multiple channels.

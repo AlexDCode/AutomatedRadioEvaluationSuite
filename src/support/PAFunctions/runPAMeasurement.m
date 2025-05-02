@@ -1,5 +1,5 @@
 function runPAMeasurement(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % This function executes a full RF power amplifier (PA) measurement 
     % sweep across defined power levels and frequencies, including:
     %   - Instrument control (PSU, Signal Generator, Signal Analyzer)
@@ -34,7 +34,7 @@ function runPAMeasurement(app)
     % ERROR HANDLING:
     %   In case of an exception, instruments are safely turned off and 
     %   the error is displayed via the application interface.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     try
         % Create the PA test parameters table.

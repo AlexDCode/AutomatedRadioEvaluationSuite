@@ -1,25 +1,23 @@
 function enablePSUChannels(app, channels, state)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function enables or disables channels on two power supply units 
-    % (PSU A and PSU B) based on the provided state. The channels are 
-    % grouped by PSU and then enabled or disabled accordingly.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function enables or disables the specified channels on two power supply units (PSU A and PSU B) based on
+    % the provided state (1 for enabling, 0 for disabling). Channels are grouped by PSU (PSU A or PSU B) and then 
+    % enabled or disabled accordingly. The order in which the channels are processed depends on the state: gate biases
+    % are controlled before drain supplies when enabling, and drain supplies are turned off before gate biases 
+    % when disabling. Examples:
     % 
-    % INSTRUMENTS
-    %   DC Power Supplies A/B: E36233A / E336234A
+    %  - enablePSUChannels(app, {'CH1', 'CH2'}, 1); Enable channels CH1 and CH2.
+    %  - enablePSUChannels(app, {'CH1'}, 0);        Disable channel CH1.
     % 
-    % INPUT PARAMETERS
-    %   app:       The application object containing the power supplies and 
-    %            the channel-to-device mapping.
-    %   channels:  A cell array of channel names (e.g., {'CH1', 'CH2'}).
-    %   state:     Channel state (1 for enable, 0 for disable).
+    % INPUT:
+    %   app:      - The application object containing the power supplies and the channel-to-device mapping.
+    %   channels  - A cell array of channel names (e.g., {'CH1', 'CH2'}).
+    %   state     - Channel state (1 for enable, 0 for disable).
     %
-    % OUTPUT PARAMETERS
+    % OUTPUT:
     %   None
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    % Group channels by power supply unit.
-    psuAChannels = {};
-    psuBChannels = {};
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
     if state == 1
         % Turn on all gate biases first, then all drain supplies
@@ -29,9 +27,14 @@ function enablePSUChannels(app, channels, state)
         channelModes = [app.DrainChannels,app.GateChannels];
     end
 
+    % Initialize containers for PSU channels.
+    psuAChannels = {};
+    psuBChannels = {};
+
     for channelMode = channelModes
         for i = 1:length(channels)
             if ismember(channels{i},channelMode)
+                % Extract the channel information.
                 [deviceChannel, psuName] = strtok(app.ChannelToDeviceMap(channels{i}), ',');
                 psuName = psuName(2:end);
         
