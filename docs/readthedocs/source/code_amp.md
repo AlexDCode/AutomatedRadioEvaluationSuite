@@ -7,20 +7,20 @@
 
 **Description:**
 
-This function creates a parameter sweep table for power amplifier (PA) testing, generating all possible combinations of frequency, RF input power, voltage, and current based on the configured sweep settings for each PSU channel.
+This function generates a complete parameter sweep table for Power Amplifier (PA) testing. It creates all possible combinations of frequency, RF input power, voltage, and current based on the sweep settings defined in the application for each active PSU channel. The resulting table is used to drive automated PA characterization across various operating conditions, it contains the following columns:
+
+- Frequency (Hz)
+- RF Input Power (dBm)
+- Voltage (V) and Current (A) per active PSU channel
 
 ```{admonition} Input Parameters
 :class: tip
-- app:  The application object containing frequency, power, and
-- voltage/current sweep configurations.
+- app - App object containing configuration parameters for frequency, RF input power, and pwower supply settings.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- paramTable:  The PA test paramaters table containing all
-- combinations of frequencies in (Hz), RF input power
-- in (dBm), voltages in (V), and currents in (A) for
-- each active PSU channel.
+- ParametersTable - The resulting parameters table containing all combinations of PA test settings.
 ```
 
 ---
@@ -30,21 +30,32 @@ This function creates a parameter sweep table for power amplifier (PA) testing, 
 
 **Description:**
 
-This function creates a results table for power amplifier (PA) measurements, dynamically adjusting the column headers based on the number of active power supply channels.
+This function initializes an empty results table for Power Amplifier (PA) measurements, with columns dynamically generated based on the number of active PSU channels configured in the application. The table is pre-allocated to the specified number of measurements and channels. For n channels:
+
+- Frequency (MHz)
+- Channel 1 Voltage (V) (if n = 1)
+- ...
+- Channel n Voltages (V)
+- RF Input Power (dBm)
+- RF Output Power (dBm)
+- Gain
+- Channel 1 DC Power (W) (if n = 1)
+- ...
+- Channel n DC Power (W)
+- Total DC Drain Power (W)
+- Total DC Gate Power (W)
+- DE (%)
+- PAE (%)
 
 ```{admonition} Input Parameters
 :class: tip
-- app:               The application object containing configuration
-- details, including the active PSU channels.
-- totalMeasurements: Total number of measurements to be recorded in
-- the table.
+- app               - The app object containing configuration details, including active PSU channels.
+- totalMeasurements - Total number of rows to preallocate in the results table.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- ResultsTable:      PA results table initialized with appropriate
-- columns for storing frequency, voltage, RF
-- power, DC power, gain, and efficiency metrics.
+- ResultsTable      - An empty table with predefined variable names and types for storing PA test results.
 ```
 
 ---
@@ -308,17 +319,14 @@ This function executes a full RF power amplifier (PA) measurement sweep across d
 
 **Description:**
 
-This function sets the voltage and current for a specified channel on a power supply unit (PSU). It selects the appropriate PSU based on the provided channel, and then applies the given voltage and current values to that channel. INSTRUMENTS DC Power Supplies A/B: E36233A / E336234A
+This function sets the voltage and current for a specific power supply channel based on the application's channel-to-device mapping. It determines the correct physical channel and PSU (A or B), and applies the specified settings via SCPI commands. The function handles numeric or string inputs for voltage and current values, ensuring compatibility with SCPI command formatting.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:           The application object containing the power supply
-- configurations and channel-to-device mapping.
-- deviceChannel: The name of the channel (e.g., 'CH1', 'CH2').
-- voltage:       The voltage to set for the specified channel, given
-- as a numeric value or a string.
-- current:       The current to set for the specified channel, given
-- as a numeric value or a string.
+- app           - App object containing power supply configurations and the channel-to-device mapping.
+- deviceChannel - Logical channel name (e.g., 'CH1') as defined in the mapping structure.
+- voltage       - Desired voltage for the channel (numeric or string).
+- current       - Desired current limit for the channel (numeric or string).
 ```
 
 ```{admonition} Output Parameters
@@ -333,12 +341,12 @@ This function sets the voltage and current for a specified channel on a power su
 
 **Description:**
 
-This function validates PSU channel configuration based on the selected mode and works with the following instruments (E36233A / E336234A). It checks:
+This function validates PSU channel configuration based on the selected mode. It checks:
 
-- That devices are connected
-- That the mode matches available devices
-- That enough channels are configured
-- That channel count does not exceed mode limits
+- That devices are connected.
+- That the mode matches available devices.
+- That enough channels are configured.
+- That channel count does not exceed mode limits.
 
 ```{admonition} Input Parameters
 :class: tip
