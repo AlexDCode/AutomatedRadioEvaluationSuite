@@ -41,7 +41,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - Measure antenna return loss (magnitude and phase).
 - Save and recall measurements in standardized file formats for data analysis.
 - Plot measurement results within the app for quick visualization.
-- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export unsupported for polar plots)
+- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots)
 
 ## TODO
 
@@ -49,6 +49,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - **FAQ**: Add a Frequently Asked Questions (FAQ) section to address common user inquiries and troubleshooting common difficulties.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
+- **Antenna Measurements**: Add capabilities to measure antenna directivity, efficiency, and polarization. Enable measurement of circular polarized antennas.
 
 ## Usage
 
