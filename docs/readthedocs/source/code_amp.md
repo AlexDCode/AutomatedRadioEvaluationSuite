@@ -137,7 +137,7 @@ This function measures the output RF power, DC drain power, and DC gate power ba
 
 **Description:**
 
-This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the
+This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the specified input and output RF power and the DC power supplied to the drain.
 
 ```{admonition} Output Parameters
 :class: tip
@@ -188,22 +188,21 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 **Description:**
 
-This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat,
+This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points. This function generates a dual y-axis plot with the left Y-axis having overlaid markers:
 
--1 dB and -3 dB compression points.
+- Left Y-axis: Gain (dB)
+- - Green X: Psat (saturation output power)
+- - Red X:   -1 dB and -3 dB gain compression points
+- Right Y-axis: DE and PAE (%)
 
 ```{admonition} Input Parameters
 :class: tip
-- app:  Application object containing PA measurement data,
-- user-selected frequency, supply voltages, and plotting
-- handles.
-- The function automatically filters the data for the selected
-- frequency and voltage settings, and generates a dual y-axis plot:
-- Left Y-axis: Gain [dB]
-- Right Y-axis: DE and PAE [%]
-- Overlaid Markers:
-- Green X: Psat (saturation output power)
-- Red X:   -1 dB and -3 dB gain compression points
+- app   - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
 ```
 
 ---
