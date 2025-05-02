@@ -48,7 +48,21 @@ EXTRACT_DOCS Extracts help comments from all .m files in a folder. extract_docs(
 
 **DESCRIPTION:**
 
-This function improves the appearance of axes in MATLAB App Designer, handles plots containing two graphs one on the left y axis and the other on the right y axis, sharing the same x axis. INPUT PARAMETERS axesObj:       Handle to the UIAxes object. varargin:      Optional name-value pairs for 'YYAxis', 'LineWidth'. YYAxis:        Boolean flag, to handle plots with graphs on the left and right y axis, sharing the same x axis. LineThickness: Positive numeric scalar, to handle the thickness.
+This function improves the appearance of UIAxes in MATLAB App Designer. It supports enhancing single or dual Y-axis (yyaxis) plots.
+
+```{admonition} Input
+:class: note
+
+- axesObj        - Handle to the UIAxes object.
+- 'YYAxis'       - Logical (true/false), if the plot uses yyaxis.
+- 'LineThickness'- Scalar > 0, sets line thickness for plotted lines.
+```
+
+```{admonition} Output
+:class: note
+
+- None
+```
 
 ## loadData.m
 `File path: src\support\SupportFunctions\loadData.m`
