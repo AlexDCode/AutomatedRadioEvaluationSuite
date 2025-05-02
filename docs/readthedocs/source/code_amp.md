@@ -116,19 +116,18 @@ This function enables or disables the specified channels on two power supply uni
 
 **Description:**
 
-This function measures the output RF power, the DC drain power, and the DC gate power. INSTRUMENTS Spectrum Analyzer: N9000B Signal Generator:  SMW200A DC Power Supply:   E36233A / E336234A
+This function measures the output RF power, DC drain power, and DC gate power based on the specified input RF power and test frequency.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:           The application object containing the instruments
-- and the settings.
-- frequency:     The test frequency
+- app            - The application object containing instrument configurations.
+- frequency      - The test frequency for measurement.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- DCDrainPower:  The DC power delivered to the drain in (watts).
-- DCGatePower:   The DC power delivered to the gate in (watts).
+- DCDrainPower   - The DC power delivered to the drain (W).
+- DCGatePower    - The DC power delivered to the gate (W).
 ```
 
 ---
@@ -138,14 +137,14 @@ This function measures the output RF power, the DC drain power, and the DC gate 
 
 **Description:**
 
-This function calculates the RF Gain, the Drain Efficiency (DE), and the Power Added Efficiency (PAE) based on the input/output RF power, and the DC power input.
+This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the
 
 ```{admonition} Output Parameters
 :class: tip
-- DCPower:         DC power in (watts).
-- Gain:            RF Gain.
-- DE:              Drain Efficiency (%).
-- PAE:             Power Added Efficiency (%).
+- DCDrainPower    - DC power supplied to the drain (in watts).
+- Gain            - RF Gain (dB).
+- DE              - Drain Efficiency (%).
+- PAE             - Power Added Efficiency (%).
 ```
 
 ---
