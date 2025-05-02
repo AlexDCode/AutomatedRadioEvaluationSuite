@@ -67,10 +67,10 @@ This function initializes an empty results table for Power Amplifier (PA) measur
 
 This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices. It generates calibration factors for both the input and output of the PA, which are applied to the measured RF power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed based on the selected calibration mode and available data on the app. The function supports the following calibration modes:
 
-- 'None': In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
-- 'Fixed Attenuation': The function directly applies the attenuation values set in the application for both input and output.
-- 'Small Signal': Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
-- 'Small + Large Signal': Same behavior as 'Small Signal' but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
+- **None**: In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
+- **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
+- **Small Signal**: Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
+- **Small + Large Signal**: Same behavior as **Small Signal** but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
 
 ```{admonition} Input Parameters
 :class: tip
