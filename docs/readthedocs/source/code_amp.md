@@ -67,7 +67,7 @@ This function initializes an empty results table for Power Amplifier (PA) measur
 
 This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices. It generates calibration factors for both the input and output of the PA, which are applied to the measured RF power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed based on the selected calibration mode and available data on the app. The function supports the following calibration modes:
 
-- **None**: In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
+- **None**: No calibration is applied, and both input and output calibration factors are set to 0.
 - **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
 - **Small Signal**: Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
 - **Small + Large Signal**: Same behavior as **Small Signal** but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
@@ -239,12 +239,11 @@ This function plots performance metrics from a frequency sweep power amplifier (
 
 **Description:**
 
-This function checks the modes and configurations of power supply channels and determines which channels are "filled," meaning their user-defined parameters are complete and ready for use. The filled channels are stored in the app object for later processing or interaction with the power supply units. INSTRUMENTS DC Power Supplies A/B: E36233A / E336234A
+This function evaluates the configuration of power supply channels and identifies which channels are "filled," meaning they have complete user-defined parameters (voltage, current, etc.) and are ready for use. These filled channels are stored in the app object for future processing or interaction with the PSU units.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:       The application object containing the channel
-- configurations and the channel-to-device mapping.
+- app   - The application object containing the channel configurations and channel-to-device mapping.
 ```
 
 ```{admonition} Output Parameters
@@ -259,12 +258,11 @@ This function checks the modes and configurations of power supply channels and d
 
 **Description:**
 
-This function resets all power supply unit (PSU) channels to their default state, which includes setting current and voltage to 0 and configuring each channel to 'Single' mode. It restores the default settings for all channels and refreshes the GUI elements to reflect these changes, ensuring the application returns to its initial configuration. INSTRUMENTS DC Power Supplies A/B: E36233A / E336234A
+This function resets all power supply unit (PSU) channels to their default settings, including setting voltage and current values to 0 and configuring each channel to 'Single' mode. It also refreshes the GUI to reflect these changes and ensures the PA side of the application returns to its initial state.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:       The application object containing the channel
-- configurations.
+- app   - The application object containing the channel configurations.
 ```
 
 ```{admonition} Output Parameters
