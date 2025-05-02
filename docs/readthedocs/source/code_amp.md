@@ -99,7 +99,7 @@ This function enables or disables the specified channels on two power supply uni
 
 ```{admonition} Input Parameters
 :class: tip
-- app:      - The application object containing the power supplies and the channel-to-device mapping.
+- app       - The application object containing the power supplies and the channel-to-device mapping.
 - channels  - A cell array of channel names (e.g., {'CH1', 'CH2'}).
 - state     - Channel state (1 for enable, 0 for disable).
 ```
