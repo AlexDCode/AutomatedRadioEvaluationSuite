@@ -70,7 +70,6 @@ This function de-embeds Power Amplifier (PA) measurements by removing the effect
 - 'None': In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
 - 'Fixed Attenuation': The function directly applies the attenuation values set in the application for both input and output.
 - 'Small Signal': Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
-- 'Small + Large Signal': Combines fixed attenuation values, S-parameters, and driver response for a more comprehensive calibration.
 - 'Small + Large Signal': Same behavior as 'Small Signal' but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
 
 ```{admonition} Input Parameters
@@ -82,8 +81,8 @@ This function de-embeds Power Amplifier (PA) measurements by removing the effect
 
 ```{admonition} Output Parameters
 :class: tip
-- inCal          - The input attenuation calibration factor (dB). Subtract this from the input RF power to obtain the corrected PA input power.
-- outCal         - The output attenuation calibration factor (dB). Add this to the measured output power to get the corrected PA output power.
+- inCal          - The input attenuation calibration factor (dB). Subtracts this from the input RF power to obtain the corrected PA input power.
+- outCal         - The output attenuation calibration factor (dB). Adds this to the measured output power to get the corrected PA output power.
 ```
 
 ---
@@ -123,6 +122,7 @@ This function measures the output RF power, the DC drain power, and the DC gate 
 :class: tip
 - app:           The application object containing the instruments
 - and the settings.
+- frequency:     The test frequency
 ```
 
 ```{admonition} Output Parameters
