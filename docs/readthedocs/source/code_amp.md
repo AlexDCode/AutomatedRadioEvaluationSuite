@@ -65,23 +65,25 @@ This function initializes an empty results table for Power Amplifier (PA) measur
 
 **Description:**
 
-This function de-embeds PA measurements by removing the effects of passive and active devices. It generates calibration factors in dB to correct the PA input and output RF power.
+This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices. It generates calibration factors for both the input and output of the PA, which are applied to the measured RF power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed based on the selected calibration mode and available data on the app. The function supports the following calibration modes:
+
+- 'None': In this mode, no calibration is applied, and both input and output calibration factors are set to 0.
+- 'Fixed Attenuation': The function directly applies the attenuation values set in the application for both input and output.
+- 'Small Signal': Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
+- 'Small + Large Signal': Combines fixed attenuation values, S-parameters, and driver response for a more comprehensive calibration.
+- 'Small + Large Signal': Same behavior as 'Small Signal' but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:           The application object containing calibration
-- settings and attenuation values.
-- testFreq:      Measurement frequency [Hz].
-- RFInputPower:  RF input power [dBm].
+- app            - The application object containing configuration settings and attenuation values for the PA setup.
+- testFrequency  - The measurement frequency (Hz) at which the calibration and de-embedding should be performed.
+- RFInputPower   - The measured RF input power (dBm) at the specified frequency.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- inCal:    Input attenuation calibration factor [dB].
-- Subtract this from the input RF power to obtain the
-- corrected PA input power.
-- outCal:   Output attenuation calibration factor [dB].
-- Add this to the measured output power to get the PA
+- inCal          - The input attenuation calibration factor (dB). Subtract this from the input RF power to obtain the corrected PA input power.
+- outCal         - The output attenuation calibration factor (dB). Add this to the measured output power to get the corrected PA output power.
 ```
 
 ---
@@ -91,14 +93,16 @@ This function de-embeds PA measurements by removing the effects of passive and a
 
 **Description:**
 
-This function enables or disables channels on two power supply units (PSU A and PSU B) based on the provided state. The channels are grouped by PSU and then enabled or disabled accordingly. INSTRUMENTS DC Power Supplies A/B: E36233A / E336234A
+This function enables or disables the specified channels on two power supply units (PSU A and PSU B) based on the provided state (1 for enabling, 0 for disabling). Channels are grouped by PSU (PSU A or PSU B) and then enabled or disabled accordingly. The order in which the channels are processed depends on the state: gate biases are controlled before drain supplies when enabling, and drain supplies are turned off before gate biases when disabling. Examples:
+
+- enablePSUChannels(app, {'CH1', 'CH2'}, 1); Enable channels CH1 and CH2.
+- enablePSUChannels(app, {'CH1'}, 0);        Disable channel CH1.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:       The application object containing the power supplies and
-- the channel-to-device mapping.
-- channels:  A cell array of channel names (e.g., {'CH1', 'CH2'}).
-- state:     Channel state (1 for enable, 0 for disable).
+- app:      - The application object containing the power supplies and the channel-to-device mapping.
+- channels  - A cell array of channel names (e.g., {'CH1', 'CH2'}).
+- state     - Channel state (1 for enable, 0 for disable).
 ```
 
 ```{admonition} Output Parameters
