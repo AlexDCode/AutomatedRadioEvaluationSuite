@@ -1,29 +1,31 @@
 # Antenna Functions
 
-## createAntennaParametersTable.m
-`File path: src\support\AntennaFunctions\createAntennaParametersTable.m`
+---
 
-**DESCRIPTION:**
+## createAntennaParametersTable.m
+`Path: src\support\AntennaFunctions\createAntennaParametersTable.m`
+
+**Description:**
 
 This function generates a table of all possible combinations of θ and φ angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - Theta      - A vector of theta angles (in degrees). The angles can range from -180 to 180.
 - Phi        - A vector of phi angles (in degrees). The angles can range from -180 to 180.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - ParametersTable - A table containing all combinations of Theta in (degrees) and Phi in (degrees).
 ```
 
-## createAntennaResultsTable.m
-`File path: src\support\AntennaFunctions\createAntennaResultsTable.m`
+---
 
-**DESCRIPTION:**
+## createAntennaResultsTable.m
+`Path: src\support\AntennaFunctions\createAntennaResultsTable.m`
+
+**Description:**
 
 This function initializes and preallocates a results table for storing antenna test measurements. The results table is designed to hold various antenna parameters for a given number of measurements. It contains the following columns:
 
@@ -38,31 +40,30 @@ This function initializes and preallocates a results table for storing antenna t
 - Path Loss (dB): The path loss in decibels.
 - Path Loss (deg): The path loss in degrees.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - totalMeasurements - The total number of measurements (rows) to allocate in the results table.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - ResultsTable      - The preallocated table.
 ```
 
-## measureAntennaGain.m
-`File path: src\support\AntennaFunctions\measureAntennaGain.m`
+---
 
-**DESCRIPTION:**
+## measureAntennaGain.m
+`Path: src\support\AntennaFunctions\measureAntennaGain.m`
+
+**Description:**
 
 This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods:
 
 - **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by interpolating the reference gain at the test frequencies.
 - **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - TestFrequency   - A scalar or vector of frequency values in Hz at which the antenna gain is measured.
 - sParameter_dB   - A scalar or vector of S21 values (in dB), representing the magnitude of power transfer between two antennas.
 - Spacing         - A scalar value representing the distance in meters between the two antennas being tested.
@@ -70,41 +71,42 @@ This function calculates the gain of a test antenna in decibels relative to an i
 - ReferenceFrequency - (Optional) A vector of frequencies (in Hz) corresponding to the reference antenna gain values.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - antennaGain     - A vector containing the calculated antenna gain in dBi for the test antenna, at the specified test frequencies.
 ```
 
-## measureSParameters.m
-`File path: src\support\AntennaFunctions\measureSParameters.m`
+---
 
-**DESCRIPTION:**
+## measureSParameters.m
+`Path: src\support\AntennaFunctions\measureSParameters.m`
+
+**Description:**
 
 This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
 
 - **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
 - **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - VNA                 - The instrument object for the VNA, used for communication and measurement control.
 - smoothingPercentage - The percentage of smoothing applied to the S-parameters data.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - sParamdB            - A cell array containing the magnitude data (in dB) for each S-parameter.
 - sParamPhase         - A cell array containing the phase data (in degrees) for each S-parameter.
 - freqValues          - A vector containing the frequency sweep values (in Hz) corresponding to the S-parameters.
 ```
 
-## plotAntenna2DRadiationPattern.m
-`File path: src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m`
+---
 
-**DESCRIPTION:**
+## plotAntenna2DRadiationPattern.m
+`Path: src\support\AntennaFunctions\plotAntenna2DRadiationPattern.m`
+
+**Description:**
 
 This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to display the following plots:
 
@@ -113,22 +115,22 @@ This function generates and displays several 2D plots related to antenna measure
 - Return Loss vs. Frequency at a fixed θ/φ angle.
 - Polar Radiation Pattern (θ and φ cuts).
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - app  - Application object containing the antenna measurement data and plot handles.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - None
 ```
 
-## plotAntenna3DRadiationPattern.m
-`File path: src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
+---
 
-**DESCRIPTION:**
+## plotAntenna3DRadiationPattern.m
+`Path: src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m`
+
+**Description:**
 
 This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, phi, and gain values in the application UI. The function:
 
@@ -137,22 +139,22 @@ This function generates a 3D radiation pattern plot for the antenna based on the
 - Creates and displays the 3D radiation pattern plot.
 - Displays appropriate error or warning messages if data is inconsistent or invalid.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - app  - Application object containing the antenna measurement data and plot handles.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - None
 ```
 
-## plotReferenceAntenna.m
-`File path: src\support\AntennaFunctions\plotReferenceAntenna.m`
+---
 
-**DESCRIPTION:**
+## plotReferenceAntenna.m
+`Path: src\support\AntennaFunctions\plotReferenceAntenna.m`
+
+**Description:**
 
 Plots the reference antenna's gain and return loss versus frequency, serving as a baseline for comparison with DUT (Device Under Test) measurements. The function:
 
@@ -161,64 +163,64 @@ Plots the reference antenna's gain and return loss versus frequency, serving as 
 - Plots return loss (dB) vs frequency (MHz).
 - Enhances visual appearance of plots using standardized formatting.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - app - Application object containing the reference antenna measurement data and associated plot handles.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - None
 ```
 
-## runAntennaMeasurement.m
-`File path: src\support\AntennaFunctions\runAntennaMeasurement.m`
+---
 
-**DESCRIPTION:**
+## runAntennaMeasurement.m
+`Path: src\support\AntennaFunctions\runAntennaMeasurement.m`
+
+**Description:**
 
 This function executes a 2D antenna gain measurement sweep using a dual-axis positioner (Theta and Phi) and a VNA. The function automates rotation, measurement, data logging, and visualization of antenna radiation patterns. The sweep is performed across a user-defined frequency range and angular grid, capturing S-parameters and calculating gain, return loss, and path loss. Data is saved to the disk and loaded into the app for plotting. Additionally the user is able to manually stop the test run from within the application. If an error occurs:
 
 - The errors are caught, reported via the app interface, and saved to the error log.
 - Positioners are safely stopped in case of interruption or failure.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - app - Application object that holds hardware interfaces, user settings, UI elements, and measurement parameters.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - None
 ```
 
-## setLinearSlider.m
-`File path: src\support\AntennaFunctions\setLinearSlider.m`
+---
 
-**DESCRIPTION:**
+## setLinearSlider.m
+`Path: src\support\AntennaFunctions\setLinearSlider.m`
+
+**Description:**
 
 This function controls the movement of the EMCenter linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - speedPreset    - An integer between 1 (slowest) and 8 (fastest) that sets the speed of the linear slider.
 - targetPosition - Target position in cm (0 - 200 cm) for the slider to move to.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - None
 ```
 
-## validateAntennaMeasurement.m
-`File path: src\support\AntennaFunctions\validateAntennaMeasurement.m`
+---
 
-**DESCRIPTION:**
+## validateAntennaMeasurement.m
+`Path: src\support\AntennaFunctions\validateAntennaMeasurement.m`
+
+**Description:**
 
 This function performs the following validation checks on the antenna test setup. If any condition is not met, the function displays an appropriate message and prompts the user to correct the configuration.
 
@@ -229,15 +231,13 @@ This function performs the following validation checks on the antenna test setup
 - Whether the turntable scan settings (mode, start angle, step angle, end angle) are configured.
 - Whether the tower scan settings (mode, start angle, step angle, end angle) are configured.
 
-```{admonition} Input
-:class: note
-
+```{admonition} Input Parameters
+:class: tip
 - app     - Application object containing the antenna setup configuration.
 ```
 
-```{admonition} Output
-:class: note
-
+```{admonition} Output Parameters
+:class: tip
 - isValid - Logical value. `true` if the configuration is valid; otherwise, `false`.
 ```
 
