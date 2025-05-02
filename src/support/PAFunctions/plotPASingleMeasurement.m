@@ -79,7 +79,7 @@ function plotPASingleMeasurement(app)
     end
 
     axis(app.SingleFrequencyPAPlot,'tight')
-    improveAxesAppearance(app.SingleFrequencyPAPlot, 'YYAxis', 'true', 'LineThickness', 2);
+    improveAxesAppearance(app.SingleFrequencyPAPlot, 'YYAxis', true, 'LineThickness', 2);
 
     if numel(legendHandles) == numel(legendEntries)
         lgd = legend(app.SingleFrequencyPAPlot, legendHandles, legendEntries, 'Location', 'west');

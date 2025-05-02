@@ -112,8 +112,8 @@ function plotPASweepMeasurement(app)
     end
     
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.
-    improveAxesAppearance(app.GainvsOutputPowerPlot, 'YYAxis', 'false', 'LineThickness', 1);
-    improveAxesAppearance(app.PeakGainPlot, 'YYAxis', 'false', 'LineThickness', 2);
-    improveAxesAppearance(app.PeakDEPAEPlot, 'YYAxis', 'false', 'LineThickness', 2);
-    improveAxesAppearance(app.CompressionPointsPlot, 'YYAxis', 'false', 'LineThickness', 2);
+    improveAxesAppearance(app.GainvsOutputPowerPlot, 'LineThickness', 1);
+    improveAxesAppearance(app.PeakGainPlot, 'LineThickness', 2);
+    improveAxesAppearance(app.PeakDEPAEPlot, 'LineThickness', 2);
+    improveAxesAppearance(app.CompressionPointsPlot, 'LineThickness', 2);
 end

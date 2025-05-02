@@ -1,38 +1,37 @@
 function fullFilename = saveData(combinedData, combinedNames)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function saves data from the application into either a CSV or
-    % Excel file. The user passes in the combined test data and combined 
-    % test variable names, the function saves and organizes the data.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function saves test data to either a CSV or Excel (.xlsx) file, depending on size and user selection. If
+    % the data exceeds Excel's row/column limits, only the CSV option is offered.
     %
-    % PARAMETERS
-    %   combinedData:  Cell array containing the data for all measurement
-    %                  variables. Example: {testFrequency, testGain, ...}
-    %   combinedNames: Cell array containing the titles of the measurement
-    %                  variables. Example: {'Frequency Hz', 'Gain dB', ...}
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % INPUT:
+    %   combinedData  - Either a table or a cell array of measurement vectors (e.g., {frequency, gain, ...}).
+    %   combinedNames - Cell array of variable names corresponding to the data (e.g., {'Frequency (Hz)', 'Gain (dB)', ...}).
+    %
+    % OUTPUT:
+    %   fullFilename  - Full path to the saved file, or an empty string if the user cancels the save dialog.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    % Constants
-    EXCEL_MAX_ROWS = 1048576;  % Maximum number of rows in Excel
-    EXCEL_MAX_COLUMNS = 16384; % Maximum number of columns in Excel
+    % Set Excel format limits.
+    EXCEL_MAX_ROWS = 1048576;  
+    EXCEL_MAX_COLUMNS = 16384;
 
+    % Handle missing second argument.
     if nargin < 2
         combinedNames = '';
-        passedExcelLimit = true;
     end
     
-    if strcmp(class(combinedData), 'table')
+    % Convert input to table if needed.
+    if istable(combinedData)
         dataTable = combinedData;
     else
         dataTable = array2table(combinedData, 'VariableNames', combinedNames);
     end
 
-    % Raise flag is there is too much data for an .xlsx file
-    if height(dataTable) >= EXCEL_MAX_ROWS || width(dataTable) > EXCEL_MAX_COLUMNS
-        passedExcelLimit = true;
-    else
-        passedExcelLimit = false;
-    end
+    % Check if data exceeds Excel limits.
+    passedExcelLimit = height(dataTable) >= EXCEL_MAX_ROWS || width(dataTable) > EXCEL_MAX_COLUMNS;
 
+    % Prompt user for save location.
     try
         if passedExcelLimit
             % Prompt the user to save the data into a CSV file
@@ -42,16 +41,17 @@ function fullFilename = saveData(combinedData, combinedNames)
             [filename, path] = uiputfile({'*.csv', 'CSV Files (*.csv)';'*.xlsx', 'Excel Files (*.xlsx)'}, 'Save Data As');
         end
     catch ME
-        error('Data saving was canceled.')
+        error('Save dialog was canceled.')
     end
 
-    % Handle the user cancelling the prompt
+    % Handle the user cancelling the saving prompt.
     if isequal(filename, 0) || isequal(path, 0)
         fullFilename = '';
         return;
     end
 
+    % Build full path and save the data.
     fullFilename = fullfile(path, filename);
     writetable(dataTable, fullFilename);
-    disp(['Data saved to ', fullFilename]);
+    disp(['Data saved to: ', fullFilename]);
 end

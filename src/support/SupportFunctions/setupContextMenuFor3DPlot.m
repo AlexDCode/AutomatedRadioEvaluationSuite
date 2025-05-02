@@ -1,18 +1,16 @@
 function setupContextMenuFor3DPlot(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function sets up a context menu for the 3D radiation pattern
-    % plot created using Antenna Toolbox's internal renderer.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function sets up a right-click context menu for the 3D radiation pattern plot, allowing the user to 
+    % export the visualization to image formats (PNG and JPG). This is particularly useful because plots rendered
+    % using the Antenna Toolbox may have limited export options or reduced visual quality by default.
     %
-    % INPUT PARAMETERS:
-    %   app: Application object containing plot handles and export logic.
+    % INPUT:
+    %   app - Application object containing the 3D plot handle and export logic.
     %
-    % This function:
-    %   - Creates a right-click context menu on the 3D radiation plot
-    %   - Adds export options (PNG, JPG) to the context menu
-    %   - Assigns the menu to the axes and all child graphics objects
-    %   - Ensures export functionality works even with toolbox-rendered 
-    %     plots
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    
     cm = uicontextmenu(app.UIFigure);
 

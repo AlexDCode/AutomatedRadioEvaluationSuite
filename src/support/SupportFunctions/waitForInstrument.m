@@ -1,36 +1,48 @@
 function waitForInstrument(app, Instrument)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function waits for an instrument to complete its operation 
-    % before proceeding. It continuously queries the instrument's operation
-    % status and checks if it is ready, or if a specified timeout duration
-    % has passed. If the instrument is not ready within the timeout 
-    % period, the function will exit.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % The function waits for a connected instrument to complete its current operation by polling its status using 
+    % the `*OPC?` SCPI query. This ensures that subsequent operations only proceed once the instrument is ready. The
+    % function enforces a timeout (default 15 seconds). The function:
     %
-    % INPUT PARAMETERS
-    %   app:         The application object, which contains settings like 
-    %              the measurement delay value.
-    %   Instrument:  The instrument object to query for its operation status.
+    %   - Starts a timer.
+    %   - Continuously queries instrument status via '*OPC?'.
+    %   - Waits between queries using app-defined delay.
+    %   - Exits if instrument reports ready (status == 1) or timeout is exceeded.
     %
-    % OUTPUT PARAMETERS
+    % INPUT:
+    %   app        - Application object that provides the delay setting between polls.
+    %   Instrument - VISA-compatible instrument object supporting '*OPC?' queries.
+    %
+    % OUTPUT:
     %   None
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Adjust the timeout duration as needed (seconds).
-    timeout = 15; 
-    tic; 
+    % Adjust the timeout duration as needed.
+    timeout = 15; % seconds
+    polldelay = app.MeasurementDelayValueField.Value;
+    startTime = tic; 
 
     while true
-        % Query the instrument for its operation status.
-        status = sscanf(writeread(Instrument, '*OPC?'), '%d');
+        try
+            % Query the instrument for its operation status.
+            status = sscanf(writeread(Instrument, '*OPC?'), '%d');
+        catch 
+            break;
+        end
 
-        % Check if the instrument is ready (status == 1) or if the 
-        % timeout has been exceeded.
-        if (status == 1 || toc > timeout)
-            break; 
-        end 
+        % Check if the instrument is ready (status == 1).
+        if status == 1
+            break;
+        end
+
+        % Check if the timeout has been exceeded.
+        if toc(startTime) > timeout
+            break;
+        end
 
         % Pause the execution of the function for a duration specified by 
         % timeout value stored in the application (default 0.1 seconds).
-        pause(app.MeasurementDelayValueField.Value); 
+        pause(polldelay); 
     end
 end
