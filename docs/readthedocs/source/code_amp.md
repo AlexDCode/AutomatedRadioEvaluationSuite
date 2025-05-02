@@ -141,7 +141,7 @@ This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Eff
 
 ```{admonition} Output Parameters
 :class: tip
-- DCDrainPower    - DC power supplied to the drain (in watts).
+- DCDrainPower    - DC power supplied to the drain (in W).
 - Gain            - RF Gain (dB).
 - DE              - Drain Efficiency (%).
 - PAE             - Power Added Efficiency (%).
