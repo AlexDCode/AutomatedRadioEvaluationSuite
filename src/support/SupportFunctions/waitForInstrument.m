@@ -20,7 +20,7 @@ function waitForInstrument(app, Instrument)
 
     % Adjust the timeout duration as needed.
     timeout = 15; % seconds
-    polldelay = app.MeasurementDelayValueField.Value;
+    polldelay = app.PAMeasurementDelayValueField.Value;
     startTime = tic; 
 
     while true

@@ -142,7 +142,7 @@ function runPAMeasurement(app)
             pause(app.PAMeasurementDelayValueField.Value);
 
             % Measure RF and DC Power.
-            [RFOutputPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower);
+            [RFOutputPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
             
             % Apply de-embedding calibration based on user
             % selected calibration mode.
@@ -189,7 +189,8 @@ function runPAMeasurement(app)
 
         measurementEndTime = datetime('now');
         measurementDuration = measurementEndTime - measurementStartTime;
-        
+
+
         % Log measurement completion time to the user path.
         logMeasurementTime(app, 'PA', measurementStartTime, measurementEndTime, measurementDuration, totalMeasurements);
         
@@ -199,6 +200,9 @@ function runPAMeasurement(app)
         
         % Disable the channels.
         enablePSUChannels(app, app.FilledPSUChannels, false);
+        
+        % Set spectrum analyzer to continous trigger
+        writeline(app.SpectrumAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
 
         % Save table as a variable in the app
         % TEST IF NEEDED

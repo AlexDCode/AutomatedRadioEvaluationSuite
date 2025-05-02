@@ -1,4 +1,4 @@
-function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, inputRFPower)
+function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, inputRFPower, frequency)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % This function measures the output RF power, the DC drain power, and 
     % the DC gate power.
@@ -12,7 +12,7 @@ function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(
     %   app:           The application object containing the instruments 
     %                  and the settings.
     %   inputRFPower:  The input RF power to the signal generator (in dB).
-    %
+    %   frequency:     The test frequency
     % OUTPUT PARAMETERS
     %   OutputRFPower: The maximum output RF power in (dB).
     %   DCDrainPower:  The DC power delivered to the drain in (watts).
@@ -34,12 +34,23 @@ function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(
     writeline(app.SpectrumAnalyzer, '*WAI');
     waitForInstrument(app, app.SpectrumAnalyzer); 
 
+    % Get center frequency, span, and sweep points to select measured frequency index 
+    fc = double(writeread(app.SpectrumAnalyzer, sprintf(':FREQ:RF:CENT?')));
+
+    span = double(writeread(app.SpectrumAnalyzer, sprintf(':FREQ:SPAN?')));
+
+    N = double(writeread(app.SpectrumAnalyzer, sprintf(':SWE:POIN?')));
+
+    freqs = (linspace(fc - span/2, fc + span/2, N))';
+    
     % Fetch the trace data.
     writeline(app.SpectrumAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe1'));
     trace_data = readbinblock(app.SpectrumAnalyzer, 'double');
 
+    data = array2table([freqs,trace_data'],'VariableNames',{'Freq','Pout'});
+    
     % Measure the maximum output power.
-    OutputRFPower = max(trace_data);
+    OutputRFPower = data(data.Freq==frequency,:).Pout;
 
     % Clear the status register of the spectrum analyzer.
     writeline(app.SpectrumAnalyzer, '*CLS');
