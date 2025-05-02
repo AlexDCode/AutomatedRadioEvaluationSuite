@@ -1,4 +1,4 @@
-# Power Amplifier Functions
+# Antenna Functions
 
 ---
 
