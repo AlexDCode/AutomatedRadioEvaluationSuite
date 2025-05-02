@@ -25,5 +25,9 @@ function [Gain, DE, PAE] = measureRFParameters(inputRFPower, outputRFPower, DCDr
     % Calculate the DE and the PAE.
     DE = (outputRFPowerW ./ DCDrainPower) * 100;
     PAE = ((outputRFPowerW - inputRFPowerW) ./ DCDrainPower) * 100;
+
+    % Remove negative efficiencies as they occur when the PA is off (Class C)
+    DE(DE<0) = NaN;
+    PAE(PAE<0) = NaN;
 end
 
