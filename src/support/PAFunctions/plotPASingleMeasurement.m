@@ -1,26 +1,23 @@
 function plotPASingleMeasurement(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function plots gain, drain efficiency (DE), and 
-    % power-added efficiency (PAE) versus RF output power for a single 
-    % frequency measurement. Also overlays peak values such as Psat, 
-    % -1 dB and -3 dB compression points.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for
+    % a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points.
+    % This function generates a dual y-axis plot with the left Y-axis having overlaid markers:
+    %   - Right Y-axis: DE and PAE (%)
+    %   - Left Y-axis: Gain (dB) 
+    %   - - Green X: Psat (saturation output power)
+    %   - - Red X:   -1 dB and -3 dB gain compression points
     %
-    % INPUT PARAMETERS:
-    %   app:  Application object containing PA measurement data, 
-    %         user-selected frequency, supply voltages, and plotting 
-    %         handles.
+    % INPUT:
+    %   app   - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
     %
-    % The function automatically filters the data for the selected 
-    % frequency and voltage settings, and generates a dual y-axis plot:
-    %   - Left Y-axis: Gain [dB]
-    %   - Right Y-axis: DE and PAE [%]
-    %
-    % Overlaid Markers:
-    %   - Green X: Psat (saturation output power)
-    %   - Red X:   -1 dB and -3 dB gain compression points
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    cla(app.SingleFrequencyPAPlot,"reset");
+    ax = app.SingleFrequencyPAPlot;
+    cla(ax, "reset");
     clear legendEntries legendHandles;
     
     % Index the plot for the selected supply voltages.
@@ -30,62 +27,58 @@ function plotPASingleMeasurement(app)
         idx = idx & idx_i;
     end
 
-
     idx_freq = (app.PA_DataTable.FrequencyMHz == str2double(app.FrequencySingleDropDown.Value));
     idx = idx & idx_freq;
 
-    % Plot Gain on the left y-axis.
-    yyaxis(app.SingleFrequencyPAPlot, 'left');
-    h1 = plot(app.SingleFrequencyPAPlot, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).Gain, 'k-');
-    hold(app.SingleFrequencyPAPlot, 'on');
-    grid(app.SingleFrequencyPAPlot, 'on');
-    ylabel(app.SingleFrequencyPAPlot, 'Gain (dB)', 'FontWeight', 'bold');
+    % Shared plot settings.
+    title(ax, 'PA Performance Metrics', 'FontWeight', 'bold');
+    xlabel(ax, 'Output Power (dBm)', 'FontWeight', 'bold');
+    grid(ax, 'on');
     
     % Plot DE and PAE on the right y-axis.
-    yyaxis(app.SingleFrequencyPAPlot, 'right');
-    h2 = plot(app.SingleFrequencyPAPlot, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).DE, 'b-');
-    h3 = plot(app.SingleFrequencyPAPlot, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).PAE, 'r--');
-    ylabel(app.SingleFrequencyPAPlot, 'Efficiency (%)', 'FontWeight', 'bold');
-    xlabel(app.SingleFrequencyPAPlot, 'Output Power (dBm)', 'FontWeight', 'bold');
-    title(app.SingleFrequencyPAPlot, 'PA Performance Metrics', 'FontWeight', 'bold');
-
-    legendEntries = {'Gain', 'DE', 'PAE'};
-    legendHandles = [h1, h2, h3];
+    yyaxis(ax, 'right');
+    h1 = plot(ax, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).DE, 'b-');
+    hold(ax, 'on');
+    h2 = plot(ax, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).PAE, 'r--');
+    ylabel(ax, 'Efficiency (%)', 'FontWeight', 'bold');
 
     % Plot Gain on the left y-axis.
-    yyaxis(app.SingleFrequencyPAPlot, 'left');
+    yyaxis(ax, 'left');
+    h3 = plot(ax, app.PA_DataTable(idx,:).RFOutputPowerdBm, app.PA_DataTable(idx,:).Gain, 'k-');
+    ylabel(ax, 'Gain (dB)', 'FontWeight', 'bold');
+
+    % Initialize legend entries.
+    legendEntries = {'DE', 'PAE', 'Gain'};
+    legendHandles = [h1, h2, h3];
     
-    % Getting the peak values.
+    % Get the peak values.
     [Psat, ~, ~, ~, compression1dB, compression3dB] = measureRFParametersPeaks(app,idx);
 
-    % Plot Psat and compression points.
-    for i = 1:height(Psat)      
-        h4 = plot(app.SingleFrequencyPAPlot, Psat(i,:).RFOutputPowerdBm, Psat(i,:).Gain, ...
-          'gx', 'MarkerSize', 8, 'LineWidth', 2); % Green circle marker
-        legendHandles(end+1) = h4;
-        legendEntries{end+1} = 'P_{sat}';
-    end
-    for i = 1:height(compression1dB)           
-        h5 = plot(app.SingleFrequencyPAPlot, compression1dB(i,:).RFOutputPowerdBm,  compression1dB(i,:).Gain, ...
-          'rx', 'MarkerSize', 8, 'LineWidth', 2); % Green circle marker
-        legendHandles(end+1) = h5;
-        legendEntries{end+1} = 'P_{-1 dB}';
-    end
-    for i = 1:height(compression3dB)           
-        h6 = plot(app.SingleFrequencyPAPlot, compression3dB(i,:).RFOutputPowerdBm,  compression3dB(i,:).Gain, ...
-          'rx', 'MarkerSize', 8, 'LineWidth', 2); % Green circle marker
-        legendHandles(end+1) = h6;
-        legendEntries{end+1} = 'P_{-3 dB}';
-    end
+    % Plot Psat as a green X.
+    plotPeakMarkers(ax, Psat, 'gx', 'P_{sat}', legendHandles, legendEntries);
+    % Plot -1dB point as a red X.
+    plotPeakMarkers(ax, compression1dB, 'rx', 'P_{-1 dB}', legendHandles, legendEntries);
+    % Plot -3dB point as a blue X.
+    plotPeakMarkers(ax, compression3dB, 'bx', 'P_{-3 dB}', legendHandles, legendEntries);
 
-    axis(app.SingleFrequencyPAPlot,'tight')
-    improveAxesAppearance(app.SingleFrequencyPAPlot, 'YYAxis', true, 'LineThickness', 2);
+    % Tighten and improve the axes appearance.
+    axis(ax,'tight')
+    improveAxesAppearance(ax, 'YYAxis', true, 'LineThickness', 2);
 
     if numel(legendHandles) == numel(legendEntries)
-        lgd = legend(app.SingleFrequencyPAPlot, legendHandles, legendEntries, 'Location', 'west');
+        lgd = legend(ax, legendHandles, legendEntries, 'Location', 'west');
         lgd.Box = 'on';
         lgd.FontSize = 12;
     else
         error('Mismatch between legend handles and entries.');
+    end
+end
+
+% Helper function to plot peak markers (Psat, compression points).
+function plotPeakMarkers(ax, peakData, markerStyle, label, legendHandles, legendEntries)
+    for i = 1:height(peakData)
+        h = plot(ax, peakData(i,:).RFOutputPowerdBm, peakData(i,:).Gain, markerStyle, 'MarkerSize', 8, 'LineWidth', 2);
+        legendHandles(end+1) = h; %#ok<AGROW>
+        legendEntries{end+1} = label; %#ok<AGROW>
     end
 end
