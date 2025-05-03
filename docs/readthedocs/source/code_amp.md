@@ -92,10 +92,7 @@ This function de-embeds Power Amplifier (PA) measurements by removing the effect
 
 **Description:**
 
-This function enables or disables the specified channels on two power supply units (PSU A and PSU B) based on the provided state (1 for enabling, 0 for disabling). Channels are grouped by PSU (PSU A or PSU B) and then enabled or disabled accordingly. The order in which the channels are processed depends on the state: gate biases are controlled before drain supplies when enabling, and drain supplies are turned off before gate biases when disabling. Examples:
-
-- enablePSUChannels(app, {'CH1', 'CH2'}, 1); Enable channels CH1 and CH2.
-- enablePSUChannels(app, {'CH1'}, 0);        Disable channel CH1.
+This function enables or disables the specified channels on two power supply units (PSU A and PSU B) based on the provided state (1 for enabling, 0 for disabling). Channels are grouped by PSU (PSU A or PSU B) and then enabled or disabled accordingly. The order in which the channels are processed depends on the state: gate biases are controlled before drain supplies when enabling, and drain supplies are turned off before gate biases when disabling.
 
 ```{admonition} Input Parameters
 :class: tip
