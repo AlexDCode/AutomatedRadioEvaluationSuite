@@ -29,16 +29,16 @@ This function generates a table of all possible combinations of θ and φ angles
 
 This function initializes and preallocates a results table for storing antenna test measurements. The results table is designed to hold various antenna parameters for a given number of measurements. It contains the following columns:
 
-- Theta (deg): The theta angle in degrees.
-- Phi (deg): The phi angle in degrees.
-- Frequency (MHz): The frequency in MHz.
-- Gain (dBi): The gain in decibels isotropic (dBi).
-- Return Loss (dB): The return loss in decibels.
-- Return Loss (deg): The return loss in degrees.
-- Return Loss Reference (dB): The reference return loss in decibels.
-- Return Loss Reference (deg): The reference return loss in degrees.
-- Path Loss (dB): The path loss in decibels.
-- Path Loss (deg): The path loss in degrees.
+- Theta (deg)
+- Phi (deg)
+- Frequency (MHz)
+- Gain (dBi)
+- Return Loss (dB)
+- Return Loss (deg)
+- Return Loss Reference (dB)
+- Return Loss Reference (deg)
+- Path Loss (dB)
+- Path Loss (deg)
 
 ```{admonition} Input Parameters
 :class: tip
@@ -60,7 +60,7 @@ This function initializes and preallocates a results table for storing antenna t
 This function calculates the gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input test frequency, S-parameters, and the spacing between the antennas. The function calculates the antenna gain using one of two methods:
 
 - **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by interpolating the reference gain at the test frequencies.
-- **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
+- **Two Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
 
 ```{admonition} Input Parameters
 :class: tip
@@ -86,7 +86,7 @@ This function calculates the gain of a test antenna in decibels relative to an i
 This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
 
 - **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
-- **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
+- **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S Parameters and calculates the magnitude and phase from the complex data.
 
 ```{admonition} Input Parameters
 :class: tip
@@ -135,7 +135,7 @@ This function generates and displays several 2D plots related to antenna measure
 This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, phi, and gain values in the application UI. The function:
 
 - Extracts the antenna gain data for the specified frequency.
-- Ensures consistency in angle data (handling edge cases like -180 and 180 degrees).
+- Ensures consistency in angle data.
 - Creates and displays the 3D radiation pattern plot.
 - Displays appropriate error or warning messages if data is inconsistent or invalid.
 
