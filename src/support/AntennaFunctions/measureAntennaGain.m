@@ -6,7 +6,7 @@ function antennaGain = measureAntennaGain(TestFrequency, sParameter_dB, Spacing,
     % The function calculates the antenna gain using one of two methods:
     %
     %   - **Comparison Antenna Method**: If reference gain and frequency values are provided, the antenna gain is calculated by interpolating the reference gain at the test frequencies.
-    %   - **Two-Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
+    %   - **Two Antenna Method**: If no reference data is provided, the function assumes the test antennas are identical.
     %
     % INPUT:
     %   TestFrequency   - A scalar or vector of frequency values in Hz at which the antenna gain is measured.

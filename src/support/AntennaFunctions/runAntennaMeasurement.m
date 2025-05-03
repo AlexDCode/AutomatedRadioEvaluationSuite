@@ -14,7 +14,7 @@ function runAntennaMeasurement(app)
     %   app - Application object that holds hardware interfaces, user settings, UI elements, and measurement parameters.
     %
     % OUTPUT:
-    %   None
+    %   None  (Results are saved to the user's machine and updated in the application UI).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables from the application.

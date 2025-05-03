@@ -1,50 +1,36 @@
 function runPAMeasurement(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function executes a full RF power amplifier (PA) measurement 
-    % sweep across defined power levels and frequencies, including:
-    %   - Instrument control (PSU, Signal Generator, Signal Analyzer)
-    %   - Calibration/de-embedding
-    %   - Data acquisition and processing
-    %   - PA figures of merit calculation
-    %   - Real-time progress monitoring and visualization
+    % DESCRIPTION:
+    % This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely
+    % turned off, and the error message is displayed in the app and logged to the user path. The function process 
+    % includes:
     %
-    % INPUT PARAMETERS:
-    %   app:  Application object containing hardware interfaces, 
-    %         user-defined settings, and UI components.
+    %   - Generating test parameter combinations and initializing the output results table.
+    %   - Configuring the signal analyzer and initializing the measurement loop.
+    %   - For each test point:
+    %     -- Sets frequency and signal levels
+    %     -- Configures PSU voltages and currents
+    %     -- Measures RF output power and DC power
+    %     -- Applies calibration factors (de-embedding)
+    %     -- Calculates Gain, DE (Drain Efficiency), and PAE (Power Added Efficiency)
+    %     -- Stores results in a structured table
+    %   - Providing a progress UI dialog with estimated time updates.
+    %   - Saving the results and loading them back into the application.
     %
-    % PROCESS OVERVIEW:
-    %   1. Generates test parameter combinations and initializes the 
-    %      results table.
-    %   2. Configures the spectrum analyzer and initializes the measurement
-    %      loop.
-    %   3. For each test point:
-    %       - Sets frequency and signal level
-    %       - Configures PSU voltages and currents
-    %       - Measures RF output power and DC power
-    %       - Applies calibration factors (de-embedding)
-    %       - Calculates Gain, DE (Drain Efficiency), and 
-    %         PAE (Power Added Efficiency)
-    %       - Stores results in a structured table
-    %   4. Provides a progress UI with estimated time updates.
-    %   5. Saves the results and loads them back into the application.
+    % INPUT:
+    %   app  - Application object containing hardware interfaces, user settings, and UI components.
     %
-    % OUTPUT PARAMETERS
-    %   None
-    %
-    % ERROR HANDLING:
-    %   In case of an exception, instruments are safely turned off and 
-    %   the error is displayed via the application interface.
+    % OUTPUT:
+    %   None   (Results are saved to the user's machine and updated in the application UI).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     try
-        % Create the PA test parameters table.
+        % Initialize tables for parameters and results.
         parametersTable = createPAParametersTable(app);
         totalMeasurements = height(parametersTable);
-
-        % Creates the PA test results table.
         resultsTable = createPAResultsTable(app, totalMeasurements);
         
-        % Configure the spectrum analyzer.
+        % Configure the signal analyzer settings.
         writeline(app.SpectrumAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
         writeline(app.SpectrumAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
         writeline(app.SpectrumAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));

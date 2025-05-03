@@ -1,4 +1,4 @@
-function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
+function extract_docs(folderPath, outFilename, headerStr, excludedFolders)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to 
@@ -10,7 +10,7 @@ function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
     %
     % INPUT:
     %   folderPath      - Path to folder containing .m files (recursively searched)
-    %   outputFilename  - Path to output .md file
+    %   outFilename     - Path to output .md file
     %   headerStr       - (Optional) Header/title for the generated Markdown file
     %   excludedFolders - (Optional) Cell array of subfolders to exclude (by name)
     %
@@ -19,7 +19,7 @@ function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if nargin < 1, folderPath = pwd; end
-    if nargin < 2, outputFilename = 'documentation.md'; end
+    if nargin < 2, outFilename = 'documentation.md'; end
     if nargin < 3, headerStr = 'Function Documentation'; end
     if nargin < 4, excludedFolders = {}; end
 
@@ -27,9 +27,9 @@ function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
     files = dir(fullfile(folderPath, '**', '*.m'));
 
     % Open output file.
-    fid_out = fopen(outputFilename, 'w');
+    fid_out = fopen(outFilename, 'w');
     if fid_out == -1
-        error('Failed to open output file: %s', outputFilename);
+        error('Failed to open output file: %s', outFilename);
     end
 
     fprintf(fid_out, '# %s\n\n', headerStr);
@@ -131,7 +131,7 @@ function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
     end
 
     fclose(fid_out);
-    fprintf('Documentation saved to: %s\n', outputFilename);
+    fprintf('Documentation saved to: %s\n', outFilename);
 end
 
 function out = formatAsBullets(lines)

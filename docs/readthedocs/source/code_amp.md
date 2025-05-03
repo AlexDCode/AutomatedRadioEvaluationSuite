@@ -274,7 +274,7 @@ This function performs a full RF Power Amplifier (PA) measurement sweep. On erro
   - Applies calibration factors (de-embedding)
   - Calculates Gain, DE (Drain Efficiency), and PAE (Power Added Efficiency)
   - Stores results in a structured table
-- Providing a progress UI with estimated time updates.
+- Providing a progress UI dialog with estimated time updates.
 - Saving the results and loading them back into the application.
 
 ```{admonition} Input Parameters
@@ -284,7 +284,7 @@ This function performs a full RF Power Amplifier (PA) measurement sweep. On erro
 
 ```{admonition} Output Parameters
 :class: tip
-- None   (Results are saved in a file and updated in the application UI).
+- None   (Results are saved to the user's machine and updated in the application UI).
 ```
 
 ---

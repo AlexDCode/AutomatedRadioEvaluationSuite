@@ -5,7 +5,7 @@ function [sParamdB, sParamPhase, freqValues] = measureSParameters(VNA, smoothing
     % Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
     %
     %   - **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
-    %   - **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S-parameters and calculates the magnitude and phase from the complex data.
+    %   - **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S Parameters and calculates the magnitude and phase from the complex data.
     %
     % INPUT:
     %   VNA                 - The instrument object for the VNA, used for communication and measurement control.

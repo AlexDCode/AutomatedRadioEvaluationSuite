@@ -192,7 +192,7 @@ This function executes a 2D antenna gain measurement sweep using a dual-axis pos
 
 ```{admonition} Output Parameters
 :class: tip
-- None
+- None  (Results are saved to the user's machine and updated in the application UI).
 ```
 
 ---

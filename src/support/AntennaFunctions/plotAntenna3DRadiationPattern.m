@@ -6,7 +6,7 @@ function plotAntenna3DRadiationPattern(app)
     % phi, and gain values in the application UI. The function:
     % 
     %   - Extracts the antenna gain data for the specified frequency.
-    %   - Ensures consistency in angle data (handling edge cases like -180 and 180 degrees).
+    %   - Ensures consistency in angle data.
     %   - Creates and displays the 3D radiation pattern plot.
     %   - Displays appropriate error or warning messages if data is inconsistent or invalid.
     %
