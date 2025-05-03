@@ -53,13 +53,14 @@ Extracts documentation from .m files within a given folder and writes it to a Ma
 
 ```{admonition} Input Parameters
 :class: tip
-- folder_path      - Path to folder containing .m files (recursively searched)
+- folderPath      - Path to folder containing .m files (recursively searched)
+- outFilename     - Path to output .md file
+- headerStr       - (Optional) Header/title for the generated Markdown file
+- excludedFolders - (Optional) Cell array of subfolders to exclude (by name)
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- headerStr        - Header/title for the generated Markdown file
-- excludedFolders  - (Optional) Cell array of subfolders to exclude (by name)
 - None
 ```
 
