@@ -82,15 +82,15 @@ Many instruments share a basic set of SCPI commands, regardless of vendor or typ
 
 ### Sample SCPI Commands for Antenna Measurement Instruments
 
-|**Instrument** |**Command / Query**   |**SCPI String**                 | **Input Parameter**                               |
-|---------------|----------------------|--------------------------------|---------------------------------------------------|
-| VNA           | Start frequency      | `:SENS<cnum>:FREQ:START <num>` | Number between the MIN and MAX frequency limits.  |
-| VNA           | Stop frequency       | `:SENS<cnum>:FREQ:STOP <num>`  | Number between 70 (MIN) and MAX frequency limits. |
-| VNA           | Sweep points         | `:SENS<cnum>:SWE:POIN <num>`   | Number between 1 and maximum number of points.    |
-| VNA           | Sweep mode           | `:SENS<cnum>:SWE:MODE <char>`  | **HOLD**, **CONTinuos**, **SINGle**               |
-| VNA           | Data smoothing       | `:CALC<cnum>:SMO:STAT <state>` | **ON**, **OFF**,                                  |
-| VNA           | Smoothing percentage | `:CALC<cnum>:SMO:APER <num>`   | Number between 1 and 25                           |
-| EM Center     | Set speed            | `1<slot-letter>:SPEED <speed>` |                                                   |
-| EM Center     | Seek angle           | `1<slot-letter>:SK <angle>`    |                                                   |
+|**Instrument** |**Command / Query**   |**SCPI String**                 | **Input Parameter**                                        |
+|---------------|----------------------|--------------------------------|------------------------------------------------------------|
+| VNA           | Start frequency      | `:SENS<cnum>:FREQ:START <num>` | Number between the MIN and MAX frequency limits.           |
+| VNA           | Stop frequency       | `:SENS<cnum>:FREQ:STOP <num>`  | Number between 70 (VNA specific) and MAX frequency limits. |
+| VNA           | Sweep points         | `:SENS<cnum>:SWE:POIN <num>`   | Number between 1 and maximum number of supported points.   |
+| VNA           | Sweep mode           | `:SENS<cnum>:SWE:MODE <char>`  | HOLD, CONTinuos, SINGle                                    |
+| VNA           | Data smoothing       | `:CALC<cnum>:SMO:STAT <state>` | ON or OFF (Alternatively 1 or 0)                           |
+| VNA           | Smoothing percentage | `:CALC<cnum>:SMO:APER <num>`   | Number between 1 and 25                                    |
+| EM Center     | Set speed            | `1<slot-letter>:SPEED <speed>` |                                                            |
+| EM Center     | Seek angle           | `1<slot-letter>:SK <angle>`    |                                                            |
 
 For the Vector Network Analyzer (VNA), `cnum` is the channel number which defaults to one if not specified, `mnum` is the measurement number, and `mname` is the name of the measurement. For the EM Center which controls the anechoic chamber, the tower and table are in slot one, however the table is in letter A, and the tower is in letter B.
