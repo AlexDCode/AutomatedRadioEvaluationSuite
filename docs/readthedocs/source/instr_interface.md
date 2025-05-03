@@ -1,53 +1,67 @@
 # Instrument Interfacing
 
+This guide explains how the Automated Radio Evaluation Suite (ARES) communicates with lab instruments using standard APIs and SCPI commands. Whether you're measuring power amplifier (PA) performance or characterizing antennas, this section helps you interface with your instruments through MATLAB using VISA libraries.
 
-## VISA Library
+---
 
-Virtual Instrument Standard Architecture (VISA) is a test & measurement industry standard communication API (Application Programming Interface) for use with test and measurement devices regardless of their communication protocol (i.e., LAN, USB, GPIB, etc.). The VISA libraries are the communication drivers that allow ARES to control the instruments using Standard Commands for Programmable Instruments (SCPI). Read more about the neccesary software in [MATLAB: Get Started with VISA](https://www.mathworks.com/help//releases/R2021a/instrument/visa-overview.html).
+## VISA Library Overview
 
-## SCPI Strings
+**Virtual Instrument Standard Architecture (VISA)** is a test & measurement industry standard communication API (Application Programming Interface) for use with test and measurement devices regardless of their communication protocol (i.e., LAN, USB, GPIB, etc.). The VISA libraries are the communication drivers that allow ARES to control the instruments using Standard Commands for Programmable Instruments (SCPI). ARES uses the **VISAdev** interface, introduced in MATLAB R2021a. VISAdev replaces the older VISA interface and provides better integration with modern instrument drivers. 
+Read more about the necessary software in [MATLAB: Get Started with VISA](https://www.mathworks.com/help//releases/R2021a/instrument/visa-overview.html).
 
-SCPI is a text-based command language used to control instruments and provides a common language to simplify the interface between devices and instruments mirrowing the intrument physical inputs and utilities. Since SCPI is hardware independent, SCPI strings can be sent over any interface that supports it. [Keysight Command Expert](https://www.keysight.com/find/commandexpert) allows to search the neccesary SCPI strings interactively and provides seamless integrations with different VISA libraries. There are two types of SCPI strings:
+## SCPI Command Basics
+
+**Standard Commands for Programmable Instruments (SCPI)** are text-based commands used to configure and query instruments. These commands are device-independent and can be used over any supported communication interface.
+
+[Keysight Command Expert](https://www.keysight.com/find/commandexpert) allows searching the necessary SCPI strings interactively and provides seamless integrations with different VISA libraries.
+
+Command Types
+ There are two types of SCPI strings:
 
 * **Command String:** `:KEY <parameter>`
 * **Query String:** `:KEY?`
 
-Command strings are reserved for writing only while Query strings are reserved for reading data back from the instrument. The `KEY` represents the name of the instrument feature to adjust while < parameter > is the value to be sent to the instrument. Complex SCPI strings can be made y combining several KEYs and parameters into one string, i.e. `:KEY1:KEY2:KEY3? <parameter 1> <parameter 2>`.
+Command strings are reserved for writing only, while query strings are reserved for reading data back from the instrument. The `KEY` represents the name of the instrument feature to adjust, while '<parameter>' is the value to be sent to the instrument. Complex SCPI strings can be made by combining several KEYs and parameters into one string. You can chain multiple levels of control using colons, i.e., `:KEY1:KEY2:KEY3 <parameter 1> <parameter 2>`.
 
-### Transitioning Code from VISA Interface to VISAdev Interface
+### Transitioning from VISA Interface to VISAdev Interface
 
-Command Expert references the original library but ARES uses the newer version, VISAdev, compatible only with MATLAB R2021a and newer. The following table lists the equivalent commands for each implementation.
+ARES uses the **`visadev`** interface instead of the older `visa` object. Here's a summary of equivalent MATLAB commands:
 
-|**VISA Interface**|**VISAdev Interface**  |**Purpose**                     |
-|----------------- |-----------------------|--------------------------------|
-| `visa()`         | `visadev()`           | Connect the instrument         |
-| `fprintf()`      | `writeline()`         | Write to the instrument        |
-| `fscanf()`       | `readline()`          | Read from the instrument       |
-| `query()`        | `writeread()`         | Write and read at the same time|
-| `binblockread()` | `readbinblock()`      | Read binblock data             |
-| `clrdevice()`    | `flush()`             | Flush data from memory         |
-| `fclose()`       | `delete()` & `clear()`| Disconnect the instrument      |
+|**VISA Interface**|**VISAdev Interface**  |**Purpose**                         |
+|----------------- |-----------------------|------------------------------------|
+| `visa()`         | `visadev()`           | Connect to an instrument           |
+| `fprintf()`      | `writeline()`         | Send a command                     |
+| `fscanf()`       | `readline()`          | Read a response                    |
+| `query()`        | `writeread()`         | Send a query and read the response |
+| `binblockread()` | `readbinblock()`      | Read binary data blocks            |
+| `clrdevice()`    | `flush()`             | Flush I/O data buffers             |
+| `fclose()`       | `clear()`             | Disconnect the instrument object   |
 
 
 ### Common SCPI Strings Across Instruments
 
-All instruments which adhere to the VISA standards share a small subset of SCPI strings. This subset can be found in all instruments and are employed in the application for distinct reasons discussed in the table below. In contrast to standard SCPI strings, they have a different form, `*KEY and *KEY?`.
+Many instruments share a basic set of SCPI commands, regardless of vendor or type. These are especially helpful for setup, synchronization, and debugging. 
 
+|**Type**                   |**SCPI Command/Query**  |**Purpose**                                 |**When to Use**                                                                          |
+|---------------------------|------------------------|--------------------------------------------|-----------------------------------------------------------------------------------------|
+| Identification Instrument | `*IDN?`                | Returns instrument model and info.         | Verify the instrument after connecting.                                                 |
+| Reset to Default State    | `*RST`                 | Resets instrument to factory defaults.     | Use at the start of the session unless your instrument uses a preconfigured environment.|
+| Clear Status Register     | `*CLS`                 | Clears error and communication flags.      | Prevent corrupted data in sweeps.                                                       |
+| Operation Complete        | `*OPC?`                | Queries if previous commands finished      | For command debugging.                                                                  |
+| Wait for Completion       | `*WAI`                 | Waits until prior operations are complete. | Improve speed/accuracy.                                                                 |
 
-|**Command / Query**       |**SCPI String**   |**Purpose**                                                     |**When To Use**                                        |
-|--------------------------|------------------|----------------------------------------------------------------|-------------------------------------------------------|
-| Identification Query     | `*IDN?`          | Returns a string that uniquely identifies the instrument.      | Verify instrument after connecting.                   |
-| Reset Command            | `*RST`           | Resets most instrument functions to factory-defined conditions.| Use after connecting unless preconfigured environment.|
-| Clear Status Command     | `*CLS`           | Clears the registers from the status byte.                     | Prevent compromised data in sweeps.                   |
-| Operation Complete Query | `*OPC?`          | Confirms all pending operations are finished.                  | Useful in debugging QUERY errors.                     |
-| Wait Command             | `*WAI`           | Blocks new commands until current ones complete.               | Less dynamic version of `*OPC?`.                      |
-| Data Format Commands     | `:FORM:BORD:SWAP`| Sets type and format for returned trace measurement data.      | Adjust endianness and data type for efficiency.       |
+### Sample SCPI Commands Across Both Measurement Instruments
 
-For the *Data Format Commands*, there are three types of data to be chosen. `REAL,32` is best for transferring substantial amounts of data. `REAL,64` is slower but has more significant digits than `REAL,32`. For these types use `readbinblock()`, because they transfer data in block format. The last one is ASCii,0 easiest to implement, but slow, used when you have small amounts of data to transfer.
+|**Type**           |**SCPI Command/Query** |**Purpose**                              |**When to Use**                               |
+| Set Byte Order    | `:FORM:BORD: SWAP`    | Configures Little-endian binary format. | Required by MATLAB for binary reads.         |
+| Set Byte Order    | `:FORM:BORD: NORM`    | Configures Big-endian binary format.    | Used in other environments (non-MATLAB).     |
+| Query Byte Order  | `:FORM:BORD?`         | Queries current byte order.             | Verifying before reading binary data.        |
+| Set Data Format   | `:FORM:DATA ASCii,0`  | Sets ASCII data format.                 | Useful for debugging, not efficient.         |
+| Set Data Format   | `:FORM:DATA REAL,32`  | Sets 32-bit real binary format.         | Faster transfer, sufficient for most tasks.  |
+| Set Data Format   | `:FORM:DATA REAL,64`  | Sets 64-bit real binary format.         | Highest precision, use for double-precision. |
+| Query Data Format | `:FORM:DATA?`         | Queries current data format.            | Verifying before reading trace/sample data.  |
 
-### Specific SCPI Strings Across PA Instruments
-
-This set of SCPI strings are used to control the instrument relevant for the PA measurement module.
+### Sample SCPI Commands for PA Measurement Instruments
 
 |**Instrument**    |**Command / Query** |**SCPI String**                     |
 |------------------|--------------------|------------------------------------|
@@ -56,9 +70,7 @@ This set of SCPI strings are used to control the instrument relevant for the PA 
 | Signal Generator | Set frequency      | `:SOUR:FREQ:CW <frequency>`        |
 | Spectrum Analyzer| Set span           | `:SENS:FREQ:SPAN <span>`           |
 
-### Specific SCPI Strings Across Antenna Instruments
-
-This set of SCPI strings are used to control the instrument relevant for the Antenna measurement module.
+### Sample SCPI Commands for Antenna Measurement Instruments
 
 |**Instrument**          |**Command / Query** |**SCPI String**                     |
 |------------------------|--------------------|------------------------------------|
