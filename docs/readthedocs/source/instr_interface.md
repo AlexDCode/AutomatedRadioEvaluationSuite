@@ -93,4 +93,8 @@ Many instruments share a basic set of SCPI commands, regardless of vendor or typ
 | EM Center     | Set speed            | `1<slot-letter>:SPEED <speed>` |                                                            |
 | EM Center     | Seek angle           | `1<slot-letter>:SK <angle>`    |                                                            |
 
-For the Vector Network Analyzer (VNA), `cnum` is the channel number which defaults to one if not specified, `mnum` is the measurement number, and `mname` is the name of the measurement. For the EM Center which controls the anechoic chamber, the tower and table are in slot one, however the table is in letter A, and the tower is in letter B.
+For the Vector Network Analyzer (VNA):
+ - `cnum` is the channel number, which defaults to one if not specified.
+ - `mnum` is the measurement number, and `mname` is the name of the measurement.
+
+For the EM Center, which controls the anechoic chamber, the tower and table are in slot one; however, the table is in letter A, and the tower is in letter B.
