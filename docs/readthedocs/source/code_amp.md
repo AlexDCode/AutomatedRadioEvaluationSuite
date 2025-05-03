@@ -263,41 +263,28 @@ This function resets all power supply unit (PSU) channels to their default setti
 
 **Description:**
 
-This function executes a full RF power amplifier (PA) measurement sweep across defined power levels and frequencies, including:
+This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes:
 
-- Instrument control (PSU, Signal Generator, Signal Analyzer)
-- Calibration/deembedding
-- Data acquisition and processing
-- PA figures of merit calculation
-- Realtime progress monitoring and visualization
+- Generating test parameter combinations and initializing the output results table.
+- Configuring the signal analyzer and initializing the measurement loop.
+- For each test point:
+  - Sets frequency and signal levels
+  - Configures PSU voltages and currents
+  - Measures RF output power and DC power
+  - Applies calibration factors (de-embedding)
+  - Calculates Gain, DE (Drain Efficiency), and PAE (Power Added Efficiency)
+  - Stores results in a structured table
+- Providing a progress UI with estimated time updates.
+- Saving the results and loading them back into the application.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:  Application object containing hardware interfaces,
-- user-defined settings, and UI components.
-- PROCESS OVERVIEW:
-- 1. Generates test parameter combinations and initializes the
-- results table.
-- 2. Configures the spectrum analyzer and initializes the measurement
-- loop.
-- 3. For each test point:
-- Sets frequency and signal level
-- Configures PSU voltages and currents
-- Measures RF output power and DC power
-- Applies calibration factors (deembedding)
-- Calculates Gain, DE (Drain Efficiency), and
-- PAE (Power Added Efficiency)
-- Stores results in a structured table
-- 4. Provides a progress UI with estimated time updates.
-- 5. Saves the results and loads them back into the application.
+- app  - Application object containing hardware interfaces, user settings, and UI components.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- None
-- ERROR HANDLING:
-- In case of an exception, instruments are safely turned off and
-- the error is displayed via the application interface.
+- None   (Results are saved in a file and updated in the application UI).
 ```
 
 ---
