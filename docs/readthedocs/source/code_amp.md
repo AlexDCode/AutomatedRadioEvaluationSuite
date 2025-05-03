@@ -183,7 +183,8 @@ This function plots gain, drain efficiency (DE), and power-added efficiency (PAE
 
 - Left Yaxis: Gain (dB)
   - Green X: Psat (saturation output power)
-  - Red X:   -1 dB and -3 dB gain compression points
+  - Red X: -1 dB gain compression point
+  - Blue X: -3 dB gain compression point
 - Right Yaxis: DE and PAE (%)
 
 ```{admonition} Input Parameters
