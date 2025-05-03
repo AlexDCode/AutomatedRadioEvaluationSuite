@@ -23,19 +23,19 @@ Command Types
 
 Command strings are reserved for writing only, while query strings are reserved for reading data back from the instrument. The `KEY` represents the name of the instrument feature to adjust, while '<parameter>' is the value to be sent to the instrument. Complex SCPI strings can be made by combining several KEYs and parameters into one string. You can chain multiple levels of control using colons, i.e., `:KEY1:KEY2:KEY3 <parameter 1> <parameter 2>`.
 
-### Transitioning from VISA Interface to VISAdev Interface
+### Transitioning from VISA to VISAdev
 
-ARES uses the **`visadev`** interface instead of the older `visa` object. Here's a summary of equivalent MATLAB commands:
+ARES uses the `visadev` interface instead of the older `visa` interface. Here's a summary of equivalent MATLAB commands:
 
-|**VISA Interface**|**VISAdev Interface**  |**Purpose**                         |
-|----------------- |-----------------------|------------------------------------|
-| `visa()`         | `visadev()`           | Connect to an instrument           |
-| `fprintf()`      | `writeline()`         | Send a command                     |
-| `fscanf()`       | `readline()`          | Read a response                    |
-| `query()`        | `writeread()`         | Send a query and read the response |
-| `binblockread()` | `readbinblock()`      | Read binary data blocks            |
-| `clrdevice()`    | `flush()`             | Flush I/O data buffers             |
-| `fclose()`       | `clear()`             | Disconnect the instrument object   |
+|**VISA Interface**|**VISAdev Interface**  |**Purpose**                          |
+|----------------- |-----------------------|-------------------------------------|
+| `visa()`         | `visadev()`           | Connect to an instrument.           |
+| `fprintf()`      | `writeline()`         | Send a command.                     |
+| `fscanf()`       | `readline()`          | Read a response.                    |
+| `query()`        | `writeread()`         | Send a query and read the response. |
+| `binblockread()` | `readbinblock()`      | Read binary data blocks.            |
+| `clrdevice()`    | `flush()`             | Flush I/O data buffers.             |
+| `fclose()`       | `clear()`             | Disconnect the instrument object.   |
 
 
 ### Common SCPI Strings Across Instruments
