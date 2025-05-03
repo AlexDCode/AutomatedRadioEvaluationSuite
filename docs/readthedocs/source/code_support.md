@@ -45,7 +45,11 @@ The function dBm2mag converts dBm to Watts (W).
 
 **Description:**
 
-Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows.
+Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows. Example usage:
+
+- extract_docs('./src/support/AntennaFunctions/', './docs/readthedocs/source/code_antenna.md', 'Antenna Functions')
+- extract_docs('./src/support/PAFunctions/', './docs/readthedocs/source/code_amp.md', 'Power Amplifier Functions')
+- extract_docs('./src/support/SupportFunctions/', './docs/readthedocs/source/code_support.md', 'Supporting Functions', {'matlab2tikz'})
 
 ```{admonition} Input Parameters
 :class: tip
@@ -56,9 +60,7 @@ Extracts documentation from .m files within a given folder and writes it to a Ma
 :class: tip
 - headerStr        - Header/title for the generated Markdown file
 - excludedFolders  - (Optional) Cell array of subfolders to exclude (by name)
-- EXAMPLES:
-- extract_docs('./src/support/AntennaFunctions/', 'docs/code_antenna.md', 'Antenna Functions')
-- extract_docs('./src/support/SupportFunctions/', 'docs/code_support.md', 'Support Functions', {'matlab2tikz'})
+- None
 ```
 
 ---
@@ -152,7 +154,7 @@ The function waits for a connected instrument to complete its current operation 
 
 - Starts a timer.
 - Continuously queries instrument status via '*OPC?'.
-- Waits between queries using app-defined delay.
+- Waits between queries using appdefined delay.
 - Exits if instrument reports ready (status == 1) or timeout is exceeded.
 
 ```{admonition} Input Parameters
