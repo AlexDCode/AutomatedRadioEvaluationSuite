@@ -154,31 +154,22 @@ This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Eff
 
 **Description:**
 
-This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including saturation power, peak gain, drain efficiency (DE), power-added efficiency (PAE), and
-
--1 dB and -3 dB compression points.
+This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including saturation power, peak gain, peak drain efficiency (DE), peak power-added efficiency (PAE), and -1 dB and -3 dB compression points.
 
 ```{admonition} Input Parameters
 :class: tip
-- app:            Application object containing the PA measurement
-- data table.
-- idx:            Logical or numeric index used to filter the rows
-- of the PA_DataTable for analysis.
+- app     - The application object containing the PA measurement data table.
+- idx     - Logical or numeric index used to filter the rows of the PA data table for analysis.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- Psat:            Table containing the maximum RF output power
-- (Psat) per frequency and corresponding gain.
-- peakGain:        Table of peak small-signal gain values per
-- frequency.
-- peakDE:          Table of maximum drain efficiency per frequency.
-- peakPAE:         Table of maximum power-added efficiency per
-- frequency.
-- compression1dB:  Table containing the -1 dB gain compression
-- points per frequency.
-- compression3dB:  Table containing the -3 dB gain compression
-- points per frequency.
+- Psat            - Table containing the maximum RF output power (Psat) per frequency and corresponding gain.
+- peakGain        - Table of peak small-signal gain values per frequency.
+- peakDE          - Table of maximum drain efficiency per frequency.
+- peakPAE         - Table of maximum power-added efficiency per frequency.
+- compression1dB  - Table containing the -1 dB gain compression points per frequency.
+- compression3dB  - Table containing the -3 dB gain compression points per frequency.
 ```
 
 ---
