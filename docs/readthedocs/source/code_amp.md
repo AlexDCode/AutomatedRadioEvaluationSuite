@@ -186,7 +186,7 @@ This function plots gain, drain efficiency (DE), and power-added efficiency (PAE
 
 ```{admonition} Input Parameters
 :class: tip
-- app   - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
+- app  - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
 ```
 
 ```{admonition} Output Parameters
@@ -201,22 +201,21 @@ This function plots gain, drain efficiency (DE), and power-added efficiency (PAE
 
 **Description:**
 
-This function plots performance metrics from a frequency sweep power amplifier (PA) measurement, including gain, saturation power, efficiency, and compression points.
+This function plots performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain, saturation power (Psat), efficiency (DE and PAE), and gain compression points (-1 dB, -3 dB). It filters the PA dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for clarity:
+
+- Gain vs. Output Power for each frequency
+- Peak Gain vs. Frequency
+- Peak Drain Efficiency (DE) and PowerAdded Efficiency (PAE) vs. Frequency
+- Psat, 1 dB, and 3 dB compression points vs. Frequency
 
 ```{admonition} Input Parameters
 :class: tip
-- app:   Application object containing PA measurement data and UI
-- plotting components.
-- This function filters the PA dataset based on user-selected supply
-- voltages, and generates four plots:
-- 1. Gain vs. Output Power for each frequency (GainvsOutputPowerPlot)
-- 2. Peak Gain vs. Frequency (PeakGainPlot)
-- 3. Peak Drain Efficiency (DE) and Power-Added Efficiency (PAE) vs.
-- Frequency (PeakDEPAEPlot)
-- 4. Psat and -1 dB / -3 dB compression points vs. Frequency
-- (CompressionPointsPlot)
-- Data points are highlighted with markers for easier interpretation.
-- All axes are styled for readability.
+- app  - Application object containing PA measurement data and plotting components.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
 ```
 
 ---

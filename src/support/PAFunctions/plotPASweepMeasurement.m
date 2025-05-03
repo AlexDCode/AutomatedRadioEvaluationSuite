@@ -1,34 +1,29 @@
 function plotPASweepMeasurement(app)
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    % This function plots performance metrics from a frequency 
-    % sweep power amplifier (PA) measurement, including gain, saturation 
-    % power, efficiency, and compression points.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function plots performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain,
+    % saturation power (Psat), efficiency (DE and PAE), and gain compression points (-1 dB, -3 dB). It filters the PA
+    % dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for 
+    % clarity:
     %
-    % INPUT PARAMETERS:
-    %   app:   Application object containing PA measurement data and UI 
-    %          plotting components.
+    %   - Gain vs. Output Power for each frequency
+    %   - Peak Gain vs. Frequency 
+    %   - Peak Drain Efficiency (DE) and Power-Added Efficiency (PAE) vs. Frequency 
+    %   - Psat, -1 dB, and -3 dB compression points vs. Frequency 
     %
-    % This function filters the PA dataset based on user-selected supply 
-    % voltages, and generates four plots:
+    % INPUT:
+    %   app  - Application object containing PA measurement data and plotting components.
     %
-    %   1. Gain vs. Output Power for each frequency (GainvsOutputPowerPlot)
-    %   2. Peak Gain vs. Frequency (PeakGainPlot)
-    %   3. Peak Drain Efficiency (DE) and Power-Added Efficiency (PAE) vs. 
-    %      Frequency (PeakDEPAEPlot)
-    %   4. Psat and -1 dB / -3 dB compression points vs. Frequency 
-    %      (CompressionPointsPlot)
-    %
-    % Data points are highlighted with markers for easier interpretation.
-    % All axes are styled for readability.
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % OUTPUT:
+    %   None
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Clear existing plots.
-    cla(app.GainvsOutputPowerPlot,"reset");
-    cla(app.PeakGainPlot,"reset");
-    cla(app.PeakDEPAEPlot,"reset");
-    cla(app.CompressionPointsPlot,"reset");
+    cla(app.GainvsOutputPowerPlot, "reset");
+    cla(app.PeakGainPlot, "reset");
+    cla(app.PeakDEPAEPlot, "reset");
+    cla(app.CompressionPointsPlot, "reset");
     clear legendEntries legendHandles;
-
 
     % Index the plot for the selected supply voltages.
     idx = true(height(app.PA_DataTable), 1);
@@ -83,32 +78,41 @@ function plotPASweepMeasurement(app)
     
     % Plot each metric if it has valid data.
     % Saturation Power
-    if height(Psat)>0
+    if height(Psat) > 0
         h1 = plot(app.CompressionPointsPlot, Psat.FrequencyMHz, Psat.RFOutputPowerdBm, '-o', 'Color', 'k');
         plotHandles = [plotHandles, h1];
-        legendLabels{end+1} = {'P_{sat}'};
+        legendLabels{end+1} = 'P_{sat}';
     end
     
     % -1dB Compression Point
     if height(compression1dB) > 0
-        h2 = plot(app.CompressionPointsPlot, compression1dB.FrequencyMHz, compression1dB.RFOutputPowerdBm, '-o', 'Color', 'r');
-        plotHandles = [plotHandles, h2];
-        legendLabels{end+1} = {'P_{-1dB}'};
+        % Filter out NaN values
+        valid1dB = ~isnan(compression1dB.RFOutputPowerdBm);
+        if any(valid1dB)
+            h2 = plot(app.CompressionPointsPlot, compression1dB.FrequencyMHz(valid1dB), compression1dB.RFOutputPowerdBm(valid1dB), '-o', 'Color', 'r');
+            plotHandles = [plotHandles, h2];
+            legendLabels{end+1} = 'P_{-1dB}';
+        end
     end
     
     % -3dB Compression Point
     if height(compression3dB) > 0
-        h3 = plot(app.CompressionPointsPlot, compression3dB.FrequencyMHz, compression3dB.RFOutputPowerdBm, '-o', 'Color', 'b');
-        plotHandles = [plotHandles, h3];
-        legendLabels{end+1} = {'P_{-3dB}'};
+        % Filter out NaN values
+        valid3dB = ~isnan(compression3dB.RFOutputPowerdBm);
+        if any(valid3dB)
+            h3 = plot(app.CompressionPointsPlot, compression3dB.FrequencyMHz(valid3dB), compression3dB.RFOutputPowerdBm(valid3dB), '-o', 'Color', 'b');
+            plotHandles = [plotHandles, h3];
+            legendLabels{end+1} = 'P_{-3dB}';
+        end
     end  
 
     title(app.CompressionPointsPlot, 'Saturation Power and Compression Points');
     xlabel(app.CompressionPointsPlot, 'Frequency (MHz)');
     ylabel(app.CompressionPointsPlot, 'Output Power (dBm)');
     hold(app.CompressionPointsPlot, 'off');
+
     if ~isempty(plotHandles)
-        legend(app.CompressionPointsPlot, plotHandles, string(legendLabels), 'Location', 'best');
+        legend(app.CompressionPointsPlot, plotHandles, legendLabels, 'Location', 'best');
     end
     
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.

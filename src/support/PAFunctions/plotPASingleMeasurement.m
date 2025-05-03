@@ -12,7 +12,7 @@ function plotPASingleMeasurement(app)
     %   - Right Y axis: DE and PAE (%)
     %
     % INPUT:
-    %   app   - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
+    %   app  - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
     %
     % OUTPUT:
     %   None
