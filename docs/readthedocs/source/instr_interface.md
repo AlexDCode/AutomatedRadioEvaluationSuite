@@ -53,6 +53,7 @@ Many instruments share a basic set of SCPI commands, regardless of vendor or typ
 ### Sample SCPI Commands Across Both Measurement Instruments
 
 |**Type**           |**SCPI Command/Query** |**Purpose**                              |**When to Use**                               |
+|-------------------|-----------------------|-----------------------------------------|----------------------------------------------|
 | Set Byte Order    | `:FORM:BORD: SWAP`    | Configures Little-endian binary format. | Required by MATLAB for binary reads.         |
 | Set Byte Order    | `:FORM:BORD: NORM`    | Configures Big-endian binary format.    | Used in other environments (non-MATLAB).     |
 | Query Byte Order  | `:FORM:BORD?`         | Queries current byte order.             | Verifying before reading binary data.        |
