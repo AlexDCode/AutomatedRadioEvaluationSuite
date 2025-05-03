@@ -181,11 +181,11 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points. This function generates a dual y-axis plot:
 
-- Left Yaxis: Gain (dB)
+- Left Y axis: Gain (dB)
   - Green X: Psat (saturation output power)
   - Red X: -1 dB gain compression point
   - Blue X: -3 dB gain compression point
-- Right Yaxis: DE and PAE (%)
+- Right Y axis: DE and PAE (%)
 
 ```{admonition} Input Parameters
 :class: tip
