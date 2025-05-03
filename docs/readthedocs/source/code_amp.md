@@ -69,7 +69,7 @@ This function de-embeds Power Amplifier (PA) measurements by removing the effect
 
 - **None**: No calibration is applied, and both input and output calibration factors are set to 0.
 - **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
-- **Small Signal**: Uses fixed attenuation values combined with interpolated S-parameters from the provided S-parameter file for both input and output.
+- **Small Signal**: Uses fixed attenuation values combined with interpolated Sparameters from the provided Sparameter file for both input and output.
 - **Small + Large Signal**: Same behavior as **Small Signal** but also integrates driver gain data. The driver gain is interpolated based on both the test frequency and RF input power, which is then subtracted from the input calibration factor.
 
 ```{admonition} Input Parameters
@@ -179,12 +179,12 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 **Description:**
 
-This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points. This function generates a dual y-axis plot with the left Y-axis having overlaid markers:
+This function plots gain, drain efficiency (DE), and power-added efficiency (PAE) versus RF output power for a single frequency measurement. Also overlays peak values such as Psat, -1 dB and -3 dB compression points. This function generates a dual y-axis plot:
 
-- Right Y-axis: DE and PAE (%)
-- Left Y-axis: Gain (dB)
-- Green X: Psat (saturation output power)
-- Red X:   -1 dB and -3 dB gain compression points
+- Left Yaxis: Gain (dB)
+  - Green X: Psat (saturation output power)
+  - Red X:   -1 dB and -3 dB gain compression points
+- Right Yaxis: DE and PAE (%)
 
 ```{admonition} Input Parameters
 :class: tip
@@ -269,10 +269,10 @@ This function resets all power supply unit (PSU) channels to their default setti
 This function executes a full RF power amplifier (PA) measurement sweep across defined power levels and frequencies, including:
 
 - Instrument control (PSU, Signal Generator, Signal Analyzer)
-- Calibration/de-embedding
+- Calibration/deembedding
 - Data acquisition and processing
 - PA figures of merit calculation
-- Real-time progress monitoring and visualization
+- Realtime progress monitoring and visualization
 
 ```{admonition} Input Parameters
 :class: tip
@@ -287,7 +287,7 @@ This function executes a full RF power amplifier (PA) measurement sweep across d
 - Sets frequency and signal level
 - Configures PSU voltages and currents
 - Measures RF output power and DC power
-- Applies calibration factors (de-embedding)
+- Applies calibration factors (deembedding)
 - Calculates Gain, DE (Drain Efficiency), and
 - PAE (Power Added Efficiency)
 - Stores results in a structured table
