@@ -39,7 +39,7 @@ function plotPASweepMeasurement(app)
 
     % 1) Plot Gain vs. Pout
     % Frequencies to iterate over.
-    freqs = unique(app.PA_DataTable(idx,"FrequencyMHz")); % Iterate by frequency
+    freqs = unique(app.PA_DataTable(idx, "FrequencyMHz"));
     hold(app.GainvsOutputPowerPlot, 'on'); 
 
     for i = 1:height(freqs)

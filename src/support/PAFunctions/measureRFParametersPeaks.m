@@ -18,48 +18,73 @@ function [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = mea
     %   compression3dB  - Table containing the -3 dB gain compression points per frequency.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Get the max output RF power per frequency.
-    Psat = groupsummary(app.PA_DataTable(idx,:),'FrequencyMHz','max','RFOutputPowerdBm');
-    Psat.GroupCount = zeros(height(Psat),1); % Reset column to be used for gain
-    Psat.Properties.VariableNames = {'FrequencyMHz','Gain','RFOutputPowerdBm'}; % Rename
-    Psat = Psat(:,{'FrequencyMHz','RFOutputPowerdBm','Gain'}); % Reorder
-    for i = 1:height(Psat)      
-        Psat_DataTable = app.PA_DataTable(idx,:);
-        idx_Psat = (Psat_DataTable.RFOutputPowerdBm == Psat.RFOutputPowerdBm(i));
-        Psat(i,"Gain") = array2table(Psat_DataTable(idx_Psat,:).Gain);
-    end
+    % Filtered PA data using the index.
+    PATable = app.PA_DataTable(idx, :);
 
-    % Get the max drain efficiency per frequency.
-    peakDE = groupsummary(app.PA_DataTable,'FrequencyMHz','max','DE');
-    peakDE.GroupCount = []; % Drop GroupCount column
-   
-    % Get the max power-added efficiency per frequency.
-    peakPAE = groupsummary(app.PA_DataTable,'FrequencyMHz','max','PAE');
-    peakPAE.GroupCount = []; % Drop GroupCount column
+    % Maximum RF Output Power (Psat) per frequency.
+    Psat = groupsummary(PATable, 'FrequencyMHz', 'max', 'RFOutputPowerdBm');
 
-    peakGain = groupsummary(app.PA_DataTable,'FrequencyMHz','max','Gain');
-    peakGain.GroupCount = []; % Drop GroupCount column
+    % Peak Gain, DE, and PAE per frequency.
+    peakGain = groupsummary(PATable, 'FrequencyMHz', 'max', 'Gain');
+    peakDE = groupsummary(PATable, 'FrequencyMHz', 'max', 'DE');
+    peakPAE = groupsummary(PATable, 'FrequencyMHz', 'max', 'PAE');
 
-    % Get the compression points
-    compression1dB = array2table(zeros(0,3),'VariableNames',[{'FrequencyMHz'},{'RFOutputPowerdBm'},{'Gain'}]);
-    compression3dB = compression1dB;
-    freqs = unique(app.PA_DataTable(idx,"FrequencyMHz")); % Iterate by frequency
-    for i = 1:height(freqs)
-        % Get temporary subtable for each frequency
-        freq_DataTable = app.PA_DataTable(idx,:);
-        freq_DataTable = freq_DataTable(freq_DataTable.FrequencyMHz == freqs.FrequencyMHz(i),:);
+    % maxPowerRows is a new table that has all columns from PATable, the
+    % max_RFOutputPowerdBm column from Psat, and keeps rows where the 
+    % FrequencyMHz matched between PATable and Psat.
+    maxPowerRows = join(PATable, Psat(:,{'FrequencyMHz','max_RFOutputPowerdBm'}), 'Keys', 'FrequencyMHz');
+    
+    % Filter maxPowerRows to keep rows where RF Output Power matches PSat
+    % for that frequency.
+    maxPowerRows = maxPowerRows(maxPowerRows.RFOutputPowerdBm == maxPowerRows.max_RFOutputPowerdBm, :);
+    
+    % Get max gain at those points.
+    gainAtMaxPower = groupsummary(maxPowerRows, 'FrequencyMHz', 'max', 'Gain');
+    
+    % Add gain information to Psat table and rename for clarity.
+    Psat = join(Psat, gainAtMaxPower(:,{'FrequencyMHz','max_Gain'}), 'Keys', 'FrequencyMHz');
+    Psat = renamevars(Psat, {'max_RFOutputPowerdBm', 'max_Gain'}, {'RFOutputPowerdBm', 'Gain'});
+
+    % Unique frequencies to iterate over.
+    uniqueFrequencies = unique(PATable.FrequencyMHz);
+    numFreqs = length(uniqueFrequencies);
+    
+    % Pre-allocate compression point tables.
+    compression1dB = array2table(zeros(numFreqs, 3), 'VariableNames', {'FrequencyMHz', 'RFOutputPowerdBm', 'Gain'});
+    compression3dB = array2table(zeros(numFreqs, 3), 'VariableNames', {'FrequencyMHz', 'RFOutputPowerdBm', 'Gain'});
+
+    for i = 1:numFreqs
+        currentFreq = uniqueFrequencies(i);
+
+        % Filter data for current frequency
+        FrequencyTable = PATable(PATable.FrequencyMHz == currentFreq, :);
         
-        % Select the peak gain corresponding to this frequency
-        peakGain_i = table2array(peakGain(peakGain.FrequencyMHz == freqs.FrequencyMHz(i,:),"max_Gain"));
+        % Sort by output power to ensure proper sequencing
+        FrequencyTable = sortrows(FrequencyTable, 'RFOutputPowerdBm');
 
-        % Get the compression points
-        compression1dB_i = freq_DataTable(freq_DataTable.Gain <= (peakGain_i - 1),["FrequencyMHz","RFOutputPowerdBm","Gain"]);
-        compression3dB_i = freq_DataTable(freq_DataTable.Gain <= (peakGain_i - 3),["FrequencyMHz","RFOutputPowerdBm","Gain"]);
-        if height(compression1dB_i) > 1
-            compression1dB(i,:) = compression1dB_i(1,:);
+        % Get the peak gain for the current frequency
+        currentPeakGain = peakGain.max_Gain(peakGain.FrequencyMHz == currentFreq);
+
+        % Find the power level where peak gain occurs
+        peakGainPower = max(FrequencyTable.RFOutputPowerdBm(FrequencyTable.Gain == currentPeakGain));
+
+        % Find the compression points after the peak gain power level
+        idxPostPeak = find(FrequencyTable.Gain <= (currentPeakGain - 1) & (FrequencyTable.RFOutputPowerdBm > peakGainPower));
+
+        % -1 dB compression
+        if ~isempty(idxPostPeak)
+            compression1dB(i, :) = {currentFreq, FrequencyTable.RFOutputPowerdBm(idxPostPeak(1)), FrequencyTable.Gain(idxPostPeak(1))};
+        else
+            compression1dB(i, :) = {currentFreq, NaN, NaN};
         end
-        if height(compression3dB_i) > 1
-            compression3dB(i,:) = compression3dB_i(1,:);
+
+        % -3 dB compression
+        idx_after_peak_3dB = find(FrequencyTable.Gain <= (currentPeakGain - 3) & (FrequencyTable.RFOutputPowerdBm > peakGainPower));
+                                 
+        if ~isempty(idx_after_peak_3dB)
+            compression3dB(i, :) = {currentFreq, FrequencyTable.RFOutputPowerdBm(idx_after_peak_3dB(1)), FrequencyTable.Gain(idx_after_peak_3dB(1))};
+        else
+            compression3dB(i, :) = {currentFreq, NaN, NaN};
         end
     end
 end

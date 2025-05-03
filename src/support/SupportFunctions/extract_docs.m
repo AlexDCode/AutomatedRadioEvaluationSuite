@@ -1,39 +1,41 @@
-function extract_docs(folder_path, output_filename, headerStr, excludedFolders)
+function extract_docs(folderPath, outputFilename, headerStr, excludedFolders)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to 
-    % support ReadTheDocs/Sphinx workflows.
+    % support ReadTheDocs/Sphinx workflows. Example usage:
+    %
+    %   - extract_docs('./src/support/AntennaFunctions/', './docs/readthedocs/source/code_antenna.md', 'Antenna Functions')
+    %   - extract_docs('./src/support/PAFunctions/', './docs/readthedocs/source/code_amp.md', 'Power Amplifier Functions')
+    %   - extract_docs('./src/support/SupportFunctions/', './docs/readthedocs/source/code_support.md', 'Supporting Functions', {'matlab2tikz'})
     %
     % INPUT:
-    %   folder_path      - Path to folder containing .m files (recursively searched)
-    %   output_filename  - Path to output .md file
-    %   headerStr        - Header/title for the generated Markdown file
-    %   excludedFolders  - (Optional) Cell array of subfolders to exclude (by name)
+    %   folderPath      - Path to folder containing .m files (recursively searched)
+    %   outputFilename  - Path to output .md file
+    %   headerStr       - (Optional) Header/title for the generated Markdown file
+    %   excludedFolders - (Optional) Cell array of subfolders to exclude (by name)
     %
-    % EXAMPLES:
-    %   extract_docs('./src/support/AntennaFunctions/', 'docs/code_antenna.md', 'Antenna Functions')
-    %   extract_docs('./src/support/PAFunctions/','./docs/readthedocs/source/code_amp.md', 'Power Amplifier Functions')
-    %   extract_docs('./src/support/SupportFunctions/', 'docs/code_support.md', 'Support Functions', {'matlab2tikz'})
+    % OUTPUT:
+    %   None
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    if nargin < 1, folder_path = pwd; end
-    if nargin < 2, output_filename = 'documentation.md'; end
+    if nargin < 1, folderPath = pwd; end
+    if nargin < 2, outputFilename = 'documentation.md'; end
     if nargin < 3, headerStr = 'Function Documentation'; end
     if nargin < 4, excludedFolders = {}; end
 
     % Collect all .m files.
-    files = dir(fullfile(folder_path, '**', '*.m'));
+    files = dir(fullfile(folderPath, '**', '*.m'));
 
     % Open output file.
-    fid_out = fopen(output_filename, 'w');
+    fid_out = fopen(outputFilename, 'w');
     if fid_out == -1
-        error('Failed to open output file: %s', output_filename);
+        error('Failed to open output file: %s', outputFilename);
     end
 
     fprintf(fid_out, '# %s\n\n', headerStr);
 
     % Add folder and subfolders to path temporarily.
-    addpath(genpath(folder_path));
+    addpath(genpath(folderPath));
 
     for k = 1:length(files)
         file = files(k);
@@ -129,20 +131,21 @@ function extract_docs(folder_path, output_filename, headerStr, excludedFolders)
     end
 
     fclose(fid_out);
-    fprintf('Documentation saved to: %s\n', output_filename);
+    fprintf('Documentation saved to: %s\n', outputFilename);
 end
 
 function out = formatAsBullets(lines)
-    % Only add dash if the line doesn't already start with a dash
     out = strjoin(cellfun(@(l) formatLine(l), lines, 'UniformOutput', false), newline);
 end
 
 function lineOut = formatLine(line)
     line = strtrim(line);
-    if startsWith(line, '-')
-        lineOut = line;
+    if startsWith(line, '--')
+        lineOut = ['  - ', strtrim(erase(line, '--'))];  % Indented sub-bullet
+    elseif startsWith(line, '-')
+        lineOut = ['- ', strtrim(erase(line, '-'))];     % Regular bullet
     else
-        lineOut = ['- ', line];
+        lineOut = ['- ', line];                          % Default to regular bullet
     end
 end
 

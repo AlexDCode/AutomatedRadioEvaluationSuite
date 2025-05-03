@@ -5,10 +5,7 @@ function enablePSUChannels(app, channels, state)
     % the provided state (1 for enabling, 0 for disabling). Channels are grouped by PSU (PSU A or PSU B) and then 
     % enabled or disabled accordingly. The order in which the channels are processed depends on the state: gate biases
     % are controlled before drain supplies when enabling, and drain supplies are turned off before gate biases 
-    % when disabling. Examples:
-    % 
-    %  - enablePSUChannels(app, {'CH1', 'CH2'}, 1); Enable channels CH1 and CH2.
-    %  - enablePSUChannels(app, {'CH1'}, 0);        Disable channel CH1.
+    % when disabling. 
     % 
     % INPUT:
     %   app       - The application object containing the power supplies and the channel-to-device mapping.
