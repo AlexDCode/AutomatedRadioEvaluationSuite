@@ -23,14 +23,7 @@ The instrument database is a simple `.csv` file with the following structure:
 
 - **Address**: The VISA resource string used to connect (supports LAN, GPIB, or socket-based communication).
 
-```{image} ./assets/Settings/instrument_database.png
-:alt: Instrument Database
-:class: bg-primary
-:width: 100%
-:align: center
-```
-
-## Adding and Managing Instruments
+## Managing Instruments
 To manage instruments in the app:
 
 1. Click **New Instrument** to add a new entry.
@@ -39,19 +32,30 @@ To manage instruments in the app:
 4. To remove an instrument, select its row and click **Delete Instrument**.
 5. After making changes, click **Save Changes** to update your local database.
 
+```{image} ./assets/Settings/instrument_database.png
+:alt: Instrument Database
+:class: bg-primary
+:width: 100%
+:align: center
+```
+
 For more technical details, explore the [Instrument Interfacing Section](https://aresapp.readthedocs.io/latest/instr_interface.html) which explains how ARES uses VISA protocols to communicate with connected instruments.
 
 ## Manual Editing (Optional)
-Although the app provides a user-friendly interface for managing instruments, users can also edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, Notepad++, or VS Code).
+Although the app provides a user-friendly interface for managing instruments, users can also edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, VS Code, etc.).
 
 ### File Location
 The database file is located in your **MATLAB user path**, under the ARES directory:
 
+```none
 <pre><userpath>/ARES/instrument_database.csv</pre>
+```
 
 To check your user path in MATLAB, run:
 
+```none
 <pre> userpath;</pre>
+```
 
 ### Editing Guidelines
 - Open the `.csv` file with a CSV-compatible editor to avoid corrupting the format.
