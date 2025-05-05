@@ -48,13 +48,13 @@ Although the app provides a user-friendly interface for managing instruments, us
 The database file is located in your **MATLAB user path**, under the ARES directory:
 
 ```none
-<pre><userpath>/ARES/instrument_database.csv</pre>
+<userpath>/ARES/instrument_database.csv
 ```
 
-To check your user path in MATLAB, run:
+To check your user path, run the following command in the MATLAB command window:
 
 ```none
-<pre> userpath;</pre>
+userpath
 ```
 
 ### Editing Guidelines
