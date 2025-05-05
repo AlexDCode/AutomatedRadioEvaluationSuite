@@ -3,24 +3,47 @@
 ## Antenna Example Data
 Reference Antenna
 
-![Reference Antenna](./assets/Ant/demo_refAnt.png){witdh=1920px align=center}
+```{image} ./assets/Ant/demo_refAnt.png
+:alt: Reference Antenna Results
+:class: bg-primary
+:width: 100%
+:align: center
+```
 
 Measured Antenna 2D Radiation Pattern
 
-![Antenna 2D Radiation Pattern](./assets/Ant/demo_2Dpattern.png){witdh=1920px align=center}
+```{image} ./assets/Ant/demo_2Dpattern.png
+:alt: Antenna 2D Radiation Pattern
+:class: bg-primary
+:width: 100%
+:align: center
+```
 
 Measured Antenna 3D Radiation Pattern
 
-![Antenna 3D Radiation Pattern](./assets/Ant/demo_3Dpattern.png){witdh=1920px align=center}
-
+```{image} ./assets/Ant/demo_3Dpattern.png
+:alt: Antenna 3D Radiation Pattern
+:class: bg-primary
+:width: 100%
+:align: center
+```
 
 ## PA Example Data
 
 Single Results View
 
-![Signal Analysis Configuration](./assets/PA/demo_single.png){witdh=1920px align=center}
+```{image} ./assets/PA/demo_single.png
+:alt: Single PA Results
+:class: bg-primary
+:width: 100%
+:align: center
+```
 
 Sweep Results View
 
-![Signal Analysis Configuration](./assets/PA/demo_sweep.png){witdh=1920px align=center}
-
+```{image} ./assets/PA/demo_sweep.png
+:alt: Sweep PA Results
+:class: bg-primary
+:width: 100%
+:align: center
+```
