@@ -37,7 +37,6 @@ The app has been tested and is compatible with the following instruments:
 - **Keysight E36233A/E36234A** Dual Output DC Power Supply
 - **Keysight CXA** Signal Analyzer
 - **Keysight PXA** Signal Analyzer
-- **Agilent E3634A** DC Power Supply
 - **Rohde & Schwarz SMW200A** Signal Generator
 - **Hewlett-Packard E4433B** Signal Generator
 - **ETS Lindgren EMCenter** Position Controller
