@@ -48,4 +48,4 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 This project makes use of several open-source tools. The authors acknowledge the following 
 
 - **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality $\LaTeX$-compatible plot exports. Copyright (c) 2008--2016 Nico Schlömer All rights reserved.
-> Nico Schlömer (2025). [matlab2tikz Version 1.1.0](https://github.com/matlab2tikz/matlab2tikz), GitHub. https://github.com/matlab2tikz/matlab2tikz [Retrieved May 5, 2025]. doi: 10.5281/zenodo.18605.
+> E. Geerardyn, N. Schlömer, et. al. (2025). "[matlab2tikz: Version 1.1.0](https://github.com/matlab2tikz/matlab2tikz)". Zenodo, Oct. 20, 2016. doi: 10.5281/zenodo.162246.
