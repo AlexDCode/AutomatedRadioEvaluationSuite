@@ -33,7 +33,6 @@ This project makes use of several open-source tools. Special thanks to:
 
 - **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality LaTeX-compatible plot exports.
 
-> Nico Schlömer (2025). *matlab2tikz/matlab2tikz*. GitHub. [https://github.com/matlab2tikz/matlab2tikz](https://github.com/matlab2tikz/matlab2tikz). Retrieved May 5, 2025.
 > Nico Schlömer (2025). *matlab2tikz/matlab2tikz* (https://github.com/matlab2tikz/matlab2tikz), GitHub. Retrieved May 5, 2025.
 
 ## Contributors
