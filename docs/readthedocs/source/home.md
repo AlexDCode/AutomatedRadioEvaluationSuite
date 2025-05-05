@@ -27,14 +27,6 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - Plot measurement results within the app for quick visualization.
 - Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots).
 
-## Acknowledgments
-
-This project makes use of several open-source tools. Special thanks to:
-
-- **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality LaTeX-compatible plot exports.
-
-> Nico Schlömer (2025). *matlab2tikz/matlab2tikz* (https://github.com/matlab2tikz/matlab2tikz), GitHub. Retrieved May 5, 2025.
-
 ## Contributors
 
 ```{image} ./../../../docs/assets/ARES_logo.jpg
@@ -50,3 +42,10 @@ This project makes use of several open-source tools. Special thanks to:
 - PI: Dimitrios Peroulis ([Google Scholar](https://scholar.google.com/citations?user=agc3kMMAAAAJ&hl=en&oi=ao))
 - Adaptive Radio Electronics and Sensors Group
 - Purdue University
+
+## Acknowledgments
+
+This project makes use of several open-source tools. The authors acknowledge the following 
+
+- **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality $\LaTeX$-compatible plot exports.
+> Nico Schlömer (2025). [matlab2tikz Version 1.1.0](https://github.com/matlab2tikz/matlab2tikz), GitHub. https://github.com/matlab2tikz/matlab2tikz [Retrieved May 5, 2025].
