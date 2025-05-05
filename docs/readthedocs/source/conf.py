@@ -25,13 +25,12 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 myst_enable_extensions = [
-    "attstr",  # Allows attributes in Markdown
+    "attrs_inline",  # Allows inline attributes
+    "amsmath",     # Enables amsmath environments
     "colon_fence",  # Allows ::: for directives
+    "dollarmath",  # Enables $...$ and $$...$$
     "html_admonition",  # Allows HTML admonitions
     "html_image",  # Allows HTML images
-    "attrs_inline",  # Allows inline attributes
-    "dollarmath",  # Enables $...$ and $$...$$
-    "amsmath",     # Enables amsmath environments
 ]
 
 latex_engine = 'pdflatex'
