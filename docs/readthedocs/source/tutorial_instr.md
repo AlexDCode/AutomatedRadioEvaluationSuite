@@ -10,15 +10,12 @@ If the database does not exist, ARES automatically creates one by copying a defa
 
 The instrument database is a simple `.csv` file with the following structure:
 
-Manufacturer,Model,Address
-Agilent Technologies,E5072A,TCPIP0::192.168.3.95::inst0::INSTR
-ETS Lindgren,EMCenter,TCPIP0::192.168.2.150::inst0::INSTR
-ETS Lindgren,EMSlider,TCPIP::192.168.0.100::1206::SOCKET
-Hewlett-Packard,E4433B,GPIB0::19::INSTR
-Keysight Technologies,E36233A,TCPIP0::192.168.2.16::5025::SOCKET
-Keysight Technologies,N5232B,TCPIP0::192.168.1.161::inst0::INSTR
-Keysight Technologies,N9000B,TCPIP0::192.168.1.173::inst0::INSTR
-Rohde & Schwarz,SMW200A,TCPIP0::192.168.3.52::hislip0::INSTR
+|**Manufacturer**      |**Model** |**Address**                         |
+|----------------------|----------|------------------------------------|
+|Agilent Technologies  |E5072A    |TCPIP0::192.168.3.95::inst0::INSTR  |
+|ETS Lindgren          |EMCenter  |TCPIP0::192.168.2.150::inst0::INSTR |
+|Hewlett-Packard       |E4433B    |GPIB0::19::INSTR                    |
+|Keysight Technologies |E36233A   |TCPIP0::192.168.2.16::5025::SOCKET  |
 
 - **Manufacturer**: The name of the equipment vendor.
 
