@@ -25,11 +25,16 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - Measure antenna return loss (magnitude and phase)
 - Save and recall measurements in standardized file formats for data analysis
 - Plot measurement results within the app for quick visualization
-- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export unsupported for polar plots)
+- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots)
 
 ## Contributors
 
-<img src="./../../../docs/assets/ARES_logo.jpg" alt="ARES Lab Logo" width="400px">
+```{image} ./../../../docs/assets/ARES_logo.jpg
+:alt: ARES Lab Logo
+:class: bg-primary
+:width: 240px
+:align: center
+```
 
 
 - Author: José Abraham Bolaños Vargas ([@bolanosv](http://github.com/bolanosv))

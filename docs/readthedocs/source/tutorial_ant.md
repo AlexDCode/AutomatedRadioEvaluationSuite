@@ -2,6 +2,14 @@
 
 The Antenna module performs parametric measurements varying the position of the DUT and acquires the frequency response. The program will capture the measurements, calculate the gain, save the data, and plot the results. Note the test does not need to be run every time as the data can be loaded into the app. Sample data is available in [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna).
 
+```{admonition} Average Measurement Time
+:class: important
+* Scan $\theta$ ($1^{\circ}$ step) with fixed $\phi$: ~16 minutes
+* Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
+* Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
+* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
+```
+
 ## Theory
 
 ### Foundational Equations
@@ -104,15 +112,6 @@ In the *Linear Slider* tab, set the *Antenna Offset*, which is adding the length
 ### Run the test and plot the results
 
 After validating all the settings, click on *Start Test* to begin the measurement. The progress window will display the time taken and estimated to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the *Load Test* button. 
-
-
-```{important} Measurement Time
-* Scan $\theta$ ($1^{\circ}$ step) with fixed $\phi$: ~16 minutes
-* Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
-* Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
-* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
-```
-
 
 The *2D Radiation Pattern* results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the *Frequency*, *$\theta$* cut, and *$\phi$* cut dropdowns.
 

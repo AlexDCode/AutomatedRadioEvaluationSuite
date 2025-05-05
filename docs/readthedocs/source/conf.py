@@ -25,6 +25,7 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 myst_enable_extensions = [
+    "attstr",  # Allows attributes in Markdown
     "colon_fence",  # Allows ::: for directives
     "html_admonition",  # Allows HTML admonitions
     "html_image",  # Allows HTML images
