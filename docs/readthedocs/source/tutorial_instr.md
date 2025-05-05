@@ -39,7 +39,7 @@ To manage instruments in the app:
 :align: center
 ```
 
-For more technical details, explore the [Instrument Interfacing Section](https://aresapp.readthedocs.io/latest/instr_interface.html) which explains how ARES uses VISA protocols to communicate with connected instruments.
+For more technical details, explore the [Instrument Interfacing Section](https://aresapp.readthedocs.io/latest/instr_interface.html), which explains how ARES uses VISA protocols to communicate with connected instruments.
 
 ## Manual Editing (Optional)
 Although the app provides a user-friendly interface for managing instruments, users can also edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, VS Code, etc.).
