@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
 
-The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
+The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas, interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
 
 ## Features
 
@@ -26,6 +26,15 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - Save and recall measurements in standardized file formats for data analysis
 - Plot measurement results within the app for quick visualization
 - Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots)
+
+## Acknowledgments
+
+This project makes use of several open-source tools. Special thanks to:
+
+- **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality LaTeX-compatible plot exports.
+
+> Nico Schlömer (2025). *matlab2tikz/matlab2tikz*. GitHub. [https://github.com/matlab2tikz/matlab2tikz](https://github.com/matlab2tikz/matlab2tikz). Retrieved May 5, 2025.
+> Nico Schlömer (2025). *matlab2tikz/matlab2tikz* (https://github.com/matlab2tikz/matlab2tikz), GitHub. Retrieved May 5, 2025.
 
 ## Contributors
 
