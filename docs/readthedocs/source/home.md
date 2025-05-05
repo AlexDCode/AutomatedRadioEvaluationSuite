@@ -13,7 +13,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## Features
 
-- VISA Instrument Control for multiple Keysight and ETS-Lindgren instruments by GPIB and LAN
+- VISA Instrument Control for multiple Keysight and ETS-Lindgren instruments by GPIB, USB, and LAN.
 - Measure RF power amplifier Figures of Merit (FoM) over one or multiple frequencies
   - Gain
   - Output Power
@@ -22,10 +22,10 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - Measure antenna gain characteristics by:
   - Gain Comparison Method (i.e., Two-Antenna Method)
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
-- Measure antenna return loss (magnitude and phase)
-- Save and recall measurements in standardized file formats for data analysis
-- Plot measurement results within the app for quick visualization
-- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots)
+- Measure antenna return loss (magnitude and phase).
+- Save and recall measurements in standardized file formats for data analysis.
+- Plot measurement results within the app for quick visualization.
+- Export plots in standard formats (PDF, PNG, JPEG) and TikZ for publication (TikZ export is unsupported for polar plots).
 
 ## Acknowledgments
 
