@@ -2,18 +2,9 @@
 
 ARES maintains a user-defined instrument database stored as a `.csv` file within the ARES directory in your MATLAB user path. This database enables persistent tracking of instrument configurations across app sessions.
 
+-------------------
+
 If the database does not exist, ARES automatically creates one by copying a default template from the source directory.
-
-## Adding and Managing Instruments
-To manage instruments in the app:
-
-1. Click **New Instrument** to add a new entry.
-2. Fill in the required fields: **Manufacturer**, **Model**, and **Address**.
-3. Added instruments will appear in the **Instruments** tab of each measurement module.
-4. To remove an instrument, select its row and click **Delete Instrument**.
-5. After making changes, click **Save Changes** to update your local database.
-
-For more technical details, explore the [Instrument Interfacing (https://aresapp.readthedocs.io/latest/instr_interface.html) which explains how ARES uses VISA protocols to communicate with connected instruments.
 
 ## Database Format
 
@@ -41,6 +32,17 @@ Rohde & Schwarz,SMW200A,TCPIP0::192.168.3.52::hislip0::INSTR
 :width: 100%
 :align: center
 ```
+
+## Adding and Managing Instruments
+To manage instruments in the app:
+
+1. Click **New Instrument** to add a new entry.
+2. Fill in the required fields: **Manufacturer**, **Model**, and **Address**.
+3. Added instruments will appear in the **Instruments** tab of each measurement module.
+4. To remove an instrument, select its row and click **Delete Instrument**.
+5. After making changes, click **Save Changes** to update your local database.
+
+For more technical details, explore the [Instrument Interfacing (https://aresapp.readthedocs.io/latest/instr_interface.html) which explains how ARES uses VISA protocols to communicate with connected instruments.
 
 ## Manual Editing (Optional)
 Although the app provides a user-friendly interface for managing instruments, users can also edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, Notepad++, or VS Code).
