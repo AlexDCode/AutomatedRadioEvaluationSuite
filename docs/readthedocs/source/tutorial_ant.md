@@ -74,19 +74,14 @@ $$
 
 * Using an eCal is highly recommended, as shown in the following [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
 
-### Connect to the instruments
+### Connect to the Instruments
 
 * Select the relevant instrument VISA addresses in each dropdown of the *Instruments* tab.
 * Select *None: NA* for the instruments that will not be used. 
 * Follow the [Instrument Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html) for detailed information on how to edit the user-defined instrument database. 
 * Once all the addresses have been populated, click on *Connect* at the bottom to establish connection to each instrument and *Disconnect* to clear all connections. 
 
-The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
-
-```{admonition} Average Measurement Time
-:class: note
-The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
-```
+The *Measurement Delay (s)* can be modified at any time before the measurement starts. This value is the time in seconds to wait between setting all the instruments and capturing the data.
 
 ```{image} ./assets/Ant/instr_conf.png
 :alt: Instrument Configuration
@@ -97,7 +92,17 @@ The *Measurement Delay* can be modified at any time before the measurement start
 
 ### Load Reference Antenna Data (for Gain Comparison Method)
 
-For the [Gain Comparison Method](#gain-comparison-method), the reference antenna gain needs to be loaded using the same data format as measured antennas. In the *Reference Antenna* window, click on *Browse Reference File* and select the data for the reference antenna. Only the boresight gain ($\theta = 0$, $\phi = 0$) is required from the reference antenna. The boresight gain and return loss magnitude over frequency will be plotted in the results view window. To remove the file, click on *Clear Reference*.
+For the [Gain Comparison Method](#gain-comparison-method), the reference antenna gain needs to be loaded using the same data format as measured antennas.
+
+* In the *Reference Antenna* window, click *Browse Reference* and select the file containing  your reference antenna data.
+
+* Only the boresight gain ($\theta = 0$, $\phi = 0$) is required from the reference antenna.
+
+* After loading, the **boresight gain** and **return loss magnitude** over frequency will be plotted in the results view.
+
+* The filename of the loaded reference data will be shown below the plots.
+
+* To remove the file, click *Clear Reference*.
 
 ```{image} ./assets/Ant/demo_refAnt.png
 :alt: Reference Antenna
@@ -108,7 +113,11 @@ For the [Gain Comparison Method](#gain-comparison-method), the reference antenna
 
 ### Configure the VNA
 
-Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to the instruments, the app will load the current settings to the app. If you change any of the *Start Frequency*, *Step Frequency*, and *Stop Frequency*, the calibration might not be valid anymore. To prevent this, calibrate before connecting and leave the loaded values. These settings are limited to the capabilities of the instruments (i.e., frequency and power range). In addition, the app can load the smoothed data from the VNA, which utilizes a moving average filter with the given number of samples. If the *Smoothing Percentage* is set to zero, the smoothing will be turned off.
+Use the *VNA* tab to review and adjust Vector Network Analyzer (VNA) settings. When the VNA is connected, its current configuration is automatically loaded into the app. If you modify key parameters such as *Sweep Points*, *Start Frequency*, or *Stop Frequency*, the existing calibration may no longer be valid.
+
+To avoid invalidating the calibration, it is recommended to perform the VNA calibration before connecting to the VNA and then leave the loaded values unchanged. Keep in mind that the frequency and power ranges are constrained by the capabilities of the connected instrument.
+
+Optionally, the app can apply smoothing to the VNA data using a moving average filter with the given number of samples. This is controlled via the *Smoothing Percentage* setting. If set to zero, smoothing is disabled.
 
 ```{image} ./assets/Ant/vna_conf.png
 :alt: VNA Configuration
@@ -118,9 +127,20 @@ Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to
 ```
 
 
-### Configure the table (theta axis)
+### Configure the Turntable (theta axis)
 
-Configure the theta axis in the *Table* tab. Select between a static or parametric sweep. Select the *Table Speed* using the slider. Then enter the appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note that the software inputs are between $-180^\circ$ and $180^\circ$. Since the table is configured to take angles between $0^\circ$ and $360^\circ$, the software will translate to the appropriate values. If the user desires to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Table*.
+Use the *Table* tab to set up theta-axis rotation for antenna measurements. 
+
+To configure the turntable:
+* Select either a static or parametric sweep.
+* Adjust the *Table Speed* using the slider.
+* Enter  appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle* values.
+
+Note: Software inputs range from $-180^\circ$ to $180^\circ$, but the table is configured to operate from $0^\circ$ to $360^\circ$. The software automatically translates angles accordingly.
+
+To control the turntable manually:
+* Enter a desired target position and click on *Move to Angle*.
+* To stop the movement at any time, click on *Stop Table*.
 
 ```{image} ./assets/Ant/table_conf.png
 :alt: Table Configuration
@@ -130,9 +150,20 @@ Configure the theta axis in the *Table* tab. Select between a static or parametr
 ```
 
 
-### Configure the tower (phi axis)
+### Configure the Tower (phi axis)
 
-Configure the tower axis in the *Tower* tab. Select between a static or parametric sweep. Select the *Tower Speed* using the slider. Then enter the appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note the software inputs are between $-180^\circ$ and $180^\circ$. If the user desires to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Tower*.
+Use the *Tower* tab to set up phi-axis rotation for antenna measurements. 
+
+To configure the tower:
+* Select either a static or parametric sweep.
+* Adjust the *Tower Speed* using the slider.
+* Enter  appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle* values.
+
+Note: Software accepts inputs between $-180^\circ$ and $180^\circ$.
+
+To control the tower manually:
+* Enter a desired target position and click on *Move to Angle*.
+* To stop the movement at any time, click on *Stop Tower*.
 
 ```{image} ./assets/Ant/tower_conf.png
 :alt: Tower Configuration
@@ -141,9 +172,19 @@ Configure the tower axis in the *Tower* tab. Select between a static or parametr
 :align: center
 ```
 
-### Configure the linear slider
+### Configure the Linear Slider
 
-In the *Linear Slider* tab, set the *Antenna Offset*, which adds the lengths of the DUT and reference antenna with respect to the mounting fixtures. The linear slider *Speed Preset* and *Slider Position* can be controlled from this tab. To move the slider, enter the target position and click on *Move to Position*. The *Slider Position* will display the current position of the slider, while the *Current Spacing* will display the current antenna separation, which takes into account the slider position and antenna offset. Options to *Home*, *Scan*, and *Stop* the slider are available.
+Use the *Linear Slider* tab to control antenna spacing and movement along the rail.
+
+To configure and operate the slider:
+* Set the *Antenna Offset* in centimeters, which accounts for the physical length of both the DUT and reference antennas relative to the mounting fixtures.
+* Choose a *Speed Preset* for how fast the slider moves.
+* Enter a target *Slider Position* and click *Move to Position* to move the antenna.
+* Use the *Home*, *Scan*, or *Stop* buttons to control motion directly.
+
+Live displays include:
+* *Slider Position* – the real-time position of the slider, given in centimeters.
+* *Current Spacing* – the calculated antenna separation, factoring in the slider position and antenna offset, given in meters.
 
 ```{image} ./assets/Ant/slider_conf.png
 :alt: Linear Slider Configuration
@@ -152,11 +193,24 @@ In the *Linear Slider* tab, set the *Antenna Offset*, which adds the lengths of 
 :align: center
 ```
 
-### Run the test and plot the results
+### Run the Test and Plot the Results
 
-After validating all the settings, click on *Start Test* to begin the measurement. The progress window will display the time taken and the estimated time to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the *Load Test* button. 
+After verifying all configuration settings, click *Start Test* to begin the measurement.
 
-The *2D Radiation Pattern* results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the *Frequency*, *$\theta$* cut, and *$\phi$* cut dropdowns.
+During the test:
+* A progress window will show elapsed time and estimated completion time.
+* Once the test is finished, a prompt will appear to save the results.
+
+After saving you results:
+* The measurement data is automatically loaded and visualized by ARES.
+* To view previous results, use the *Load Test* button.
+
+### 2D Radiation Pattern Results
+
+The *2D Radiation Pattern* window displays:
+* Realized gain vs. frequency
+* Return loss vs. frequency
+* 2D cartesian and polar plots based on the selected value from the *Frequency*, *$\theta$*, and *$\phi$* dropdowns. $\theta$
 
 ```{image} ./assets/Ant/demo_2Dpattern.png
 :alt: Antenna 2D Radiation Pattern
@@ -165,7 +219,10 @@ The *2D Radiation Pattern* results view window will display the realized gain vs
 :align: center
 ```
 
-The *3D Radiation Pattern* results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the *Frequency* dropdown.
+### 3D Radiation Pattern Results
+
+The *3D Radiation Pattern* window displays:
+* Full 3D gain pattern for the selected frequency.
 
 ```{image} ./assets/Ant/demo_3Dpattern.png
 :alt: Antenna 3D Radiation Pattern
