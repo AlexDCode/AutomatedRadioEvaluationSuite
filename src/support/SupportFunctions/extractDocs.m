@@ -1,4 +1,4 @@
-function extract_docs(folderPath, outFilename, headerStr, excludedFolders)
+function extractDocs(folderPath, outFilename, headerStr, excludedFolders)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to 
@@ -72,6 +72,9 @@ function extract_docs(folderPath, outFilename, headerStr, excludedFolders)
                 if startsWith(line, '%')
                     line = regexprep(line, '^\s*%+\s?', '');
                 end
+
+                % Convert Greek letters to LaTeX math format
+                line = convertGreekLettersToLatex(line);
 
                 % Detect section headers.
                 if startsWith(line, 'INPUT', 'IgnoreCase', true)
@@ -149,3 +152,80 @@ function lineOut = formatLine(line)
     end
 end
 
+function text = convertGreekLettersToLatex(text)
+    % Define a mapping of Greek letters to their LaTeX math equivalents
+    greekMap = containers.Map();
+    
+    % Lowercase Greek letters
+    greekMap('α') = '$\alpha$';
+    greekMap('β') = '$\beta$';
+    greekMap('γ') = '$\gamma$';
+    greekMap('δ') = '$\delta$';
+    greekMap('ε') = '$\epsilon$';
+    greekMap('ζ') = '$\zeta$';
+    greekMap('η') = '$\eta$';
+    greekMap('θ') = '$\theta$';
+    greekMap('ι') = '$\iota$';
+    greekMap('κ') = '$\kappa$';
+    greekMap('λ') = '$\lambda$';
+    greekMap('μ') = '$\mu$';
+    greekMap('ν') = '$\nu$';
+    greekMap('ξ') = '$\xi$';
+    greekMap('ο') = '$\omicron$';
+    greekMap('π') = '$\pi$';
+    greekMap('ρ') = '$\rho$';
+    greekMap('σ') = '$\sigma$';
+    greekMap('τ') = '$\tau$';
+    greekMap('υ') = '$\upsilon$';
+    greekMap('φ') = '$\phi$';
+    greekMap('χ') = '$\chi$';
+    greekMap('ψ') = '$\psi$';
+    greekMap('ω') = '$\omega$';
+    
+    % Uppercase Greek letters
+    greekMap('Α') = '$\Alpha$';
+    greekMap('Β') = '$\Beta$';
+    greekMap('Γ') = '$\Gamma$';
+    greekMap('Δ') = '$\Delta$';
+    greekMap('Ε') = '$\Epsilon$';
+    greekMap('Ζ') = '$\Zeta$';
+    greekMap('Η') = '$\Eta$';
+    greekMap('Θ') = '$\Theta$';
+    greekMap('Ι') = '$\Iota$';
+    greekMap('Κ') = '$\Kappa$';
+    greekMap('Λ') = '$\Lambda$';
+    greekMap('Μ') = '$\Mu$';
+    greekMap('Ν') = '$\Nu$';
+    greekMap('Ξ') = '$\Xi$';
+    greekMap('Ο') = '$\Omicron$';
+    greekMap('Π') = '$\Pi$';
+    greekMap('Ρ') = '$\Rho$';
+    greekMap('Σ') = '$\Sigma$';
+    greekMap('Τ') = '$\Tau$';
+    greekMap('Υ') = '$\Upsilon$';
+    greekMap('Φ') = '$\Phi$';
+    greekMap('Χ') = '$\Chi$';
+    greekMap('Ψ') = '$\Psi$';
+    greekMap('Ω') = '$\Omega$';
+
+    % Common variant forms and symbols
+    greekMap('ϕ') = '$\phi$';  % Variant of phi
+    greekMap('ϑ') = '$\vartheta$';  % Variant of theta
+    greekMap('ϵ') = '$\varepsilon$';  % Variant of epsilon
+    greekMap('±') = '$\pm$';  % Plus-minus
+    greekMap('∑') = '$\sum$';  % Summation
+    greekMap('∏') = '$\prod$';  % Product
+    greekMap('∫') = '$\int$';  % Integral
+    greekMap('≈') = '$\approx$';  % Approximately
+    greekMap('≤') = '$\leq$';  % Less than or equal
+    greekMap('≥') = '$\geq$';  % Greater than or equal
+    greekMap('≠') = '$\neq$';  % Not equal
+    greekMap('∞') = '$\infty$';  % Infinity
+    
+    % Replace each Greek letter with its LaTeX equivalent
+    keys = greekMap.keys();
+    for i = 1:length(keys)
+        key = keys{i};
+        text = strrep(text, key, greekMap(key));
+    end
+end
