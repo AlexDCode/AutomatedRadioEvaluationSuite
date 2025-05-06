@@ -200,6 +200,7 @@ After verifying all configuration settings, click *Start Test* to begin the meas
 
 During the test:
 * A progress window will show elapsed time and estimated completion time.
+* To terminate the test, press the *Stop Test* button on the progress window.
 * Once the test is finished, a prompt will appear to save the results.
 
  ```{image} ./assets/Ant/ant_dialog.PNG
