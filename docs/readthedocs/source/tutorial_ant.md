@@ -1,6 +1,8 @@
 # Antenna Tutorial
 
-The Antenna module performs parametric measurements varying the position of the DUT and acquires the frequency response. The program will capture the measurements, calculate the gain, save the data, and plot the results. Note the test does not need to be run every time as the data can be loaded into the app. Sample data is available in [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna).
+The Antenna Module enables parametric measurements by varying the position of the Device Under Test (DUT) and acquiring its frequency response. The application captures the data, calculates antenna gain, saves the results, and visualizes the plots. Measurements can be reloaded from saved data, so tests do not need to be repeated unnecessarily.
+
+Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna) folder.
 
 ```{admonition} Average Measurement Time
 :class: important
@@ -8,6 +10,20 @@ The Antenna module performs parametric measurements varying the position of the 
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
 * 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
+```
+
+```{admonition} Average Measurement Time
+:class: important
+- θ sweep (1° steps) at fixed φ: ~16 minutes  
+- θ sweep (3° steps) at fixed φ: ~8 minutes  
+- θ sweep (5° steps) at fixed φ: ~6 minutes  
+- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
+```
+```{admonition} Average Measurement Time
+- 2D sweep (1° steps in θ at fixed φ): ~16 minutes  
+- 2D sweep (3° steps in θ at fixed φ): ~8 minutes  
+- 2D sweep (5° steps in θ at fixed φ): ~6 minutes  
+- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
 ```
 
 ## Theory
@@ -67,11 +83,11 @@ $$
 ## Performing the Measurement
 
 ### Calibration
-To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Ensure the frequency range and number of points (or step size) are as desired before caliration. Using an eCal is highly recommended as shown in the [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
+To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Ensure the frequency range and number of points (or step size) are as desired before calibration. Using an eCal is highly recommended, as shown in the [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
 
 ### Connect to the instruments
 
-The first step is to select the relevant instruments in each dropdown of the *Instruments* tab. Select *None: NA* for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the [instrument database](https://aresapp.readthedocs.io/latest/tutorial_instr.html). Once all the addresses have been populated, click on *Connect* in the bottom to establish the connection to each instrument and *Disconnect* to clear all the connections. The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and before capturing the data.
+The first step is to select the relevant instruments in each dropdown of the *Instruments* tab. Select *None: NA* for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the [instrument database](https://aresapp.readthedocs.io/latest/tutorial_instr.html). Once all the addresses have been populated, click on *Connect* at the bottom to establish the connection to each instrument and *Disconnect* to clear all the connections. The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
 
 ```{image} ./assets/Ant/instr_conf.png
 :alt: Instrument Configuration
@@ -82,7 +98,7 @@ The first step is to select the relevant instruments in each dropdown of the *In
 
 ### Load Reference Antenna Data (for Gain Comparison Method)
 
-For the [Gain Comparison Method](#gain-comparison-method), the reference antenna gain needs to be loaded using the same data format for measured antennas. In the *Reference Antenna* window, click on *Browse Reference File* and select the data for the reference antenna. Only the boresight gain ($\theta = 0$, $\phi = 0$) is required from the reference antenna. The boresight gain and return loss magnitude over frequency cill be plotted in the results view window. To remove the file, click on *Clear Reference*.
+For the [Gain Comparison Method](#gain-comparison-method), the reference antenna gain needs to be loaded using the same data format as measured antennas. In the *Reference Antenna* window, click on *Browse Reference File* and select the data for the reference antenna. Only the boresight gain ($\theta = 0$, $\phi = 0$) is required from the reference antenna. The boresight gain and return loss magnitude over frequency will be plotted in the results view window. To remove the file, click on *Clear Reference*.
 
 ```{image} ./assets/Ant/demo_refAnt.png
 :alt: Reference Antenna
@@ -93,7 +109,7 @@ For the [Gain Comparison Method](#gain-comparison-method), the reference antenna
 
 ### Configure the VNA
 
-Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to the instruments, the app will load the current settings to the app. If you change any of the *Start Frequency*, *Step Frequency*, and *Step Frequency* the calibration might not be valid anymore. To prevent this, calibrate before connecting and leave the loaded values. These settings are limited to the capabilites of the instruments (i.e., frequency and power range). In addition, the app can load the smoothened data from the VNA, which utilizes a moving average filter with the given number of samples. If the *Smoothing Percentage* is set to zero, the smoothing will be turned off.
+Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to the instruments, the app will load the current settings to the app. If you change any of the *Start Frequency*, *Step Frequency*, and *Stop Frequency*, the calibration might not be valid anymore. To prevent this, calibrate before connecting and leave the loaded values. These settings are limited to the capabilities of the instruments (i.e., frequency and power range). In addition, the app can load the smoothed data from the VNA, which utilizes a moving average filter with the given number of samples. If the *Smoothing Percentage* is set to zero, the smoothing will be turned off.
 
 ```{image} ./assets/Ant/vna_conf.png
 :alt: VNA Configuration
@@ -105,7 +121,7 @@ Configure the Vector Network Analyzer (VNA) in the *VNA* tab. When connecting to
 
 ### Configure the table (theta axis)
 
-Configure the theta axis in the *Table* tab. Select between a static or parametric sweep. Select the *Table Speed* using the slider. Then enter the appropiate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note the software inputs are between $-180^\circ$ and $180^\circ$. Since the table is configured to take angles between $0^\circ$ and $360^\circ$, the software will translate to the appropiate values. If the user desired to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Table*.
+Configure the theta axis in the *Table* tab. Select between a static or parametric sweep. Select the *Table Speed* using the slider. Then enter the appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note that the software inputs are between $-180^\circ$ and $180^\circ$. Since the table is configured to take angles between $0^\circ$ and $360^\circ$, the software will translate to the appropriate values. If the user desires to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Table*.
 
 ```{image} ./assets/Ant/table_conf.png
 :alt: Table Configuration
@@ -117,7 +133,7 @@ Configure the theta axis in the *Table* tab. Select between a static or parametr
 
 ### Configure the tower (phi axis)
 
-Configure the tower axis in the *Tower* tab. Select between a static or parametric sweep. Select the *Tower Speed* using the slider. Then enter the appropiate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note the software inputs are between $-180^\circ$ and $180^\circ$. If the user desired to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Tower*.
+Configure the tower axis in the *Tower* tab. Select between a static or parametric sweep. Select the *Tower Speed* using the slider. Then enter the appropriate *Start Angle*, *Angle Step Size*, and *Stop Angle*. Note the software inputs are between $-180^\circ$ and $180^\circ$. If the user desires to control the table from the software, enter the target position and click on *Move to Angle*. To stop the movement at any time, click on *Stop Tower*.
 
 ```{image} ./assets/Ant/tower_conf.png
 :alt: Tower Configuration
@@ -128,7 +144,7 @@ Configure the tower axis in the *Tower* tab. Select between a static or parametr
 
 ### Configure the linear slider
 
-In the *Linear Slider* tab, set the *Antenna Offset*, which is adding the lengths of the DUT and reference antenna with respect to the mounting fixtures. The linear slider *Speed Preset* and *Slider Position* can be controlled from this tab. To move the slider, enter the target position and clock on *Move to Position*. The *Slider Position* will display the current position of the slider while the *Current Spacing* will display the current antenna separation, which takes into account the slider position and antenna offset. Options to *Home*, *Scan*, and *Stop* the slider are available.
+In the *Linear Slider* tab, set the *Antenna Offset*, which adds the lengths of the DUT and reference antenna with respect to the mounting fixtures. The linear slider *Speed Preset* and *Slider Position* can be controlled from this tab. To move the slider, enter the target position and click on *Move to Position*. The *Slider Position* will display the current position of the slider, while the *Current Spacing* will display the current antenna separation, which takes into account the slider position and antenna offset. Options to *Home*, *Scan*, and *Stop* the slider are available.
 
 ```{image} ./assets/Ant/slider_conf.png
 :alt: Linear Slider Configuration
@@ -139,7 +155,7 @@ In the *Linear Slider* tab, set the *Antenna Offset*, which is adding the length
 
 ### Run the test and plot the results
 
-After validating all the settings, click on *Start Test* to begin the measurement. The progress window will display the time taken and estimated to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the *Load Test* button. 
+After validating all the settings, click on *Start Test* to begin the measurement. The progress window will display the time taken and the estimated time to complete. Once the test is completed, a prompt will open up to save the data. Once you enter the name and save the data, ARES will automatically load the data and plot it. A previous measurement can be plotted by loading the data in the *Load Test* button. 
 
 The *2D Radiation Pattern* results view window will display the realized gain vs. frequency, return loss, and 2D radiation pattern for the selected value of the *Frequency*, *$\theta$* cut, and *$\phi$* cut dropdowns.
 

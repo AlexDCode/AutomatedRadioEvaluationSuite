@@ -28,7 +28,7 @@ To manage instruments in the app:
 
 1. Click **New Instrument** to add a new entry.
 2. Fill in the required fields: **Manufacturer**, **Model**, and **Address**.
-3. Added instruments will appear in the **Instruments** tab of each measurement module.
+3. Added instruments will appear in each measurement module's **Instruments** tab.
 4. To remove an instrument, select its row and click **Delete Instrument**.
 5. After making changes, click **Save Changes** to update your local database.
 
@@ -42,7 +42,7 @@ To manage instruments in the app:
 For more technical details, explore the [Instrument Interfacing Section](https://aresapp.readthedocs.io/latest/instr_interface.html), which explains how ARES uses VISA protocols to communicate with connected instruments.
 
 ## Manual Editing (Optional)
-Although the app provides a user-friendly interface for managing instruments, users can also edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, VS Code, etc.).
+Although the app provides a user-friendly interface for managing instruments, users can edit the instrument database file directly using a text editor or spreadsheet software (e.g., Excel, VS Code, etc.).
 
 ### File Location
 The database file is located in your **MATLAB user path**, under the ARES directory:
