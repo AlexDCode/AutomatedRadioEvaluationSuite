@@ -220,6 +220,8 @@ The *2D Radiation Pattern* window displays:
 <br>
 ```
 
+lol
+
 ### 3D Radiation Pattern Results
 
 The *3D Radiation Pattern* window displays:
