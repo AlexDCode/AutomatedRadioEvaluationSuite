@@ -7,7 +7,7 @@
 
 **Description:**
 
-This function generates a table of all possible combinations of θ and φ angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
+This function generates a table of all possible combinations of $\theta$ and $\phi$ angles for antenna testing. The function ensures that the input angles are properly processed and sorted for efficient use in antenna measurements.
 
 ```{admonition} Input Parameters
 :class: tip
@@ -108,12 +108,12 @@ This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB 
 
 **Description:**
 
-This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to display the following plots:
+This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected $\theta$, $\phi$, and frequency values. It updates four axes in the application UI to display the following plots:
 
-- Gain vs. Frequency at a fixed θ/φ angle.
-- Gain vs. Angle (θ and φ cuts) at a fixed frequency.
-- Return Loss vs. Frequency at a fixed θ/φ angle.
-- Polar Radiation Pattern (θ and φ cuts).
+- Gain vs. Frequency at a fixed $\theta$/$\phi$ angle.
+- Gain vs. Angle ($\theta$ and $\phi$ cuts) at a fixed frequency.
+- Return Loss vs. Frequency at a fixed $\theta$/$\phi$ angle.
+- Polar Radiation Pattern ($\theta$ and $\phi$ cuts).
 
 ```{admonition} Input Parameters
 :class: tip

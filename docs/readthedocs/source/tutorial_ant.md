@@ -217,10 +217,7 @@ The *2D Radiation Pattern* window displays:
 :class: bg-primary
 :width: 100%
 :align: center
-<br>
 ```
-
-lol
 
 ### 3D Radiation Pattern Results
 
