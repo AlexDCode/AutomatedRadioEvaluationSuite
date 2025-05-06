@@ -9,7 +9,7 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
 * Scan $\theta$ ($1^{\circ}$ step) with fixed $\phi$: ~16 minutes
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
-* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
+* 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, (~380 MB for 201 frequency points)
     * Note only half $\theta$ scan may be needed for full 3D pattern, cutting the total time in half.
 ```
 
@@ -70,11 +70,23 @@ $$
 ## Performing the Measurement
 
 ### Calibration
-To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Ensure the frequency range and number of points (or step size) are as desired before calibration. Using an eCal is highly recommended, as shown in the [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
+* To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Set your frequency range and number of points (or step size) as desired **before calibration**.
+
+* Using an eCal is highly recommended, as shown in the following [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
 
 ### Connect to the instruments
 
-The first step is to select the relevant instruments in each dropdown of the *Instruments* tab. Select *None: NA* for the instruments that will not be used. Read the instrument connection tutorial for detailed information on how to edit the [instrument database](https://aresapp.readthedocs.io/latest/tutorial_instr.html). Once all the addresses have been populated, click on *Connect* at the bottom to establish the connection to each instrument and *Disconnect* to clear all the connections. The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
+* Select the relevant instrument VISA addresses in each dropdown of the *Instruments* tab.
+* Select *None: NA* for the instruments that will not be used. 
+* Follow the [Instrument Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html) for detailed information on how to edit the user-defined instrument database. 
+* Once all the addresses have been populated, click on *Connect* at the bottom to establish connection to each instrument and *Disconnect* to clear all connections. 
+
+The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
+
+```{admonition} Average Measurement Time
+:class: note
+The *Measurement Delay* can be modified at any time before the measurement starts. This value is the time to wait between setting all the instruments and capturing the data.
+```
 
 ```{image} ./assets/Ant/instr_conf.png
 :alt: Instrument Configuration
