@@ -64,10 +64,3 @@ html_theme_options = {
 
 # -- Options for LaTeX output -------------------------------------------------
 # https://sphinx-themed.readthedocs.io/en/latest/latex.html
-latex_elements = {
-    'papersize': 'letterpaper',
-    'pointsize': '12pt',
-    'fncychap': r'\usepackage[Bjornstrup]{fncychap}',
-    'printindex': r'\footnotesize\centering\printindex',
-}
-latex_show_urls = 'footnote'
