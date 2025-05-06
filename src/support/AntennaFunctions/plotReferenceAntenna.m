@@ -22,7 +22,14 @@ function plotReferenceAntenna(app)
 
     % Plot the parameters onto the plots.
     plot(app.GainvsFrequencyBoresight, app.ReferenceGainFile.FrequencyMHz, app.ReferenceGainFile.GaindBi);
+    xlabel(app.GainvsFrequencyBoresight, 'Frequency (MHz)');
+    ylabel(app.GainvsFrequencyBoresight, 'Gain (dBi)');
+    axis(app.GainvsFrequencyBoresight, 'tight');
+
     plot(app.ReturnLossBoresight, app.ReferenceGainFile.FrequencyMHz, app.ReferenceGainFile.ReturnLossdB);
+    xlabel(app.ReturnLossBoresight, 'Frequency (MHz)');
+    ylabel(app.ReturnLossBoresight, 'RL (dB)');
+    axis(app.ReturnLossBoresight, 'tight');
 
     % Improves the plot appeareance, line thickness can be modified.
     improveAxesAppearance(app.GainvsFrequencyBoresight, 'LineThickness', 2);
