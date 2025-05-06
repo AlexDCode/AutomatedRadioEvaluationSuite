@@ -80,7 +80,7 @@ $$
 * Select the relevant instrument VISA addresses in each dropdown of the *Instruments* tab.
 * Select *None: NA* for the instruments that will not be used. 
 * Follow the [Instrument Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html) for detailed information on how to edit the user-defined instrument database. 
-* Once all the addresses have been populated, click on *Connect* at the bottom to establish connection to each instrument and *Disconnect* to clear all connections. 
+* Once all the addresses have been populated, click on *Connect* at the bottom to establish a connection to each instrument and *Disconnect* to clear all connections. 
 
 The *Measurement Delay (s)* can be modified at any time before the measurement starts. This value is the time in seconds to wait between setting all the instruments and capturing the data.
 
@@ -202,14 +202,14 @@ During the test:
 * A progress window will show elapsed time and estimated completion time.
 * Once the test is finished, a prompt will appear to save the results.
 
- ```{image} ./assets/Ant/ant_dialog.png
+ ```{image} ./assets/Ant/ant_dialog.PNG
 :alt: Antenna Test Dialog Screen
 :class: bg-primary
 :width: 100%
 :align: center
 ```
 
-After saving you results:
+After saving your results:
 * The measurement data is automatically loaded and visualized by ARES.
 * To view previous results, use the *Load Test* button.
   
