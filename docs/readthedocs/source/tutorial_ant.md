@@ -1,6 +1,8 @@
 # Antenna Tutorial
 
-The Antenna module performs parametric measurements, varying the position of the DUT, and acquires the frequency response. The program will capture the measurements, calculate the gain, save the data, and plot the results. Note that the test does not need to be run every time, as the data can be loaded into the app. Sample data is available in [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna).
+The Antenna Module enables parametric measurements by varying the position of the Device Under Test (DUT) and acquiring its frequency response. The application captures the data, calculates antenna gain, saves the results, and visualizes the plots. Measurements can be reloaded from saved data, so tests do not need to be repeated unnecessarily.
+
+Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna) folder.
 
 ```{admonition} Average Measurement Time
 :class: important
@@ -8,6 +10,20 @@ The Antenna module performs parametric measurements, varying the position of the
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
 * 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
+```
+
+```{admonition} Average Measurement Time
+:class: important
+- θ sweep (1° steps) at fixed φ: ~16 minutes  
+- θ sweep (3° steps) at fixed φ: ~8 minutes  
+- θ sweep (5° steps) at fixed φ: ~6 minutes  
+- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
+```
+```{admonition} Average Measurement Time
+- 2D sweep (1° steps in θ at fixed φ): ~16 minutes  
+- 2D sweep (3° steps in θ at fixed φ): ~8 minutes  
+- 2D sweep (5° steps in θ at fixed φ): ~6 minutes  
+- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
 ```
 
 ## Theory
