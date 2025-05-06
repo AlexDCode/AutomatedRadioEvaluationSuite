@@ -20,6 +20,7 @@ ARES_favicon = './../../../src/support/ARES Icon.png'
 extensions = [
     'sphinx.ext.mathjax',  # For HTML math rendering
     'myst_parser',         # If you use Markdown (MyST)
+    'sphinxcontrib.svg2pdfconverter',  # For SVG to PDF conversion
 ]
 templates_path = ['_templates']
 exclude_patterns = []
@@ -34,6 +35,7 @@ myst_enable_extensions = [
 ]
 
 latex_engine = 'pdflatex'
+svg2pdf_converter = ('inkscape')  # or ('rsvg-convert',)
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
