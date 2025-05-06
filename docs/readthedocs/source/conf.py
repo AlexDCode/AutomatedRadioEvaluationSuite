@@ -44,7 +44,6 @@ html_logo = ARES_logo
 html_favicon = ARES_favicon
 html_title = "ARES"
 master_doc = "index"
-html_additional_pages = {"index": "home.html"}
 html_theme_options = {
     "source_repository": "https://github.com/AlexDCode/AutomatedRadioEvaluationSuite",
     "source_branch": "main",
@@ -73,13 +72,21 @@ html_theme_options = {
 
 # -- Options for LaTeX output -------------------------------------------------
 # https://sphinx-themed.readthedocs.io/en/latest/latex.html
+latex_engine = 'xelatex'
 latex_elements = {
+    'fontpkg': r'''
+\setmainfont{DejaVu Serif}
+\setsansfont{DejaVu Sans}
+\setmonofont{DejaVu Sans Mono}
+''',
     'preamble': r'''
-    \usepackage{titlesec}
-    \titleformat{\chapter}[display]
-    {\normalfont\huge\bfseries} % Format
-    {\chaptername\ \thechapter} % Label
-    {20pt}                      % Separation
-    {\centering}             % Alignment (use \centering for center)
-    ''',
+\usepackage[titles]{tocloft}
+\cftsetpnumwidth {1.25cm}\cftsetrmarg{1.5cm}
+\setlength{\cftchapnumwidth}{0.75cm}
+\setlength{\cftsecindent}{\cftchapnumwidth}
+\setlength{\cftsecnumwidth}{1.25cm}
+''',
+    'fncychap': r'\usepackage[Bjornstrup]{fncychap}',
+    'printindex': r'\footnotesize\centering\printindex',
 }
+latex_show_urls = 'footnote'
