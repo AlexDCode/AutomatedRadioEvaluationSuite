@@ -210,13 +210,14 @@ After saving you results:
 The *2D Radiation Pattern* window displays:
 * Realized gain vs. frequency
 * Return loss vs. frequency
-* 2D cartesian and polar plots based on the selected value from the *Frequency*, *$\theta$*, and *$\phi$* dropdowns. $\theta$
+* 2D cartesian and polar plots based on the selected value from the *Frequency*, *$\theta$*, and *$\phi$* dropdowns.
 
 ```{image} ./assets/Ant/demo_2Dpattern.png
 :alt: Antenna 2D Radiation Pattern
 :class: bg-primary
 :width: 100%
 :align: center
+<br>
 ```
 
 ### 3D Radiation Pattern Results
