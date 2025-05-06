@@ -40,8 +40,8 @@ The function dBm2mag converts dBm to Watts (W).
 
 ---
 
-## extract_docs.m
-`Path: src\support\SupportFunctions\extract_docs.m`
+## extractDocs.m
+`Path: src\support\SupportFunctions\extractDocs.m`
 
 **Description:**
 
