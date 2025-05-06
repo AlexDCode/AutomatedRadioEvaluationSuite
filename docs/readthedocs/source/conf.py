@@ -52,12 +52,12 @@ html_theme_options = {
     "top_of_page_buttons": ["view"],
     "sidebar_hide_name": True,
     "light_css_variables": {
-        "color-brand-primary": "#245A80",
         "color-brand-content": "#E2712D",
+        "color-background-secondary": "#245A80",
     },
     "dark_css_variables": {
-        "color-brand-primary": "#245A80",
         "color-brand-content": "#E2712D",
+        "color-background-secondary": "#245A80",
     },
 
     "footer_icons": [
@@ -72,20 +72,9 @@ html_theme_options = {
 
 # -- Options for LaTeX output -------------------------------------------------
 # https://sphinx-themed.readthedocs.io/en/latest/latex.html
-latex_engine = 'xelatex'
 latex_elements = {
-    'fontpkg': r'''
-\setmainfont{DejaVu Serif}
-\setsansfont{DejaVu Sans}
-\setmonofont{DejaVu Sans Mono}
-''',
-    'preamble': r'''
-\usepackage[titles]{tocloft}
-\cftsetpnumwidth {1.25cm}\cftsetrmarg{1.5cm}
-\setlength{\cftchapnumwidth}{0.75cm}
-\setlength{\cftsecindent}{\cftchapnumwidth}
-\setlength{\cftsecnumwidth}{1.25cm}
-''',
+    'papersize': 'letterpaper',
+    'pointsize': '12pt',
     'fncychap': r'\usepackage[Bjornstrup]{fncychap}',
     'printindex': r'\footnotesize\centering\printindex',
 }
