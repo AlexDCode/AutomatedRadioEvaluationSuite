@@ -51,14 +51,6 @@ html_theme_options = {
     "navigation_with_keys": True,
     "top_of_page_buttons": ["view"],
     "sidebar_hide_name": True,
-    "light_css_variables": {
-        "color-brand-content": "#E2712D",
-        "color-background-secondary": "#245A80",
-    },
-    "dark_css_variables": {
-        "color-brand-content": "#E2712D",
-        "color-background-secondary": "#245A80",
-    },
 
     "footer_icons": [
         {

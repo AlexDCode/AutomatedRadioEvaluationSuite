@@ -1,3 +1,4 @@
+# Index
 <!-- File Tree -->
 ```{toctree}
 :maxdepth: 2
