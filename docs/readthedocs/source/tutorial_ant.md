@@ -202,9 +202,17 @@ During the test:
 * A progress window will show elapsed time and estimated completion time.
 * Once the test is finished, a prompt will appear to save the results.
 
+ ```{image} ./assets/Ant/ant_dialog.png
+:alt: Antenna Test Dialog Screen
+:class: bg-primary
+:width: 100%
+:align: center
+```
+
 After saving you results:
 * The measurement data is automatically loaded and visualized by ARES.
 * To view previous results, use the *Load Test* button.
+  
 
 ### 2D Radiation Pattern Results
 

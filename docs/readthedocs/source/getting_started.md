@@ -45,6 +45,6 @@ ARES has been tested and is compatible with the following instruments:
 - **Rohde & Schwarz SMW200A** — Signal Generator
 - **Hewlett-Packard E4433B** — Signal Generator
 - **ETS Lindgren EMCenter** — Position Controller
-- **ETS Lindgren Linear Slider**
+- **ETS Lindgren Linear Slider** — Slider Controller
 
 Other SCPI-compatible instruments may also work, provided they support the same command set as those listed.
