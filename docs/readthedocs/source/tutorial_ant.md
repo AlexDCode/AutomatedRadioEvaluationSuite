@@ -10,6 +10,7 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
 * 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, (~380 MB for 201 frequency points)
+* 3D scan ($5^{\circ}$ step for both $\theta$ and $\phi$): ~8 hours
     * Note only half $\theta$ scan may be needed for full 3D pattern, cutting the total time in half.
 ```
 
