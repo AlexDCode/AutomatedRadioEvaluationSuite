@@ -10,20 +10,7 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
 * Scan $\theta$ ($3^{\circ}$ step) with fixed $\phi$: ~8 minutes
 * Scan $\theta$ ($5^{\circ}$ step) with fixed $\phi$: ~6 minutes
 * 3D scan ($3^{\circ}$ step for both $\theta$ and $\phi$): ~20 hours, ~380 MB for 201 frequency points
-```
-
-```{admonition} Average Measurement Time
-:class: important
-- θ sweep (1° steps) at fixed φ: ~16 minutes  
-- θ sweep (3° steps) at fixed φ: ~8 minutes  
-- θ sweep (5° steps) at fixed φ: ~6 minutes  
-- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
-```
-```{admonition} Average Measurement Time
-- 2D sweep (1° steps in θ at fixed φ): ~16 minutes  
-- 2D sweep (3° steps in θ at fixed φ): ~8 minutes  
-- 2D sweep (5° steps in θ at fixed φ): ~6 minutes  
-- 3D sweep (3° steps in θ and φ): ~20 hours (~380 MB for 201 frequency points)
+    * Note only half $\theta$ scan may be needed for full 3D pattern, cutting the total time in half.
 ```
 
 ## Theory
