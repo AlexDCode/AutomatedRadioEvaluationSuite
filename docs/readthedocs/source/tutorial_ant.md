@@ -52,7 +52,7 @@ $$
 
 ### Gain Comparison Method
 
-In the gain comparison method (i.e., two antenna method), the reference antenna gain is known. Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$, calculated $FSPL$, and reference antenna gain $G_{REF}^{[dBi]}$.
+In the gain comparison method (i.e., two antenna method), the reference antenna gain is known. Hence, we can solve the Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$, calculated $FSPL$, and reference antenna gain $G_{REF}^{[dBi]}$.
 
 $$
 G_{DUT}^{[dBi]} = S_{21}^{[dB]} - FSPL - G_{REF}^{[dBi]}
@@ -61,7 +61,7 @@ $$
 
 ### Gain Transfer Method
 
-In the gain transfer method (i.e., one antenna method), the DUT and reference antenna are identical ($G_t^{[dBi]} = G_r^{[dBi]}$). Hence, we can solve Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$ and calculated $FSPL$.
+In the gain transfer method (i.e., one antenna method), the DUT and reference antenna are identical ($G_t^{[dBi]} = G_r^{[dBi]}$). Hence, we can solve the Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$ and calculated $FSPL$.
 
 $$
 G_{DUT}^{[dBi]} = \frac{S_{21}^{[dB]} - FSPL}{2}
@@ -80,7 +80,7 @@ $$
 * Select the relevant instrument VISA addresses in each dropdown of the *Instruments* tab.
 * Select *None: NA* for the instruments that will not be used. 
 * Follow the [Instrument Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html) for detailed information on how to edit the user-defined instrument database. 
-* Once all the addresses have been populated, click on *Connect* at the bottom to establish connection to each instrument and *Disconnect* to clear all connections. 
+* Once all the addresses have been populated, click on *Connect* at the bottom to establish a connection to each instrument and *Disconnect* to clear all connections. 
 
 The *Measurement Delay (s)* can be modified at any time before the measurement starts. This value is the time in seconds to wait between setting all the instruments and capturing the data.
 
@@ -200,16 +200,17 @@ After verifying all configuration settings, click *Start Test* to begin the meas
 
 During the test:
 * A progress window will show elapsed time and estimated completion time.
+* To terminate the test, press the *Stop Test* button on the progress window.
 * Once the test is finished, a prompt will appear to save the results.
 
- ```{image} ./assets/Ant/ant_dialog.png
+ ```{image} ./assets/Ant/ant_dialog.PNG
 :alt: Antenna Test Dialog Screen
 :class: bg-primary
 :width: 100%
 :align: center
 ```
 
-After saving you results:
+After saving your results:
 * The measurement data is automatically loaded and visualized by ARES.
 * To view previous results, use the *Load Test* button.
   
