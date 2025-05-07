@@ -11,7 +11,9 @@ Sample datasets are available in the [data/PA](https://github.com/AlexDCode/Auto
 ```
 
 ## Theory
-
+<pre>
+ 
+</pre>
 ### Gain and Efficiency
 
 Drain Efficiency (DE):
@@ -36,7 +38,9 @@ Where,
 * $P_{out}$: RF output power
 * $P_{in}$: RF input power
 * $P_{DC}$: DC supply (drain) power
-
+<pre>
+ 
+</pre>
 ### Gain Compression Points
 
 The gain compression points characterize the nonlinearity of a power amplifier (PA). These include:
@@ -46,7 +50,9 @@ The gain compression points characterize the nonlinearity of a power amplifier (
 * **Saturation Power ($P_{sat}$)**: Absolute maximum output power.
 
 These refer to output-referred compression points, which are standard for PAs. In contrast, input-referred compression points may be used for linear or low-noise amplifiers. These figures of merit indicate the linearity of the device under test (DUT).
-
+<pre>
+ 
+</pre>
 ### Calibration
 
 Direct Measurement (Supported):
@@ -55,7 +61,7 @@ Direct Measurement (Supported):
 * Small-signal (passive) S-parameters.
 * Large-signal driver measurements.
 
-These calibration types are supported directly through the ARES interface using standard instrument connections.
+Standard instrument connections support these calibration types directly through the ARES interface.
 
 Indirect Measurement (Not Yet Supported):
 
@@ -89,7 +95,6 @@ The *Measurement Delay* (s) can be modified at any time before the measurement s
 :align: center
 ```
 <pre>
-
  
 </pre>
 
@@ -155,6 +160,9 @@ Default values should be feasible for most constant-wave (CW) measurements. The 
 :width: 100%
 :align: center
 ```
+<pre>
+ 
+</pre>
 
 ### Configure the Measurement Calibration
 
@@ -165,7 +173,7 @@ Use the *Calibration Mode* dropdown to choose one of the following options:
 * **None**: No calibration will be applied.
 * **Fixed**: Specify static input and output attenuation in decibels, which will be applied equally to all frequencies. Used for passives (i.e., cables, attenuators, etc.).
 * **Small Signal**: Load an s-parameter measurement  (*.s2p file) for the input and output to specify a frequency-dependent attenuation. This is used for passives (i.e., cables, attenuators, etc.). The fixed attenuation options are still available, and they will be added to the s-parameter attenuations.
-* **Large Signal**: In addition to the small-signal calibration options, load a driver amplifier measurement following the same data format in the app. The DUT input power will be calculated by adding the input attenuation and grabing the output power of the driver at this input power and frequency. Intermediary values are linearly interpolated.
+* **Large Signal**: In addition to the small-signal calibration options, load a driver amplifier measurement following the same data format in the app. The DUT input power will be calculated by adding the input attenuation and grabbing the output power of the driver at this input power and frequency. Intermediary values are linearly interpolated.
 
 ```{image} ./assets/PA/calibration.png
 :alt: Calibration Configuration
@@ -173,6 +181,9 @@ Use the *Calibration Mode* dropdown to choose one of the following options:
 :width: 100%
 :align: center
 ```
+<pre>
+ 
+</pre>
 
 ### Run the Test and Plot the Results
 
@@ -193,6 +204,9 @@ During the test:
 After saving your results:
 * The measurement data is automatically loaded and visualized by ARES.
 * To view previous results, use the *Load Test* button.
+<pre>
+ 
+</pre>
 
 ### Single Frequency Results
 
@@ -204,6 +218,9 @@ In the *Single* results view window, use the *Frequency* and *PSU Channel* dropd
 :width: 100%
 :align: center
 ```
+<pre>
+ 
+</pre>
 
 ### Sweep Frequencies Results
 
