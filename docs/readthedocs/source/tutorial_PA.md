@@ -11,9 +11,7 @@ Sample datasets are available in the [data/PA](https://github.com/AlexDCode/Auto
 ```
 
 ## Theory
-<pre>
- 
-</pre>
+
 ### Gain and Efficiency
 
 Drain Efficiency (DE):
