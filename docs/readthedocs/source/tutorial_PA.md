@@ -88,6 +88,10 @@ The *Measurement Delay* (s) can be modified at any time before the measurement s
 :width: 100%
 :align: center
 ```
+<pre>
+
+ 
+</pre>
 
 ### Configure the DC Power Supplies
 
