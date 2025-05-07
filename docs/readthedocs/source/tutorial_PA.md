@@ -1,6 +1,6 @@
 # PA Tutorial
 
-The Power Amplifier (PA) module performs parametric measurements by sweeping frequency, input RF power, and controlling up to four power supplies. The software captures measurements, calculates figures of merit (FoM), saves the data, and plots the results. You do not need to rerun the test every time — previously saved data can be reloaded into the app. 
+The Power Amplifier (PA) module performs parametric measurements by sweeping frequency, input RF power, and controlling up to four power supplies. The software captures measurements, calculates figures of merit (FoM), saves the data, and plots the results. You do not need to rerun the test every time, as previously saved data can be reloaded into the app. 
 
 Sample datasets are available in the [data/PA](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA) folder.
 
@@ -41,8 +41,8 @@ Where,
 
 The gain compression points characterize the nonlinearity of a power amplifier (PA). These include:
 
-* **1 dB Compression Point ($P_{-1 dB}$)**: Output power where gain drops by 1 dB from its linear value.
-* **3 dB Compression Point ($P_{-3 dB}$)**: Output power where gain drops by 3 dB.
+* **1 dB Compression Point ($P_{-1 dB}$)**: Output power where gain drops by 1 dB from peak value.
+* **3 dB Compression Point ($P_{-3 dB}$)**: Output power where gain drops by 3 dB from peak value.
 * **Saturation Power ($P_{sat}$)**: Absolute maximum output power.
 
 These refer to output-referred compression points, which are standard for PAs. In contrast, input-referred compression points may be used for linear or low-noise amplifiers. These figures of merit indicate the linearity of the device under test (DUT).
@@ -59,7 +59,6 @@ These calibration types are supported directly through the ARES interface using 
 
 Indirect Measurement (Not Yet Supported):
 
-* Currently not available in the software.
 * Planned Feature: Support for coupled measurements using two signal analyzers—one measuring the input and the other measuring the output via directional couplers (e.g., -X dB).
 * This would enable real-time tracking of gain and distortion with a more accurate measurement path.
 
@@ -131,7 +130,7 @@ In the *Signal Generator Settings Section*:
 * Define the frequency sweep (if applicable) by filling out the *Start Frequency*, *Step Frequency*, and *Stop Frequency* according to the measurement type.
 * Define the RF input power sweep by filling out the *Start Power*, *Step Power*, and *Stop Power*.
 
-```{admonition} Average Measurement Time
+```{admonition} 
 :class: caution
 These settings are limited to the capabilities of the instruments (i.e., frequency and power range).
 ```
@@ -155,7 +154,7 @@ Default values should be feasible for most constant-wave (CW) measurements. The 
 
 The *Calibration* tab allows you to optionally account for attenuation and external gain stages. 
 
-Use the Calibration Mode dropdown to choose one of the following options:
+Use the *Calibration Mode* dropdown to choose one of the following options:
 
 * **None**: No calibration will be applied.
 * **Fixed**: Specify static input and output attenuation in decibels, which will be applied equally to all frequencies. Used for passives (i.e., cables, attenuators, etc.).
@@ -179,7 +178,7 @@ During the test:
 * Once the test is finished, a prompt will appear to save the results.
 
  ```{image} ./assets/Ant/PA_dialog.PNG
-:alt: Antenna Test Dialog Screen
+:alt: PA Test Dialog Screen
 :class: bg-primary
 :width: 100%
 :align: center
