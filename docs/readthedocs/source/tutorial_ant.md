@@ -49,7 +49,9 @@ The ratio of received to transmitted power will be the measured magnitude:
 $$
 S_{21} = \frac{P_r}{P_t} 
 $$
-
+<pre>
+ 
+</pre>
 ### Gain Comparison Method
 
 In the gain comparison method (i.e., two antenna method), the reference antenna gain is known. Hence, we can solve the Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$, calculated $FSPL$, and reference antenna gain $G_{REF}^{[dBi]}$.
@@ -57,8 +59,9 @@ In the gain comparison method (i.e., two antenna method), the reference antenna 
 $$
 G_{DUT}^{[dBi]} = S_{21}^{[dB]} - FSPL - G_{REF}^{[dBi]}
 $$
-
-
+<pre>
+ 
+</pre>
 ### Gain Transfer Method
 
 In the gain transfer method (i.e., one antenna method), the DUT and reference antenna are identical ($G_t^{[dBi]} = G_r^{[dBi]}$). Hence, we can solve the Friis transmission equation with this assumption and express it in terms of the measured S-parameters $S_{21}^{[dB]}$ and calculated $FSPL$.
@@ -74,7 +77,9 @@ $$
 * To get started, calibrate the Vector Network Analyzer (VNA) at the measurement plane, where the reference antenna and DUT will be connected. Set your frequency range and number of points (or step size) as desired **before calibration**.
 
 * Using an eCal is highly recommended, as shown in the following [demonstration](https://youtu.be/OefvtshJiC0?si=ZZNQlMm1ttoYM5Pf).
-
+<pre>
+ 
+</pre>
 ### Connect to the Instruments
 
 * Select the relevant instrument VISA addresses in each dropdown of the *Instruments* tab.
@@ -90,7 +95,9 @@ The *Measurement Delay (s)* can be modified at any time before the measurement s
 :width: 100%
 :align: center
 ```
-
+<pre>
+ 
+</pre>
 ### Load Reference Antenna Data (for Gain Comparison Method)
 
 For the [Gain Comparison Method](#gain-comparison-method), the reference antenna gain needs to be loaded using the same data format as measured antennas.
@@ -111,7 +118,9 @@ For the [Gain Comparison Method](#gain-comparison-method), the reference antenna
 :width: 100%
 :align: center
 ```
-
+<pre>
+ 
+</pre>
 ### Configure the VNA
 
 Use the *VNA* tab to review and adjust Vector Network Analyzer (VNA) settings. When the VNA is connected, its current configuration is automatically loaded into the app. If you modify key parameters such as *Sweep Points*, *Start Frequency*, or *Stop Frequency*, the existing calibration may no longer be valid.
@@ -126,11 +135,12 @@ Optionally, the app can apply smoothing to the VNA data using a moving average f
 :width: 100%
 :align: center
 ```
+<pre>
+ 
+</pre>
+### Configure the Turntable ($\theta$ axis)
 
-
-### Configure the Turntable (theta axis)
-
-Use the *Table* tab to set up theta-axis rotation for antenna measurements. 
+Use the *Table* tab to set up $\theta$-axis rotation for antenna measurements. 
 
 To configure the turntable:
 * Select either a static or parametric sweep.
@@ -149,11 +159,12 @@ To control the turntable manually:
 :width: 100%
 :align: center
 ```
+<pre>
+ 
+</pre>
+### Configure the Tower ($\phi$ axis)
 
-
-### Configure the Tower (phi axis)
-
-Use the *Tower* tab to set up phi-axis rotation for antenna measurements. 
+Use the *Tower* tab to set up $\phi$-axis rotation for antenna measurements. 
 
 To configure the tower:
 * Select either a static or parametric sweep.
@@ -172,7 +183,9 @@ To control the tower manually:
 :width: 100%
 :align: center
 ```
-
+<pre>
+ 
+</pre>
 ### Configure the Linear Slider
 
 Use the *Linear Slider* tab to control antenna spacing and movement along the rail.
@@ -193,7 +206,9 @@ Live displays include:
 :width: 100%
 :align: center
 ```
-
+<pre>
+ 
+</pre>
 ### Run the Test and Plot the Results
 
 After verifying all configuration settings, click *Start Test* to begin the measurement.
@@ -213,8 +228,9 @@ During the test:
 After saving your results:
 * The measurement data is automatically loaded and visualized by ARES.
 * To view previous results, use the *Load Test* button.
-  
-
+<pre>
+ 
+</pre>
 ### 2D Radiation Pattern Results
 
 The *2D Radiation Pattern* window displays:
@@ -228,7 +244,9 @@ The *2D Radiation Pattern* window displays:
 :width: 100%
 :align: center
 ```
-
+<pre>
+ 
+</pre>
 ### 3D Radiation Pattern Results
 
 The *3D Radiation Pattern* window displays:
