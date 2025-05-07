@@ -130,9 +130,7 @@ In the *Signal Generator Settings Section*:
 * Define the frequency sweep (if applicable) by filling out the *Start Frequency*, *Step Frequency*, and *Stop Frequency* according to the measurement type.
 * Define the RF input power sweep by filling out the *Start Power*, *Step Power*, and *Stop Power*.
 
-```{admonition} 
-:class: caution
-These settings are limited to the capabilities of the instruments (i.e., frequency and power range).
+```{caution} These settings are limited to the capabilities of the instruments (i.e., frequency and power range).
 ```
 
 In the *Signal Analyzer Settings Section*:
