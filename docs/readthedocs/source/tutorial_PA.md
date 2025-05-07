@@ -122,7 +122,9 @@ Each supply output is labeled with a supply name (A or B) and an output number (
 :width: 100%
 :align: center
 ```
-<pre></pre>
+<pre>
+ 
+</pre>
 
 ### Configure the Signal Generator and Analyzer
 
