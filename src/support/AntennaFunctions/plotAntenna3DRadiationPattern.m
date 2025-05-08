@@ -22,7 +22,12 @@ function plotAntenna3DRadiationPattern(app)
         cla(app.RadiationPlot3DPattern);
         ax = app.RadiationPlot3DPattern;
         app.RadiationPlot3DLabel.Text = '';
-        colorbar(ax, 'delete');
+
+        % Delete colorbar if it exists.
+        cb = findobj(ax.Parent, 'Tag', 'Colorbar');
+        if ~isempty(cb)
+            delete(cb);
+        end
 
         % Specified frequency plotting index.
         if ~isempty(app.PlotFrequencyMHzDropDown.Value)
@@ -75,15 +80,15 @@ function plotAntenna3DRadiationPattern(app)
         % Using the internal spherical renderer for true polar axes from 
         % Antenna Toolbox.
         pause(0.1); 
-        antennashared.internal.radiationpattern3D(ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
-        ylabel(colorbar(ax), 'Gain (dBi)');
+        RADIATIONPATTERN3D(app, ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
+        cb = colorbar('peer', ax);
+        ylabel(cb, 'Gain (dBi)');
         axis(ax, 'tight');
 
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(ax, 'LineThickness', 2);
 
-        % Create and assign context menu to save the plot as a PNG or JPEG.
-        setupContextMenuFor3DPlot(app);
+        setupContextMenuFor3DPlot(app)
     catch ME
         app.displayError(ME);
     end

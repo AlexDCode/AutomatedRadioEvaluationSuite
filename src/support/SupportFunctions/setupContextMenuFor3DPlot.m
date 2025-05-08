@@ -11,7 +11,7 @@ function setupContextMenuFor3DPlot(app)
     % OUTPUT:
     %   None
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-   
+ 
     cm = uicontextmenu(app.UIFigure);
 
     formats = {'png', 'jpg'};
