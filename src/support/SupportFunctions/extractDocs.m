@@ -47,6 +47,12 @@ function extractDocs(folderPath, outFilename, headerStr, excludedFolders)
             continue;
         end
 
+        % Skip RADIATIONPATTERN3D.m file
+        if strcmp(file.name, 'RADIATIONPATTERN3D.m')
+            fprintf('Skipping %s\n', file.name);  
+            continue; 
+        end
+
         try
             docString = help(fullFilePath);
             if isempty(strtrim(docString))
