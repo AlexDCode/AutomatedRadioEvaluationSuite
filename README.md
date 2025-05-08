@@ -55,6 +55,8 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ### [Installing ARES](https://aresapp.readthedocs.io/latest/getting_started.html)
 
+### [Instrumnet Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html)
+
 ### [PA Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_PA.html)
 
 ### [Antenna Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_ant.html)
