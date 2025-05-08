@@ -46,8 +46,9 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 ## TODO
 
 - **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
-- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with JSON file. Add MATLAB style toolbar and resizable pannels.
+- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file. Add MATLAB-style toolbar and resizable panels.
 - **Antenna Measurements**: Add capabilities to measure antenna directivity, efficiency, and polarization. Enable measurement of circular polarized antennas.
+- **PA Measurements**: Add a Drain Current vs Input RF Power Plot, for further PA troubleshooting.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
 
 ## Usage
