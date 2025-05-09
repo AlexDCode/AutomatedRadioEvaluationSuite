@@ -1,4 +1,4 @@
-function makeAntenna3DRadiationPattern(axes, Magnitude, Theta, Phi)
+function createAntenna3DRadiationPattern(axes, Magnitude, Theta, Phi)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function generates a 3D radiation pattern plot for antennas in App Designer environments. It
@@ -11,7 +11,7 @@ function makeAntenna3DRadiationPattern(axes, Magnitude, Theta, Phi)
     %   - Provides visual indicators for azimuth and elevation angles
     %   - Supports proper scaling and normalization of magnitude data
     %
-    % NOTES:
+    % Things to consider:
     %   - Magnitude should be a matrix where dimensions match the length of Phi and Theta vectors
     %   - The function automatically normalizes the pattern for visualization
     %   - Colors represent magnitude values according to the default jet colormap

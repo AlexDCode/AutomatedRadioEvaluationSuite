@@ -78,10 +78,8 @@ function plotAntenna3DRadiationPattern(app)
         end
 
         % 1) 3D Radiation Pattern Plot
-        % Using the internal spherical renderer for true polar axes from 
-        % Antenna Toolbox.
         pause(0.1); 
-        makeAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
+        createAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
         cb = colorbar('peer', ax);
         ylabel(cb, 'Gain (dBi)');
         axis(ax, 'tight');
