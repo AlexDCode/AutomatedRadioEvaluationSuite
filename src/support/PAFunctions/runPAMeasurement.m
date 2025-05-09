@@ -165,6 +165,7 @@ function runPAMeasurement(app)
             resultsTable.("PAE (%)")(i) = PAE;   
             
             for ch = 1:length(app.FilledPSUChannels)
+                % TODO: Add channel current (A) to results
                 resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i) = parametersTable.(sprintf('Channel %d Voltage', ch))(i);
                 resultsTable.(sprintf('Channel %d DC Power (W)', ch))(i) = DCDrainPower(1, ch);
             end

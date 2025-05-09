@@ -88,6 +88,7 @@ function combinedData = processPAData(app, combinedData)
         % Plot with updated dropdown values.
         plotPASingleMeasurement(app);
         plotPASweepMeasurement(app);
+        plotPADCMeasurement(app);
     end
 end
 

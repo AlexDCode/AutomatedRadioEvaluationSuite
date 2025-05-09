@@ -1,7 +1,7 @@
 function plotPASweepMeasurement(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
-    % This function plots performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain,
+    % This function plots RF performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain,
     % saturation power (Psat), efficiency (DE and PAE), and gain compression points (-1 dB, -3 dB). It filters the PA
     % dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for 
     % clarity:

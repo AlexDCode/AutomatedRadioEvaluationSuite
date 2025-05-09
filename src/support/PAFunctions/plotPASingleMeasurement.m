@@ -29,6 +29,7 @@ function plotPASingleMeasurement(app)
         idx = idx & idx_i;
     end
 
+    % Index the plot for the selected frequency
     idx_freq = (app.PA_DataTable.FrequencyMHz == str2double(app.FrequencySingleDropDown.Value));
     idx = idx & idx_freq;
 
