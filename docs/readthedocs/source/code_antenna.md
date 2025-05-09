@@ -52,6 +52,39 @@ This function initializes and preallocates a results table for storing antenna t
 
 ---
 
+## makeAntenna3DRadiationPattern.m
+`Path: src\support\AntennaFunctions\makeAntenna3DRadiationPattern.m`
+
+**Description:**
+
+This function generates a 3D radiation pattern plot for antennas in App Designer environments. It creates a visually informative 3D representation of radiation patterns without dependencies on internal MATLAB functions. The function: NOTES: * Theta = 0° points along positive z-axis * Theta = 90°, Phi = 0° points along positive x-axis * Theta = 90°, Phi = 90° points along positive y-axis
+
+- Renders a 3D surface representation of radiation pattern data
+- Draws reference coordinate system with x, y, z axes and plane indicators
+- Creates interactive elements (data tips) for measurements
+- Provides visual indicators for azimuth and elevation angles
+- Supports proper scaling and normalization of magnitude data
+- Magnitude should be a matrix where dimensions match the length of Phi and Theta vectors
+- The function automatically normalizes the pattern for visualization
+- Colors represent magnitude values according to the default jet colormap
+- Coordinate system follows standard spherical conventions:
+
+```{admonition} Input Parameters
+:class: tip
+- app       - App Designer application object containing the UI components
+- axes      - Target UIAxes object where the pattern will be rendered
+- Magnitude - Matrix of magnitude values (typically in dBi) corresponding to the pattern
+- Theta     - Vector of theta angles in degrees (elevation angle, 0-180°)
+- Phi       - Vector of phi angles in degrees (azimuth angle, 0-360°)
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None. The function modifies the provided axes object directly.
+```
+
+---
+
 ## measureAntennaGain.m
 `Path: src\support\AntennaFunctions\measureAntennaGain.m`
 
@@ -132,21 +165,22 @@ This function generates and displays several 2D plots related to antenna measure
 
 **Description:**
 
-This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, phi, and gain values in the application UI. The function:
+This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values from the application data. The function:
 
-- Extracts the antenna gain data for the specified frequency.
-- Ensures consistency in angle data.
-- Creates and displays the 3D radiation pattern plot.
+- Extracts the antenna gain data for the selected frequency
+- Processes angle data for consistent representation
+- Creates a properly formatted gain matrix
+- Renders the 3D radiation pattern with appropriate visual elements
 - Displays appropriate error or warning messages if data is inconsistent or invalid.
 
 ```{admonition} Input Parameters
 :class: tip
-- app  - Application object containing the antenna measurement data and plot handles.
+- app  - Application object containing the antenna measurement data and UI components.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- None
+- None - The function updates the application's UI components directly.
 ```
 
 ---
