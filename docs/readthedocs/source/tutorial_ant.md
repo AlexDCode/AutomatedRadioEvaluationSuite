@@ -14,6 +14,8 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
     * Note only half $\theta$ scan may be needed for full 3D pattern, cutting the total time in half.
 ```
 
+-------------------
+
 ## Theory
 
 ### Foundational Equations
