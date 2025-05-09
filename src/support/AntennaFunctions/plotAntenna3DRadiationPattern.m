@@ -2,19 +2,20 @@ function plotAntenna3DRadiationPattern(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It
-    % uses the Antenna Toolbox's internal spherical renderer to plot a 3D radiation pattern based on theta, 
-    % phi, and gain values in the application UI. The function:
+    % creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values
+    % from the application data. The function:
     % 
-    %   - Extracts the antenna gain data for the specified frequency.
-    %   - Ensures consistency in angle data.
-    %   - Creates and displays the 3D radiation pattern plot.
+    %   - Extracts the antenna gain data for the selected frequency
+    %   - Processes angle data for consistent representation
+    %   - Creates a properly formatted gain matrix
+    %   - Renders the 3D radiation pattern with appropriate visual elements
     %   - Displays appropriate error or warning messages if data is inconsistent or invalid.
     %
     % INPUT:
-    %   app  - Application object containing the antenna measurement data and plot handles.
+    %   app  - Application object containing the antenna measurement data and UI components.
     %
     % OUTPUT:
-    %   None
+    %   None - The function updates the application's UI components directly.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     try
@@ -80,7 +81,7 @@ function plotAntenna3DRadiationPattern(app)
         % Using the internal spherical renderer for true polar axes from 
         % Antenna Toolbox.
         pause(0.1); 
-        RADIATIONPATTERN3D(app, ax, gainMatrix, uniqueTheta, uniquePhi, 'CurrentAxes', 1);
+        makeAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
         cb = colorbar('peer', ax);
         ylabel(cb, 'Gain (dBi)');
         axis(ax, 'tight');
