@@ -10,6 +10,8 @@ Sample datasets are available in the [data/PA](https://github.com/AlexDCode/Auto
 * A data point corresponds to one combination of the parametric sweep, represented as a single row in the parameters and results table.
 ```
 
+-------------------
+
 ## Theory
 
 ### Gain and Efficiency
