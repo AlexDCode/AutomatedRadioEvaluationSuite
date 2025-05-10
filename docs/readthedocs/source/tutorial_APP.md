@@ -26,6 +26,19 @@ This log enables users to:
 - Optimize sweep parameters and delays
 - Maintain a record of test durations for reproducibility or documentation
 
+Measurement Log Example:
+
+```none
+[27-Apr-2025 15:57:38]
+Antenna Measurement Summary:
+Start Time: 27-Apr-2025 15:56:11
+End Time: 27-Apr-2025 15:57:38
+Duration: 00:01:26
+Total Positions Measured: 19
+Average Time Per Position: 00:00:04
+---------------------------------------------------------------------------
+```
+
 ### Error Logging
 
 ARES includes a built-in error handling system to capture unexpected issues during execution.
@@ -45,10 +58,37 @@ Each error entry includes:
 - **Error Identifier**
 - **Stack Trace** (file, function name, and line number)
 
-```{admonition} l
+```{admonition} Note
 :class: tip
 *  If the log file or folder doesn’t exist, ARES will create it automatically.
 ```
 
 This feature is particularly useful when debugging or reporting issues. The user can easily share the log file with our team to diagnose problems quickly.
+
+Error Log Example:
+
+```none
+[08-May-2025 19:57:30]
+Error: Unrecognized function or variable 'units'.
+Identifier: MATLAB:UndefinedFunction
+
+Stack Trace:
+In file: C:\Users\USERNAME\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\RADIATIONPATTERN3D.m
+Function: RADIATIONPATTERN3D
+Line: 70
+
+In file: C:\Users\USERNAME\Documents\GitHub\AutomatedRadioEvaluationSuite\src\support\AntennaFunctions\plotAntenna3DRadiationPattern.m
+Function: plotAntenna3DRadiationPattern
+Line: 83
+
+In file: C:\Users\USERNAME\Documents\GitHub\AutomatedRadioEvaluationSuite\src\ARES.mlapp
+Function: ARES.AntennaSelectedFrequencyValue
+Line: 1793
+
+In file: C:\Program Files\MATLAB\R2025a\toolbox\matlab\appdesigner\appdesigner\runtime\+matlab\+apps\AppBase.m
+Function: @(source,event)executeCallback(ams,app,callback,requiresEventData,event)
+Line: 54
+
+---------------------------------------------------------------------------
+```
 
