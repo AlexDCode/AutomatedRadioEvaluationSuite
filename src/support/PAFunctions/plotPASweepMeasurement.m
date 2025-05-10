@@ -6,7 +6,6 @@ function plotPASweepMeasurement(app)
     % dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for 
     % clarity:
     %
-    %   - Gain vs. Output Power for each frequency
     %   - Peak Gain vs. Frequency 
     %   - Peak Drain Efficiency (DE) and Power-Added Efficiency (PAE) vs. Frequency 
     %   - Psat, -1 dB, and -3 dB compression points vs. Frequency 
@@ -19,7 +18,6 @@ function plotPASweepMeasurement(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Clear existing plots.
-    cla(app.GainvsOutputPowerPlot, "reset");
     cla(app.PeakGainPlot, "reset");
     cla(app.PeakDEPAEPlot, "reset");
     cla(app.CompressionPointsPlot, "reset");
@@ -31,37 +29,17 @@ function plotPASweepMeasurement(app)
         idx_i = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
         idx = idx & idx_i;
     end
-
-    % 1) Plot Gain vs. Pout
-    % Frequencies to iterate over.
-    freqs = unique(app.PA_DataTable(idx, "FrequencyMHz"));
-    hold(app.GainvsOutputPowerPlot, 'on'); 
-
-    for i = 1:height(freqs)
-        % Get temporary subtable for each frequency.
-        freq_DataTable = app.PA_DataTable(idx,:);
-        freq_DataTable = freq_DataTable(freq_DataTable.FrequencyMHz == freqs.FrequencyMHz(i),:);
-        
-        % Plot Gain vs. Pout
-        plot(app.GainvsOutputPowerPlot, freq_DataTable.RFOutputPowerdBm, freq_DataTable.Gain);
-    end
-
-    % Labels for Gain vs. Pout plot.
-    hold(app.GainvsOutputPowerPlot, 'off');
-    title(app.GainvsOutputPowerPlot, 'Gain vs. Output Power');
-    xlabel(app.GainvsOutputPowerPlot, 'Output Power (dBm)');
-    ylabel(app.GainvsOutputPowerPlot, 'Gain (dB)');
     
     % Getting the peak values.
     [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = measureRFParametersPeaks(app,idx);
 
-    % 2) Peak Gain vs. Frequency
+    % 1) Peak Gain vs. Frequency
     plot(app.PeakGainPlot, peakGain.FrequencyMHz, peakGain.max_Gain, 'b-o');
     title(app.PeakGainPlot, 'Peak Gain');
     xlabel(app.PeakGainPlot, 'Frequency (MHz)');
     ylabel(app.PeakGainPlot, 'Gain (dB)');
 
-    % 3) Peak DE & PAE vs. Frequency
+    % 2) Peak DE & PAE vs. Frequency
     hold(app.PeakDEPAEPlot, 'on');
     h1 = plot(app.PeakDEPAEPlot, peakDE.FrequencyMHz, peakDE.max_DE, 'b-o');
     h2 = plot(app.PeakDEPAEPlot, peakPAE.FrequencyMHz, peakPAE.max_PAE, 'r-o');
@@ -71,7 +49,7 @@ function plotPASweepMeasurement(app)
     ylabel(app.PeakDEPAEPlot, 'Efficiency (%)');
     legend(app.PeakDEPAEPlot, [h1, h2], {'DE', 'PAE'}, 'Location', 'best');
     
-    % 4) Saturation Power & Compression Points
+    % 3) Saturation Power & Compression Points
     hold(app.CompressionPointsPlot, 'on');
     legendLabels = {};
     plotHandles = [];
@@ -116,7 +94,6 @@ function plotPASweepMeasurement(app)
     end
     
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.
-    improveAxesAppearance(app.GainvsOutputPowerPlot, 'LineThickness', 1);
     improveAxesAppearance(app.PeakGainPlot, 'LineThickness', 2);
     improveAxesAppearance(app.PeakDEPAEPlot, 'LineThickness', 2);
     improveAxesAppearance(app.CompressionPointsPlot, 'LineThickness', 2);
