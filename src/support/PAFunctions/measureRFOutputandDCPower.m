@@ -1,4 +1,4 @@
-function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, inputRFPower, frequency)
+function [OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, inputRFPower, frequency)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function measures the output RF power, DC drain power, and DC gate power based on the specified input
@@ -50,6 +50,10 @@ function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(
     % Clear the status register of the spectrum analyzer.
     writeline(app.SpectrumAnalyzer, '*CLS');
 
+    % Measure DC Current and initalize outputs.
+    DCDrainCurrent = zeros(1, length(app.FilledPSUChannels));
+    DCGateCurrent = zeros(1, length(app.FilledPSUChannels));
+
     % Measure DC Power and intialize outputs.
     DCDrainPower = zeros(1, length(app.FilledPSUChannels)); 
     DCGatePower = zeros(1, length(app.FilledPSUChannels));   
@@ -63,26 +67,27 @@ function [OutputRFPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(
         [deviceChannel, psuName] = strtok(app.ChannelToDeviceMap(channel), ',');
         psuName = psuName(2:end);
 
-        % Select PSU
+        % Select PSU.
         if strcmp(psuName, 'PSUA')
             psu = app.PowerSupplyA;
         else
             psu = app.PowerSupplyB;
         end
 
-        % Read Voltage from PSU
+        % Read Voltage from PSU.
         DCVoltage = str2double(writeread(psu, sprintf(':MEASure:SCALar:VOLTage:DC? %s', deviceChannel)));
         % Read Current from PSU
         DCCurrent = str2double(writeread(psu, sprintf(':MEASure:SCALar:CURRent:DC? %s', deviceChannel)));
-
-        % Calculate DC Power
+        % Calculate DC Power.
         channelPower = DCVoltage * DCCurrent;
 
-        % Store the power based on channel designation.
+        % Store the current and power based on channel designation.
         if ismember(channel, app.DrainChannels)
+            DCDrainCurrent(drainIndex) = DCCurrent;
             DCDrainPower(drainIndex) = channelPower;
             drainIndex = drainIndex + 1;
         elseif ismember(channel, app.GateChannels)
+            DCGateCurrent(gateIndex) = DCCurrent;
             DCGatePower(gateIndex) = channelPower;
             gateIndex = gateIndex + 1;
         end

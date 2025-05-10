@@ -127,8 +127,8 @@ function runPAMeasurement(app)
             % Small delay.
             pause(app.PAMeasurementDelayValueField.Value);
 
-            % Measure RF and DC Power.
-            [RFOutputPower, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
+            % Measure RF Powwr, DC Current, and DC Power.
+            [RFOutputPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
             
             % Apply de-embedding calibration based on user
             % selected calibration mode.
@@ -139,8 +139,12 @@ function runPAMeasurement(app)
             
             % Add outCal to get actual PA output power.
             correctedRFOutputPower = RFOutputPower + outCal;
+
+            % Calculate total DC Current (A).
+            TotalDCDrainCurrent = sum(DCDrainCurrent);
+            TotalDCGateCurrent = sum(DCGateCurrent);
             
-            % Calculate total DC Power.
+            % Calculate total DC Power (W).
             TotalDCDrainPower = sum(DCDrainPower);
             TotalDCGatePower = sum(DCGatePower);
             
@@ -160,13 +164,16 @@ function runPAMeasurement(app)
             resultsTable.("RF Input Power (dBm)")(i) = correctedRFInputPower;
             resultsTable.("RF Output Power (dBm)")(i) = correctedRFOutputPower;
             resultsTable.Gain(i) = Gain;
+            resultsTable.("Total DC Drain Current (A)")(i) = TotalDCDrainCurrent;
+            resultsTable.("Total DC Gate Current (A)")(i) = TotalDCGateCurrent;
             resultsTable.("Total DC Drain Power (W)")(i) = TotalDCDrainPower;
+            resultsTable.("Total DC Gate Power (W)")(i) = TotalDCGatePower;
             resultsTable.("DE (%)")(i) = DE;
             resultsTable.("PAE (%)")(i) = PAE;   
             
             for ch = 1:length(app.FilledPSUChannels)
-                % TODO: Add channel current (A) to results
                 resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i) = parametersTable.(sprintf('Channel %d Voltage', ch))(i);
+                resultsTable.(sprintf('Channel %d DC Current (A)', ch))(i) = DCDrainCurrent(1, ch);
                 resultsTable.(sprintf('Channel %d DC Power (W)', ch))(i) = DCDrainPower(1, ch);
             end
         end
@@ -205,6 +212,7 @@ function runPAMeasurement(app)
         % Plot with updated dropdown values.
         plotPASingleMeasurement(app);
         plotPASweepMeasurement(app);
+        plotPADCMeasurement(app);
     catch ME
         % If an error occurs during the PA test measurement, then
         % for safety reasons the instruments will be turned off.

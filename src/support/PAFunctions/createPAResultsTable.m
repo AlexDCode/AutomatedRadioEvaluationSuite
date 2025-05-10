@@ -12,9 +12,14 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
     %   - RF Input Power (dBm)
     %   - RF Output Power (dBm)
     %   - Gain
+    %   - Channel 1 DC Current (A) (if n = 1)
+    %   - ...
+    %   - Channel n DC Current (A)
     %   - Channel 1 DC Power (W) (if n = 1)
     %   - ...
     %   - Channel n DC Power (W)
+    %   - Total DC Drain Current (A)
+    %   - Total DC Gain Current (A)
     %   - Total DC Drain Power (W)
     %   - Total DC Gate Power (W)
     %   - DE (%)
@@ -41,6 +46,11 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
     
     % Add measurement columns independent of active channels.
     varNames = [varNames, 'RF Input Power (dBm)', 'RF Output Power (dBm)', 'Gain'];
+
+    % Add current columns based on the number of active channels.
+    for i = 1:numChannels
+        varNames{end+1} = sprintf('Channel %d DC Current (A)', i); %#ok<AGROW> 
+    end
     
     % Add DC power coumns based on the number of active channels.
     for i = 1:numChannels
@@ -49,6 +59,8 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
     
     % Add total DC drain power if there are multiple channels.
     if numChannels > 1
+        varNames{end+1} = 'Total DC Drain Current (A)';
+        varNames{end+1} = 'Total DC Gain Current (A)';
         varNames{end+1} = 'Total DC Drain Power (W)';
         varNames{end+1} = 'Total DC Gate Power (W)';
     end
