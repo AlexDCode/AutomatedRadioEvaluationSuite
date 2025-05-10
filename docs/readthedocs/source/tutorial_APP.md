@@ -45,7 +45,7 @@ Each error entry includes:
 - **Error Identifier**
 - **Stack Trace** (file, function name, and line number)
 
-```{admonition} 
+```{admonition} l
 :class: tip
 *  If the log file or folder doesn’t exist, ARES will create it automatically.
 ```
