@@ -7,12 +7,12 @@
 ARES includes a built-in **right-click export system** for all major plots across the application, making it easy to save results directly from the GUI.
 
 How It Works:
-- Right-click on any plot.
-- A context menu with export options appears next to the plot.
-- Choose a format:
-  --PNG, JPG - High resolution images
-  --PDF - Vector graphics for papers and presentations
-  --TikZ - For LaTeX users
+* Right-click on any plot.
+* A context menu with export options appears next to the plot.
+* Choose a format:
+  * **PNG, JPG** – High resolution images
+  * **PDF** – Vector graphics for papers and presentations
+  * **TikZ** – For LaTeX users
 
 ```{admonition} Note
 :class: important
