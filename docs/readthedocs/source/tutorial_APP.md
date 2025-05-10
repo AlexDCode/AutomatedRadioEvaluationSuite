@@ -17,7 +17,7 @@ How It Works:
 ```{admonition} Note
 :class: important
 * **TikZ export** requires the `matlab2tikz` package and is only supported for **Cartesian 2D plots**.
-* **PDF export** is **not supported** for the **3D Radiation Plot** due to MATLAB’s `exportgraphics` limitations on 3D content.
+* **PDF export** is **not supported** for the 3D Radiation Plot due to MATLAB’s `exportgraphics` limitations on 3D content.
 ```
 
 ### Measurement Time Logging
