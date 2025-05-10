@@ -2,6 +2,24 @@
 
 -------------------
 
+### Plot Exporting
+
+ARES includes a built-in **right-click export system** for all major plots across the application, making it easy to save results directly from the GUI.
+
+How It Works:
+- Right-click on any plot.
+- A context menu with export options appears next to the plot.
+- Choose a format:
+  --PNG, JPG - High resolution images
+  --PDF - Vector graphics for papers and presentations
+  --TikZ - For LaTeX users
+
+```{admonition} Note
+:class: important
+* **TikZ export** requires the `matlab2tikz` package and is only supported for **Cartesian 2D plots**.
+* **PDF export** is **not supported** for the **3D Radiation Plot** due to MATLAB’s `exportgraphics` limitations on 3D content.
+```
+
 ### Measurement Time Logging
 
 ARES automatically logs performance metrics for every measurement session to help users monitor and optimize testing efficiency.
@@ -26,7 +44,7 @@ This log enables users to:
 - Optimize sweep parameters and delays
 - Maintain a record of test durations for reproducibility or documentation
 
-Measurement Log Example:
+**Measurement Log Example**:
 
 ```none
 [27-Apr-2025 15:57:38]
@@ -65,7 +83,7 @@ Each error entry includes:
 
 This feature is particularly useful when debugging or reporting issues. The user can easily share the log file with our team to diagnose problems quickly.
 
-Error Log Example:
+**Error Log Example**:
 
 ```none
 [08-May-2025 19:57:30]
