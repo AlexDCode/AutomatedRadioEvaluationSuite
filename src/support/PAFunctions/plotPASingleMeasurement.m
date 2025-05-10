@@ -39,7 +39,6 @@ function plotPASingleMeasurement(app)
     % Shared plot settings.
     title(ax, sprintf('Gain and Efficiency at %s MHz', app.FrequencySingleDropDown.Value), 'FontWeight', 'bold');
     xlabel(ax, 'Output Power (dBm)', 'FontWeight', 'bold');
-    grid(ax, 'on');
     
     % Plot DE and PAE on the right y-axis.
     yyaxis(ax, 'right');
