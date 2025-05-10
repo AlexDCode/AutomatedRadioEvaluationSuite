@@ -39,9 +39,14 @@ This function initializes an empty results table for Power Amplifier (PA) measur
 - RF Input Power (dBm)
 - RF Output Power (dBm)
 - Gain
+- Channel 1 DC Current (A) (if n = 1)
+- ...
+- Channel n DC Current (A)
 - Channel 1 DC Power (W) (if n = 1)
 - ...
 - Channel n DC Power (W)
+- Total DC Drain Current (A)
+- Total DC Gain Current (A)
 - Total DC Drain Power (W)
 - Total DC Gate Power (W)
 - DE (%)
@@ -171,6 +176,30 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 ---
 
+## plotPADCMeasurement.m
+`Path: src\support\PAFunctions\plotPADCMeasurement.m`
+
+**Description:**
+
+This function plots DC performance metrics from a frequency sweep Power Amplifier (PA) measurement, including drain currents (IDD) and drain DC power. It filters the PA dataset using user-selected supply voltages and generates the plots with styled axes and markers for clarity:
+
+- Supply Current vs. Output Power for each frequency
+- DC Supply Power vs. Output Power for each frequency
+- Peak Drain Current vs. Frequency
+- Peak DC Supply Power vs. Frequency
+
+```{admonition} Input Parameters
+:class: tip
+- app  - Application object containing PA measurement data and plotting components.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+```
+
+---
+
 ## plotPASingleMeasurement.m
 `Path: src\support\PAFunctions\plotPASingleMeasurement.m`
 
@@ -201,9 +230,8 @@ This function plots gain, drain efficiency (DE), and power-added efficiency (PAE
 
 **Description:**
 
-This function plots performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain, saturation power (Psat), efficiency (DE and PAE), and gain compression points (-1 dB, -3 dB). It filters the PA dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for clarity:
+This function plots RF performance metrics from a frequency sweep Power Amplifier (PA) measurement, including gain, saturation power (Psat), efficiency (DE and PAE), and gain compression points (-1 dB, -3 dB). It filters the PA dataset using user-selected supply voltages and generates four annotated plots with styled axes and markers for clarity:
 
-- Gain vs. Output Power for each frequency
 - Peak Gain vs. Frequency
 - Peak Drain Efficiency (DE) and PowerAdded Efficiency (PAE) vs. Frequency
 - Psat, 1 dB, and 3 dB compression points vs. Frequency
