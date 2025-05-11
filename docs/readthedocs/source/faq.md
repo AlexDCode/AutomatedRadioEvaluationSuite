@@ -78,8 +78,17 @@ Not all plot types support every export format:
 * Polar plots cannot be exported using TikZ.
 * PDF export is not supported for 3D radiation plots.
 
+## VNA isn’t returning expected values, what should I do?
 
+Unexpected or incorrect measurements are usually caused by instrument misconfiguration, cabling issues, or calibration mismatches. 
 
+Here's a checklist to troubleshoot:
 
-
-
+* Verify instrument calibration:
+  * Use a calibration kit or eCal module to calibrate the VNA at the measurement plane (where the DUT and reference antenna connect).
+  * Calibration should be done before connecting the VNA to ARES, using the same frequency range and number of sweep points you plan to use.
+* Don’t change the VNA frequency sweep settings after calibration:
+  * Once calibration is complete, do not adjust *Start/Stop Frequency* or *Sweep Points* in the app.
+  * ARES reads the sweep settings from the VNA to preserve the calibrated state.
+* Check cables and terminations.
+* Inspect connectors for damage or wear.
