@@ -6,7 +6,7 @@ Most features in ARES work out of the box.
 
 For TikZ export:
 
-* The required matlab2tikz package is already bundled inside the ARES src folder.
+* The required **matlab2tikz** package is already bundled inside the ARES src folder.
 * No external installation is required.
 
 To ensure your environment is correctly configured, visit the Getting Started Guide for setup steps and required MATLAB toolboxes.
@@ -15,7 +15,7 @@ To ensure your environment is correctly configured, visit the Getting Started Gu
 
 You can obtain the instrument's VISA address in several ways:
 * On the instrument front panel (check LAN or IO settings).
-* Use Keysight Connection Expert or similar software to scan your local network for supported devices.
+* Use **Keysight Connection Expert** or similar software to scan your local network for supported devices.
 
 ![Keysight Conection Expert](./assets/FAQ/keysight_connectionexpert.png){witdh=1920px align=center}
 
@@ -43,7 +43,7 @@ Yes, the instrument database is a `.csv` file located at:
 
 You can open it in Excel, VS Code, or a text editor. Just make sure you preserve the format:
 
-* Column headers: Manufacturer, Model, Address
+* Column headers: *Manufacturer*, *Model*, *Address*
 * One row per instrument
 
 ## Where are my saved test results and logs stored?
@@ -56,9 +56,9 @@ All logs and configuration files are stored in your MATLAB user path under the `
 
 This includes:
 
-* ARES_Error_Log.txt – logs internal app errors
-* ARES_Measurement_Log.txt – logs the duration of each test
-* instrument_database.csv – stores instrument addresses
+* **ARES_Error_Log.txt** – logs internal app errors
+* **ARES_Measurement_Log.txt** – logs the duration of each test
+* **instrument_database.csv** – stores instrument addresses
 
 Measurement results are saved wherever you choose when prompted after a test run. ARES opens a folder selection dialog, and you select the location.
 
