@@ -2,6 +2,29 @@
 
 -------------------
 
+## Instrument Connections
+
+ARES connects to lab equipment using **VISA resource addresses**, which are stored in the instrument database. When the user presses *Connect*, ARES reads these addresses and establishes communication using MATLAB's `visadev` interface.
+
+How It Works:
+* Each dropdown in the *Instruments* tab corresponds to an entry in the instrument database.
+* When a valid resource string is selected, ARES:
+ * Attempts to connect using `visadev`.
+ * Sends an `*IDN?` query to confirm the instrument identity.
+ * Updates the GUI with the model number or connection status.
+ * Handles connection failures gracefully using the error logging system.
+
+**Supported Address Types**
+
+ARES supports VISA-compatible resource strings:
+
+|Type  |	Example Format                      |
+|------|-------------------------------------|
+|LAN   |	TCPIP0::192.168.0.101::inst0::INSTR |
+|GPIB  |	GPIB0::19::INSTR                    |
+|SOCKET|	TCPIP0::192.168.2.16::5025::SOCKET  |
+|USB   |                                     |
+
 ### Plot Exporting
 
 ARES includes a built-in **right-click export system** for all major plots across the application, making it easy to save results directly from the GUI.
