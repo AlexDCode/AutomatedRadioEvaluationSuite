@@ -9,7 +9,7 @@ For TikZ export:
 * The required **matlab2tikz** package is already bundled inside the ARES src folder.
 * No external installation is required.
 
-To ensure your environment is correctly configured, visit the Getting Started Guide for setup steps and required MATLAB toolboxes.
+To ensure your environment is correctly configured, visit the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) page for setup steps and required MATLAB toolboxes.
 
 ## How do I find my instrument’s VISA address?
 
