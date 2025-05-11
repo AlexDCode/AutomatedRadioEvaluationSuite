@@ -18,12 +18,12 @@ How It Works:
 
 ARES supports VISA-compatible resource strings:
 
-|Type  |	Example Format                      |
-|------|-------------------------------------|
-|LAN   |	TCPIP0::192.168.0.101::inst0::INSTR |
-|GPIB  |	GPIB0::19::INSTR                    |
-|SOCKET|	TCPIP0::192.168.2.16::5025::SOCKET  |
-|USB   |                                     |
+|Type   |	Example Format                             |
+|-------|--------------------------------------------|
+|GPIB   |	GPIB0::19::INSTR                           |
+|LAN    |	TCPIP0::192.168.0.101::inst0::INSTR        |
+|SOCKET |	TCPIP0::192.168.2.16::5025::SOCKET         |
+|USB    | USB0::0x0957::0x2807::MY62003488::0::INSTR |
 
 ### Plot Exporting
 
