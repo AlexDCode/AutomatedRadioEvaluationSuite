@@ -9,10 +9,10 @@ ARES connects to lab equipment using **VISA resource addresses**, which are stor
 How It Works:
 * Each dropdown in the *Instruments* tab corresponds to an entry in the instrument database.
 * When a valid resource string is selected, ARES:
- * Attempts to connect using `visadev`.
- * Sends an `*IDN?` query to confirm the instrument identity.
- * Updates the GUI with the model number or connection status.
- * Handles connection failures gracefully using the error logging system.
+  * Attempts to connect using `visadev`.
+  * Sends an `*IDN?` query to confirm the instrument identity.
+  * Updates the GUI with the model number or connection status.
+  * Handles connection failures gracefully using the error logging system.
 
 **Supported Address Types**
 
