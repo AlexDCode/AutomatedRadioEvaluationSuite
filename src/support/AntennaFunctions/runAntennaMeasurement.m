@@ -21,11 +21,6 @@ function runAntennaMeasurement(app)
     smoothingPercentage = app.SmoothingPercentage.Value;
     sweepPoints = app.VNASweepPoints.Value;
 
-    if ~isempty(app.ReferenceGainFile)
-        ReferenceFreqs = app.ReferenceGainFile.FrequencyMHz * 1E6;
-        ReferenceGain = app.ReferenceGainFile.GaindBi;
-    end
-    
     % Get table speed and theta angles.
     tableSpeed = app.TableSpeedSlider.Value;
     if strcmp(app.ThetaSingleSweepSwitch.Value,'Sweep')
@@ -42,9 +37,16 @@ function runAntennaMeasurement(app)
         towerAngles = app.TowerStartAngle.Value;
     end
     
-    % Create the parameters table to hold the measurement parameters and
-    % create the results table to hold the saved measurement data.
+    % Create the parameters table to hold the measurement parameters.
     parametersTable = createAntennaParametersTable(tableAngles, towerAngles);
+
+    % Add the boresight gain reference point (0,0) if not included.
+    if ~any(parametersTable.("Theta (deg)") == 0 & parametersTable.("Phi (deg)") == 0)
+        zeroRef = table(0, 0, 'VariableNames', ["Theta (deg)", "Phi (deg)"]);
+        parametersTable = [zeroRef; parametersTable];
+    end
+
+    % Create the results table to hold the saved measurement data.
     totalPositions = height(parametersTable);
     totalMeasurements = totalPositions * sweepPoints;
     resultsTable = createAntennaResultsTable(totalMeasurements);
@@ -108,8 +110,13 @@ function runAntennaMeasurement(app)
 
             % Exit the outer loop as well if stop was requested
             if d.CancelRequested
-                % Check if any data results have been recorded in the 
-                % measurement.
+                % Clear the reference data.
+                if isempty(app.ReferenceGainFileField.Value)
+                    app.ReferenceGainFile.GaindBi = [];
+                    app.ReferenceGainFile.FrequencyMHz = [];
+                end
+
+                % Check if any data has been recorded in the measurement.
                 validIndices = resultsTable.("Frequency (MHz)") > 0;
                 filteredResults = resultsTable(validIndices, :);
 
@@ -144,10 +151,15 @@ function runAntennaMeasurement(app)
             % Get S-Parameters and Frequencies from VNA
             [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPercentage);
 
-            if ~isempty(app.ReferenceGainFile)
-                Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, ReferenceGain, ReferenceFreqs);
-            else
+            % Calculate gain.
+            if isempty(app.ReferenceGainFile.GaindBi)
+                % Two-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
+                app.ReferenceGainFile.GaindBi = Gain_dBi;
+                app.ReferenceGainFile.FrequencyMHz = VNAFrequencies/1E6;
+            else
+                % Comparison-Antenna Method.
+                Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, app.ReferenceGainFile.GaindBi, app.ReferenceGainFile.FrequencyMHz*1E6);
             end
 
             resultsTable(dataPts, "Theta (deg)") = array2table(parametersTable.("Theta (deg)")(i)*ones(numel(dataPts),1));
@@ -174,8 +186,11 @@ function runAntennaMeasurement(app)
             % Log measurement completion time.
             logMeasurementTime(app, 'Antenna', measurementStartTime, measurementEndTime, measurementDuration, totalPositions);
 
-            % Save the complete measurement data.
-            fullFilename = saveData(resultsTable);
+            % Sort table by Theta, Phi, and Frequency before saving.
+            sortedResults = sortrows(resultsTable, ["Theta (deg)", "Phi (deg)", "Frequency (MHz)"]);
+            
+            % Save the complete sorted measurement data.
+            fullFilename = saveData(sortedResults);
 
             if ~isempty(fullFilename)
                 loadData(app, 'Antenna', fullFilename);
@@ -193,7 +208,19 @@ function runAntennaMeasurement(app)
 
         % Return the VNA windows to continuos mode.
         writeline(app.VNA, 'SENS1:SWE:MODE CONT');
+
+        % Clear the reference data.
+        if isempty(app.ReferenceGainFileField.Value)
+            app.ReferenceGainFile.GaindBi = [];
+            app.ReferenceGainFile.FrequencyMHz = [];
+        end
     catch ME
         app.displayError(ME);
     end
+end
+
+function sortResultsTable(resultsTable)
+
+    sort(resultsTable);
+
 end

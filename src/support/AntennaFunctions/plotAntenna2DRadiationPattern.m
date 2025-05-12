@@ -53,8 +53,8 @@ function plotAntenna2DRadiationPattern(app)
         thetaCutAngles = app.Antenna_Data(idx_theta & idx_freq,:).Phideg;
         thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).GaindBi;
 
-        % For linear plots, we need to handle the -180 to 180 transition specially
-        % Sort angles for consistent plotting
+        % Extra sorting for old data recorded prior to the new sorted
+        % results table changes.
         [phiCutAngles, sortIdx] = sort(phiCutAngles);
         phiCutGain = phiCutGain(sortIdx);
         [thetaCutAngles, sortIdx] = sort(thetaCutAngles);

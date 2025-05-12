@@ -26,12 +26,14 @@ function antennaGain = measureAntennaGain(TestFrequency, sParameter_dB, Spacing,
 
     % Speed of light (m/s). 
     c = 3E8; 
+
     % Wavelength (m).
     lambda = c ./ TestFrequency; 
+
     % Free Space Path Loss (dB).
     FSPL_dB = 20 * log10(lambda / (4*pi*Spacing));
 
-    if ~isempty(ReferenceGain)  
+    if ~isempty(ReferenceGain) && ~isempty(ReferenceFrequency)     
         % Comparison Antenna Method: Use reference antenna data.
         interpolatedRefGain = interp1(ReferenceFrequency, ReferenceGain, TestFrequency, 'spline');
         antennaGain = sParameter_dB - FSPL_dB - interpolatedRefGain;

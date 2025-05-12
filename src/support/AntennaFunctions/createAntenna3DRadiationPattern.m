@@ -163,10 +163,6 @@ function surfHdl = create3DPattern(axes, Mag, theta, phi, r, antoff)
     % Create the meshgrid for the spherical coordinates
     [theta, phi] = meshgrid(theta, phi);
     
-    % Reshape the magnitude and radius matrices
-    MagE = reshape(Mag, length(phi), length(theta));
-    r = reshape(r, length(phi), length(theta));
-    
     % Normalize the radius
     r_normalized = r./max(max(r));
 
@@ -179,7 +175,7 @@ function surfHdl = create3DPattern(axes, Mag, theta, phi, r, antoff)
     Z = Z + antoff(3);
     
     % Create the surface
-    surfHdl = surf(axes, X, Y, Z, MagE, 'FaceColor', 'interp');
+    surfHdl = surf(axes, X, Y, Z, Mag, 'FaceColor', 'interp');
     
     % Set surface properties
     set(surfHdl, 'LineStyle', 'none', 'FaceAlpha', 1.0, 'Tag', '3D polar plot');
