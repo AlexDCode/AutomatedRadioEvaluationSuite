@@ -1,5 +1,7 @@
 # Antenna Tutorial
 
+---
+
 The Antenna Module enables parametric measurements by varying the position of the Device Under Test (DUT) and acquiring its frequency response. The application captures the data, calculates antenna gain, saves the results, and visualizes the plots. Measurements can be reloaded from saved data, so tests do not need to be repeated unnecessarily.
 
 Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna) folder.
@@ -13,8 +15,6 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
 * 3D scan ($5^{\circ}$ step for both $\theta$ and $\phi$): ~8 hours
     * Note only half $\theta$ scan may be needed for full 3D pattern, cutting the total time in half.
 ```
-
--------------------
 
 ## Theory
 
