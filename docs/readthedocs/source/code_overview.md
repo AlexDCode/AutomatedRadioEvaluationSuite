@@ -1,20 +1,70 @@
-# App Source Code Overview
+# Source Code Overview
 
-The main application, instrument control code, and supporting functions are organized within the **[src](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src)** directory. Here’s an overview of the contents:
+---
 
-- **ARES.mlapp**: This is the main application file for ARES, where the graphical user interface (GUI) and core functionality reside.
-- **instrument_address_history.txt**: This text file stores the names of instruments and their corresponding IP addresses (or other connection details, like USB addresses). The app reads this file each time it is loaded to display available instruments and their addresses in the instrument blocks. Users can add, modify, or remove instrument addresses either through the app interface or by directly editing the **instrument_address_history.txt** file. The app handles the `visadev` connections internally and requires only the correct addresses to connect to the instruments.
+The full source code for ARES is organized within the **[src](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src)** directory. This section provides a high-level overview of the directory structure and key components.
 
-In the **[src/support](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support)** directory, you'll find three subdirectories, each containing functions relevant to specific parts of the app:
+## Main Application
 
-- **[AntennaFunctions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/AntennaFunctions)**: This directory contains functions related to antenna measurements, including the calculation of antenna gain using methods like gain comparison and gain transfer, S-parameters, and setting up necessary hardware like linear sliders. 
+`ARES.mlapp`
 
-- **[PAFunctions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/PAFunctions)**: This directory contains functions specific to power amplifier (PA) testing. It includes functions for measuring RF output, Gain, and DC Power, controlling power supply units (PSUs), deembedding PA characteristics, and validating and configuring PSU channels.
+The main application file contains the graphical user interface (GUI) and core app logic. This main file defines:
 
-- **[SupportFunctions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/SupportFunctions)**: This directory contains utility functions that are used across both antenna and PA modules. These include functions for data conversion, saving/loading measurement data, improving plot appearance, and ensuring smooth instrument communication, and other app-wide utilities that facilitate interaction with the system.
+* A tab-based interface layout.
+* Laboratory instrument connection workflows.
+* Measurement test execution for both antenna and PA modules
+* Plotting, exporting, and data handling behavior.
 
-Additionally, sample measurement data for plotting is available in the **[data](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data)** directory, organized into two subdirectories:
-- **[Antenna](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna)**: Contains sample data specific to antenna measurements.
-- **[PA](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA)**: Contains sample data related to power amplifier measurements.
+`instrument_address_history.txt`
+
+A simple text file that logs laboratory instrument addresses (VISA resource strings).
+
+* ARES reads this file upon startup to populate instrument dropdowns with addresses.
+* You can edit or manage this list via the in-app Instrument Database interface.
+
+## Support Modules
+
+Located in the **[src/support](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support)** directory, the following submodules contain reusable measurement and processing logic:
+
+### **[Antenna Functions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/AntennaFunctions)**
+
+Functions focused on antenna measurements, including:
+
+* Gain calculations (Comparison & Transfer methods)
+* S-parameter acquisition and interpretation
+* Radiation pattern plotting (2D & 3D)
+* Linear slider and rotator control
+* Enabling and validating the antenna test setup
+* Main measurement function for parametric sweeps, data collection, and result plotting
+
+### **[PA Functions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/PAFunctions)**
+
+Functions focused on power amplifier (PA) characterization:
+
+* Measuring DC power, RF power, gain, and efficiency
+* DC power supply control
+* Enabling and validating power supply unit channels
+* Peak gain, peak efficiency, compression points, and saturation analysis
+* PA deembedding
+* Main measurement function for parametric sweeps, data collection, and result plotting
+
+### **[Support Functions](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/src/support/SupportFunctions)**
+
+Shared utility functions used by both measurement modules:
+
+* Unit conversions (e.g., dBm ↔ Watts, linear ↔ dB)
+* Measurement data saving/loading
+* UI and axes formatting
+* Instrument wait timing
+
+## Sample Data
+
+Located in the **[data](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data)** folder, this directory provides example measurement results you can load directly into ARES for visualization or testing.
+
+**[Antenna Data](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/Antenna)**:
+- Contains sample data specific to antenna measurements. Includes example gain, return loss, and radiation pattern datasets.
+
+**[PA Data](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA)**:
+- Contains sample data related to power amplifier measurements. Includes example gain, efficiency, compression analysis, DC current, and DC power analysis.
 
 You can reference these files and directories to build custom scripts or adapt the existing functionality to suit your specific needs.
