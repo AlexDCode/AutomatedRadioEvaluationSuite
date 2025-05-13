@@ -1,10 +1,10 @@
 # Instrument Database Tutorial
 
+---
+
 ARES maintains a user-defined instrument database stored as a `.csv` file within the ARES directory in your MATLAB user path. This database enables persistent tracking of instrument configurations across app sessions.
 
 If the database does not exist, ARES automatically creates one by copying a default template from the source directory.
-
--------------------
 
 ## Database Format
 
