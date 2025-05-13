@@ -1,4 +1,4 @@
-# Home
+# Automated Radio Evaluation Suite
 
 [![Latest Release](https://img.shields.io/github/v/release/AlexDCode/AutomatedRadioEvaluationSuite?label=Latest%20Release)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases)
 [![Star on GitHub](https://img.shields.io/github/stars/AlexDCode/AutomatedRadioEvaluationSuite?style=social)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/stargazers)
@@ -10,13 +10,13 @@
 
 ---
 
-## Automated Radio Evaluation Suite
-
 **ARES** is an open-source MATLAB-based platform for performing automated RF measurements on power amplifiers and antennas. It interfaces seamlessly with existing laboratory equipment via VISA (LAN, GPIB, USB), supporting streamlined data collection, visualization, and export, all within a graphical user interface. 
 
 ARES is free, fully customizable, and actively maintained. It provides a cost-effective alternative to commercial measurement software and allows full transparency and control over your test flow. [Download the latest release.](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and [get started with the setup guide.](https://aresapp.readthedocs.io/latest/getting_started.html)
 
-### Tutorials
+## Tutorials
+
+---
 
 Explore the functionality of ARES through guided documentation:
 
@@ -27,6 +27,8 @@ Explore the functionality of ARES through guided documentation:
 Full documentation is hosted on **[Read the Docs](https://aresapp.readthedocs.io/)**.
 
 ## Key Features
+
+---
 
 - VISA-based instrument control via **GPIB**, **LAN**, and **USB**
 - Support for multiple ETS-Lindgren, Keysight, and Rohde & Schwarz instruments
@@ -52,6 +54,8 @@ TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support PDF 
 
 ## Contributors
 
+---
+
 ```{image} ./../../../docs/assets/ARES_logo.jpg
 :alt: ARES Lab Logo
 :class: bg-primary
@@ -66,6 +70,8 @@ TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support PDF 
 - Purdue University
 
 ## Acknowledgments
+
+---
 
 This project makes use of several open-source tools. The authors acknowledge the following 
 
