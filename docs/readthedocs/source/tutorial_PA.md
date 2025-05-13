@@ -1,5 +1,7 @@
 # PA Tutorial
 
+---
+
 The Power Amplifier (PA) module performs parametric measurements by sweeping frequency, input RF power, and controlling up to four power supplies. The software captures measurements, calculates figures of merit (FoM), saves the data, and plots the results. You do not need to rerun the test every time, as previously saved data can be reloaded into the app. 
 
 Sample datasets are available in the [data/PA](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/tree/main/data/PA) folder.
@@ -9,8 +11,6 @@ Sample datasets are available in the [data/PA](https://github.com/AlexDCode/Auto
 * Less than 1 second per data point with the default measurement delay.
 * A data point corresponds to one combination of the parametric sweep, represented as a single row in the parameters and results table.
 ```
-
--------------------
 
 ## Theory
 
