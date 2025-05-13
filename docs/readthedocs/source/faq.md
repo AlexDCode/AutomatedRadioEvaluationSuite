@@ -1,4 +1,6 @@
-# FAQ - Frequently Asked Questions
+# FAQ 
+
+---
 
 ## Do I need to install anything else to use ARES?
 
