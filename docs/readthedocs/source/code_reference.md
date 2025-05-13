@@ -6,6 +6,7 @@
 
 code_overview.md
 instr_interface.md
+app_overview.md
 code_antenna.md
 code_amp.md
 code_support.md
