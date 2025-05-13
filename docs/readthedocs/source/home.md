@@ -49,7 +49,7 @@ Full documentation is hosted on **[Read the Docs](https://aresapp.readthedocs.io
 
 ```{admonition} Export Tip
 :class: note
-TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support PDF and image formats only.
+TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support image formats only.
 ```
 
 ## Contributors
@@ -73,7 +73,7 @@ TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support PDF 
 
 ---
 
-This project makes use of several open-source tools. The authors acknowledge the following 
+This project makes use of several open-source tools. The authors acknowledge the following:
 
-- **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality $\LaTeX$-compatible plot exports. Copyright (c) 2008--2016 Nico Schlömer All rights reserved.
+- **[matlab2tikz](https://github.com/matlab2tikz/matlab2tikz)** for enabling high-quality $\LaTeX$-compatible plot exports. Copyright (c) 2008--2016 Nico Schlömer. All rights reserved.
 > E. Geerardyn, N. Schlömer, et. al. (2025). "[matlab2tikz: Version 1.1.0](https://github.com/matlab2tikz/matlab2tikz)". Zenodo, Oct. 20, 2016. doi: 10.5281/zenodo.162246.
