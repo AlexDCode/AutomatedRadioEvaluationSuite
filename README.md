@@ -50,6 +50,9 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file. Add MATLAB-style toolbar and resizable panels.
 - **Antenna Measurements**: Add capabilities to measure antenna directivity, efficiency, and polarization. Enable measurement of circular polarized antennas.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
+- **Instrument Type Filter**: Filter the instrument address dropdown by instrument type and only display the instruments pertaining relevant category and 'Others'.
+- **Known Limitation**: The linear slider range and offset are hard coded in the app. The default values are for the Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to instrument database properties.
+
 
 ## Usage
 
