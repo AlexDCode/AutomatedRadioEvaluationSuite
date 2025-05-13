@@ -1,6 +1,10 @@
 # Getting Started
 
+---
+
 ## Requirements
+
+---
 
 To run the Automated Radio Evaluation Suite (ARES), ensure the following software is installed:
 
@@ -12,11 +16,15 @@ To run the Automated Radio Evaluation Suite (ARES), ensure the following softwar
 
 ## Download and Install
 
+---
+
 1. Download the latest release of the Automated Radio Evaluation Suite from [releases](https://github.com/bolanosv/AutomatedRadioEvaluationSuite/releases).
 2. **If using the MATLAB App installer**: Follow the instructions in the [Packaging and Installing MATLAB Apps Guide](https://www.mathworks.com/videos/packaging-and-installing-matlab-apps-70404.html).
 
 
 ## Network Configuration
+
+---
 
 Skip this section if you only intend to use the app for plotting previously collected data.
 
@@ -35,6 +43,8 @@ For LAN-based communication, ensure the PC is on the same network as your instru
 To verify connectivity, open a terminal or command prompt and `ping` the IP address of the intended instrument in the command window. If this is successful for the desired instrument, the network settings are appropriate.
 
 ## Compatibility
+
+---
 
 ARES has been tested and is compatible with the following instruments:
 
