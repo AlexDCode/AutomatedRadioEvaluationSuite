@@ -1,7 +1,5 @@
 # Getting Started
 
----
-
 ## Requirements
 
 ---
