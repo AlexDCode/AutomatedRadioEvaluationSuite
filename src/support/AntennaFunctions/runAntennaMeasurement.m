@@ -152,11 +152,15 @@ function runAntennaMeasurement(app)
             [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPercentage);
 
             % Calculate gain.
-            if isempty(app.ReferenceGainFile.GaindBi)
+            if isempty(app.ReferenceGainFile)
                 % Two-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
                 app.ReferenceGainFile.GaindBi = Gain_dBi;
                 app.ReferenceGainFile.FrequencyMHz = VNAFrequencies/1E6;
+                app.ReferenceGainFile.ReturnLossdB = SParameters_dB{2};
+                app.ReferenceGainFile.ReturnLossdeg = SParameters_Phase{2};
+
+                plotReferenceAntenna(app);
             else
                 % Comparison-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, app.ReferenceGainFile.GaindBi, app.ReferenceGainFile.FrequencyMHz*1E6);
@@ -209,10 +213,12 @@ function runAntennaMeasurement(app)
         % Return the VNA windows to continuos mode.
         writeline(app.VNA, 'SENS1:SWE:MODE CONT');
 
-        % Clear the reference data.
+        % Clear the reference data if running two-antenna method.
         if isempty(app.ReferenceGainFileField.Value)
             app.ReferenceGainFile.GaindBi = [];
             app.ReferenceGainFile.FrequencyMHz = [];
+            app.ReferenceGainFile.ReturnLossdB = [];
+            app.ReferenceGainFile.ReturnLossdeg = [];
         end
     catch ME
         app.displayError(ME);
