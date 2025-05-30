@@ -18,7 +18,7 @@ function runAntennaMeasurement(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Initialize variables from the application.
-    smoothingPercentage = app.SmoothingPercentage.Value;
+    smoothingPoints = app.SmoothingPoints.Value;
     sweepPoints = app.VNASweepPoints.Value;
 
     % Get table speed and theta angles.
@@ -149,7 +149,7 @@ function runAntennaMeasurement(app)
             pause(app.AntennaMeasurementDelayValueField.Value);
 
             % Get S-Parameters and Frequencies from VNA
-            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPercentage);
+            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPoints);
 
             % Calculate gain.
             if isempty(app.ReferenceGainFile)

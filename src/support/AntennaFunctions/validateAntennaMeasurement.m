@@ -55,6 +55,13 @@ function isValid = validateAntennaMeasurement(app)
         return;
     end
 
+    % Check if the smoothing points are valid
+    if isempty(app.SmoothingPoints) || (app.SmoothingPoints.Value/sweepPoints > 0.25)
+        uialert(app.UIFigure, 'Number of smoothing points is invalid. Has to be less than 25% of the number of sweep points', 'Invalid Sweep Points');
+        isValid = false;
+        return;
+    end
+    
     % Check if the antenna physical size is specified.
     if isempty(antennaSize)
         uialert(app.UIFigure, 'Antenna physical size is not set.', 'Invalid Antenna Size');
