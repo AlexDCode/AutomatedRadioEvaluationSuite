@@ -47,6 +47,16 @@ function fullFilename = saveData(combinedData, combinedNames)
     % Handle the user cancelling the saving prompt.
     if isequal(filename, 0) || isequal(path, 0)
         fullFilename = '';
+
+        % Define a directory called 'ARES' in the userpath.
+        ARESDirectory = fullfile(userpath, 'ARES');
+
+        % Save backup
+        backupFile = fullfile(ARESDirectory, 'measurement_backup.csv');
+        writetable(dataTable, backupFile);
+        disp("Backup file saved at " + string(backupFile))
+        error("Save dialog was canceled. Backup file saved at " + string(backupFile))
+
         return;
     end
 

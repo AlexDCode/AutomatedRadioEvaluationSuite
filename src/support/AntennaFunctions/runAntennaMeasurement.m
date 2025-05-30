@@ -224,9 +224,3 @@ function runAntennaMeasurement(app)
         app.displayError(ME);
     end
 end
-
-function sortResultsTable(resultsTable)
-
-    sort(resultsTable);
-
-end
