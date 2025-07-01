@@ -41,6 +41,7 @@ release/*/*.html
 release/*/*.json
 release/*/*.txt
 release/*/*.log
+release/standalone/build/
 deploymentLog.html
 !release/standalone/*.exe
 !release/toolbox/*.mltbx

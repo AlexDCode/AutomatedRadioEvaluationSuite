@@ -194,7 +194,7 @@ During the test:
 * To terminate the test, press the *Stop Test* button on the progress window.
 * Once the test is finished, a prompt will appear to save the results.
 
- ```{image} ./assets/Ant/PA_dialog.PNG
+ ```{image} ./assets/PA/PA_dialog.PNG
 :alt: PA Test Dialog Screen
 :class: bg-primary
 :width: 100%

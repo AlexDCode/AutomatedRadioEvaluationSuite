@@ -52,7 +52,7 @@ try
         % Calculate progress and time estimates.
         progress = i / totalMeasurements;
         avgTime = totalTime / i;
-        remainingTime = avgTime * (totalPositions - i);
+        remainingTime = avgTime * (totalMeasurements - i);
 
         % Update the progress dialog window.
         d.Value = progress;
