@@ -35,6 +35,16 @@ codegen/
 # SimBiology backup files
 *.sbproj.backup
 *.sbproj.bak
-data/Antenna/converted_data.xlsx
-data/Antenna/CustomPattern_testfile.csv
-data/Antenna/TEST3DRADIATIONPATTERN.m
+
+# Building releases
+release/*/*.html
+release/*/*.json
+release/*/*.txt
+release/*/*.log
+deploymentLog.html
+!release/standalone/*.exe
+!release/toolbox/*.mltbx
+
+# Sample data
+
+resources/
