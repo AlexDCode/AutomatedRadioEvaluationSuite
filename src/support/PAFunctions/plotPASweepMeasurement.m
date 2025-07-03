@@ -34,15 +34,15 @@ function plotPASweepMeasurement(app)
     [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = measureRFParametersPeaks(app,idx);
 
     % 1) Peak Gain vs. Frequency
-    plot(app.PeakGainPlot, peakGain.FrequencyMHz, peakGain.max_Gain, 'b-o');
+    plot(app.PeakGainPlot, peakGain.FrequencyMHz, peakGain.max_Gain, '-o');
     title(app.PeakGainPlot, 'Peak Gain');
     xlabel(app.PeakGainPlot, 'Frequency (MHz)');
     ylabel(app.PeakGainPlot, 'Gain (dB)');
 
     % 2) Peak DE & PAE vs. Frequency
     hold(app.PeakDEPAEPlot, 'on');
-    h1 = plot(app.PeakDEPAEPlot, peakDE.FrequencyMHz, peakDE.max_DE, 'b-o');
-    h2 = plot(app.PeakDEPAEPlot, peakPAE.FrequencyMHz, peakPAE.max_PAE, 'r-o');
+    h1 = plot(app.PeakDEPAEPlot, peakDE.FrequencyMHz, peakDE.max_DE, '-o');
+    h2 = plot(app.PeakDEPAEPlot, peakPAE.FrequencyMHz, peakPAE.max_PAE, '-o');
     hold(app.PeakDEPAEPlot, 'off');
     title(app.PeakDEPAEPlot, 'Peak DE and PAE');
     xlabel(app.PeakDEPAEPlot, 'Frequency (MHz)');
@@ -57,7 +57,7 @@ function plotPASweepMeasurement(app)
     % Plot each metric if it has valid data.
     % Saturation Power
     if height(Psat) > 0
-        h1 = plot(app.CompressionPointsPlot, Psat.FrequencyMHz, Psat.RFOutputPowerdBm, '-o', 'Color', 'k');
+        h1 = plot(app.CompressionPointsPlot, Psat.FrequencyMHz, Psat.RFOutputPowerdBm, '-o');
         plotHandles = [plotHandles, h1];
         legendLabels{end+1} = 'P_{sat}';
     end
@@ -67,7 +67,7 @@ function plotPASweepMeasurement(app)
         % Filter out NaN values
         valid1dB = ~isnan(compression1dB.RFOutputPowerdBm);
         if any(valid1dB)
-            h2 = plot(app.CompressionPointsPlot, compression1dB.FrequencyMHz(valid1dB), compression1dB.RFOutputPowerdBm(valid1dB), '-o', 'Color', 'r');
+            h2 = plot(app.CompressionPointsPlot, compression1dB.FrequencyMHz(valid1dB), compression1dB.RFOutputPowerdBm(valid1dB), '-o');
             plotHandles = [plotHandles, h2];
             legendLabels{end+1} = 'P_{-1dB}';
         end
@@ -78,7 +78,7 @@ function plotPASweepMeasurement(app)
         % Filter out NaN values
         valid3dB = ~isnan(compression3dB.RFOutputPowerdBm);
         if any(valid3dB)
-            h3 = plot(app.CompressionPointsPlot, compression3dB.FrequencyMHz(valid3dB), compression3dB.RFOutputPowerdBm(valid3dB), '-o', 'Color', 'b');
+            h3 = plot(app.CompressionPointsPlot, compression3dB.FrequencyMHz(valid3dB), compression3dB.RFOutputPowerdBm(valid3dB), '-o');
             plotHandles = [plotHandles, h3];
             legendLabels{end+1} = 'P_{-3dB}';
         end

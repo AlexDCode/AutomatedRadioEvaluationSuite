@@ -42,14 +42,14 @@ function plotPASingleMeasurement(app)
     
     % Plot DE and PAE on the right y-axis.
     yyaxis(ax, 'right');
-    h1 = plot(ax, PATable.RFOutputPowerdBm, PATable.DE, 'b-');
+    h1 = plot(ax, PATable.RFOutputPowerdBm, PATable.DE, '-');
     hold(ax, 'on');
-    h2 = plot(ax, PATable.RFOutputPowerdBm, PATable.PAE, 'r--');
+    h2 = plot(ax, PATable.RFOutputPowerdBm, PATable.PAE, '--');
     ylabel(ax, 'Efficiency (%)', 'FontWeight', 'bold');
 
     % Plot Gain on the left y-axis.
     yyaxis(ax, 'left');
-    h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain, 'k-');
+    h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain, '-');
     ylabel(ax, 'Gain (dB)', 'FontWeight', 'bold');
 
     % Initialize legend entries.
