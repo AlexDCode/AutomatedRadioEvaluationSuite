@@ -2,6 +2,26 @@
 
 ---
 
+## calculateAbsoluteAntennaGain.m
+`Path: src\support\AntennaFunctions\calculateAbsoluteAntennaGain.m`
+
+**Description:**
+
+This function calculates the absolute gain of a test antenna in decibels relative to an isotropic radiator (dBi). The gain is computed based on the input realized gain and the return loss.
+
+```{admonition} Input Parameters
+:class: tip
+- realizedGain   - A scalar or vector containing the realized antenna gain in dBi for the test antenna.
+- sParameter_dB  - A scalar or vector of S22 values (in dB), representing the magnitude of return loss between two antennas.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- absoluteGain   - A vector containing the calculated absolute antenna gain in dBi for the test antenna.
+```
+
+---
+
 ## createAntenna3DRadiationPattern.m
 `Path: src\support\AntennaFunctions\createAntenna3DRadiationPattern.m`
 
@@ -135,7 +155,7 @@ This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB 
 
 **Description:**
 
-This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected $\theta$, $\phi$, and frequency values. It updates four axes in the application UI to display the following plots:
+This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant antenna data based on user-selected $\theta$, $\phi$, gain type, and frequency values. It updates four axes in the application UI to display the following plots:
 
 - Gain vs. Frequency at a fixed $\theta$/$\phi$ angle.
 - Gain vs. Angle ($\theta$ and $\phi$ cuts) at a fixed frequency.
@@ -159,9 +179,9 @@ This function generates and displays several 2D plots related to antenna measure
 
 **Description:**
 
-This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values from the application data. The function:
+This function generates a 3D radiation pattern plot for the antenna based on the specified frequency and gain type. It creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values from the application data. The function:
 
-- Extracts the antenna gain data for the selected frequency
+- Extracts the antenna gain data for the selected frequency and gain type
 - Processes angle data for consistent representation
 - Creates a properly formatted gain matrix
 - Renders the 3D radiation pattern with appropriate visual elements

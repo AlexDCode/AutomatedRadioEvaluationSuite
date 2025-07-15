@@ -13,8 +13,9 @@ function ResultsTable = createAntennaResultsTable(totalMeasurements)
     %   - Return Loss (deg)
     %   - Return Loss Reference (dB)
     %   - Return Loss Reference (deg)
-    %   - Path Loss (dB)
-    %   - Path Loss (deg)
+    %   - Insertion Loss (dB)
+    %   - Insertion Loss (deg)
+    %   - Absolute Gain (dBi)
     %
     % INPUT:
     %   totalMeasurements - The total number of measurements (rows) to allocate in the results table. 
@@ -32,8 +33,9 @@ function ResultsTable = createAntennaResultsTable(totalMeasurements)
                 'Return Loss (deg)',...
                 'Return Loss Reference (dB)',...
                 'Return Loss Reference (deg)',...
-                'Path Loss (dB)',...
-                'Path Loss (deg)'
+                'Insertion Loss (dB)',...
+                'Intertion Loss (deg)',...
+                'Absolute Gain (dBi)'
     };
     
     varTypes = repmat({'double'}, 1, length(varNames));

@@ -21,12 +21,50 @@ The function A2dB converts magnitudes (voltage or current) to dB.
 
 ---
 
+## dB2A.m
+`Path: src\support\SupportFunctions\dB2A.m`
+
+**Description:**
+
+The function dB2A converts dB to magnitudes (voltage or current)
+
+```{admonition} Input Parameters
+:class: tip
+- dB    - A scalar of vector of magnitudes in dB
+```
+
+```{admonition} Output Parameters
+:class: tip
+- dBA   - A scalar or vector of magnitudes (voltage or current) in linear scale
+```
+
+---
+
+## dB2P.m
+`Path: src\support\SupportFunctions\dB2P.m`
+
+**Description:**
+
+The function dB2P converts dB to magnitudes (power)
+
+```{admonition} Input Parameters
+:class: tip
+- dB  - A scalar of vector of magnitudes in dB
+```
+
+```{admonition} Output Parameters
+:class: tip
+- P  - A scalar or vector of magnitudes (power) in linear scale
+```
+
+---
+
 ## dBm2W.m
 `Path: src\support\SupportFunctions\dBm2W.m`
 
 **Description:**
 
-The function dBm2mag converts dBm to Watts (W).
+The function dBm2W converts dBm to Watts (W).
 
 ```{admonition} Input Parameters
 :class: tip
@@ -103,6 +141,25 @@ This function loads data from a CSV or Excel file containing a single or sweep P
 ```{admonition} Output Parameters
 :class: tip
 - combinedData - A struct containing all the data from each column of the loaded file.
+```
+
+---
+
+## P2dB.m
+`Path: src\support\SupportFunctions\P2dB.m`
+
+**Description:**
+
+The function P2dB converts magnitudes (power) to dB.
+
+```{admonition} Input Parameters
+:class: tip
+- P    - Magnitude (power) in linear scale
+```
+
+```{admonition} Output Parameters
+:class: tip
+- PdB  - Magnitude in decibels (dB)
 ```
 
 ---

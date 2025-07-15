@@ -155,6 +155,7 @@ function runAntennaMeasurement(app)
             if isempty(app.ReferenceGainFile)
                 % Two-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
+                AbsoluteGain_dBi = caulculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
                 app.ReferenceGainFile.GaindBi = Gain_dBi;
                 app.ReferenceGainFile.FrequencyMHz = VNAFrequencies/1E6;
                 app.ReferenceGainFile.ReturnLossdB = SParameters_dB{2};
@@ -164,6 +165,7 @@ function runAntennaMeasurement(app)
             else
                 % Comparison-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, app.ReferenceGainFile.GaindBi, app.ReferenceGainFile.FrequencyMHz*1E6);
+                AbsoluteGain_dBi = calculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
             end
 
             resultsTable(dataPts, "Theta (deg)") = array2table(parametersTable.("Theta (deg)")(i)*ones(numel(dataPts),1));
@@ -174,8 +176,9 @@ function runAntennaMeasurement(app)
             resultsTable(dataPts, "Return Loss (deg)") = array2table(SParameters_Phase{3}');
             resultsTable(dataPts, "Return Loss Reference (dB)") = array2table(SParameters_dB{1}');
             resultsTable(dataPts, "Return Loss Reference (deg)") = array2table(SParameters_Phase{1}');
-            resultsTable(dataPts, "Path Loss (dB)") = array2table(SParameters_dB{2}');
-            resultsTable(dataPts, "Path Loss (deg)") = array2table(SParameters_Phase{2}');
+            resultsTable(dataPts, "Insertion Loss (dB)") = array2table(SParameters_dB{2}');
+            resultsTable(dataPts, "Insertion (deg)") = array2table(SParameters_Phase{2}');
+            resultsTable(dataPts, "Absolute Gain (dBi)") = array2table(AbsoluteGain_dBi');
         end
 
         % Return turntable and tower to starting position.

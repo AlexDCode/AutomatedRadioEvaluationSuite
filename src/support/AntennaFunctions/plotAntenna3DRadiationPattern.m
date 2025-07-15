@@ -1,8 +1,8 @@
 function plotAntenna3DRadiationPattern(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
-    % This function generates a 3D radiation pattern plot for the antenna based on the specified frequency. It
-    % creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values
+    % This function generates a 3D radiation pattern plot for the antenna based on the specified frequency and gain type. 
+    % It creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values
     % from the application data. The function:
     % 
     %   - Extracts the antenna gain data for the selected frequency
@@ -40,7 +40,11 @@ function plotAntenna3DRadiationPattern(app)
         % Extract theta, phi, and gain values for specified frequency.
         thetaValues = app.Antenna_Data.Thetadeg(idx_freq);
         phiValues   = app.Antenna_Data.Phideg(idx_freq);
-        gainValues  = app.Antenna_Data.GaindBi(idx_freq);
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            gainValues  = app.Antenna_Data.GaindBi(idx_freq);
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            gainValues  = app.Antenna_Data.AbsoluteGaindBi(idx_freq);
+        end
 
         % Ensure wrapped angles are consistent.
         if ismember(-180, thetaValues) && ismember(180, thetaValues)
@@ -81,8 +85,12 @@ function plotAntenna3DRadiationPattern(app)
         pause(0.1); 
         createAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
         cb = colorbar('peer', ax);
-        ylabel(cb, 'Gain (dBi)');
         axis(ax, 'tight');
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            ylabel(cb, 'Realized Gain (dBi)');
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            ylabel(cb, 'Absolute Gain (dBi)');
+        end
 
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(ax, 'LineThickness', 2);

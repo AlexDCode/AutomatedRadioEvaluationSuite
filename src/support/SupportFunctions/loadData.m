@@ -98,7 +98,7 @@ function combinedData = processAntennaData(app, combinedData)
          app.Antenna_Data = combinedData;
 
          % Check each required field and add to the list if missing.
-         expectedVars = {'Thetadeg', 'Phideg', 'FrequencyMHz', 'GaindBi', 'ReturnLossdB', 'ReturnLossdeg'};
+         expectedVars = {'Thetadeg', 'Phideg', 'FrequencyMHz', 'GaindBi', 'ReturnLossdB', 'ReturnLossdeg', 'AbsoluteGaindBi'};
          missingFields = setdiff(expectedVars, app.Antenna_Data.Properties.VariableNames);
  
          % Raise an error if any fields are missing. 
@@ -122,7 +122,7 @@ function combinedData = processAntennaReferenceData(app, combinedData, FileName)
              app.ReferenceGainFilePath = FileName;
              
              % Check each required field and add to the list if missing.
-             expectedVars = {'Thetadeg', 'Phideg', 'FrequencyMHz', 'GaindBi', 'ReturnLossdB', 'ReturnLossdeg'};
+             expectedVars = {'Thetadeg', 'Phideg', 'FrequencyMHz', 'GaindBi', 'ReturnLossdB', 'ReturnLossdeg', 'AbsoluteGaindBi'};
              missingFields = setdiff(expectedVars, app.ReferenceGainFile.Properties.VariableNames);
 
             % Raise an error if any fields are missing.

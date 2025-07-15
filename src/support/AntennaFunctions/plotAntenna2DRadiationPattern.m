@@ -2,7 +2,7 @@ function plotAntenna2DRadiationPattern(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant
-    % antenna data based on user-selected θ, φ, and frequency values. It updates four axes in the application UI to 
+    % antenna data based on user-selected θ, φ, gain type, and frequency values. It updates four axes in the application UI to 
     % display the following plots:
     %
     %   - Gain vs. Frequency at a fixed θ/φ angle.
@@ -17,7 +17,7 @@ function plotAntenna2DRadiationPattern(app)
     %   None
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    try
+  try
         % Clear current plots.
         cla(app.GainvsFrequency2DPattern);
         cla(app.ReturnLoss2DPattern);
@@ -31,10 +31,16 @@ function plotAntenna2DRadiationPattern(app)
         idx_angle = idx_theta & idx_phi; 
      
         % 1) Antenna Gain vs. Frequency, at specified angle
-        plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).GaindBi);
-        title(app.GainvsFrequency2DPattern, sprintf('Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).GaindBi);
+            title(app.GainvsFrequency2DPattern, sprintf('Realized Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+            ylabel(app.GainvsFrequency2DPattern, 'Realized Gain (dBi)');
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).AbsoluteGaindBi);
+            title(app.GainvsFrequency2DPattern, sprintf('Absolute Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+            ylabel(app.GainvsFrequency2DPattern, 'Absolute Gain (dBi)');
+        end
         xlabel(app.GainvsFrequency2DPattern, 'Frequency (MHz)');
-        ylabel(app.GainvsFrequency2DPattern, 'Gain (dBi)');
         axis(app.GainvsFrequency2DPattern, 'tight');
 
         % 2) Return Loss (dB) Plot
@@ -47,11 +53,19 @@ function plotAntenna2DRadiationPattern(app)
         % Prepare the polar data correctly.
         % For phi cut: theta varies, phi is fixed
         phiCutAngles = app.Antenna_Data(idx_phi & idx_freq,:).Thetadeg;
-        phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).GaindBi;
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).GaindBi;
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).AbsoluteGaindBi;
+        end
         
         % For theta cut: phi varies, theta is fixed
         thetaCutAngles = app.Antenna_Data(idx_theta & idx_freq,:).Phideg;
-        thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).GaindBi;
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).GaindBi;
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).AbsoluteGaindBi;
+        end
 
         % Extra sorting for old data recorded prior to the new sorted
         % results table changes.
@@ -101,9 +115,14 @@ function plotAntenna2DRadiationPattern(app)
         hold(app.GainvsAngle2DPattern,'on');
         h_theta = plot(app.GainvsAngle2DPattern, thetaCutAngles, thetaCutGain);
         hold(app.GainvsAngle2DPattern,'off');
-        title(app.GainvsAngle2DPattern, sprintf('Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+            title(app.GainvsAngle2DPattern, sprintf('Realzied Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+            ylabel(app.GainvsAngle2DPattern, 'Realized Gain (dBi)');
+        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+            title(app.GainvsAngle2DPattern, sprintf('Absolute Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+            ylabel(app.GainvsAngle2DPattern, 'Absolute Gain (dBi)');
+        end
         xlabel(app.GainvsAngle2DPattern, 'Angle (degrees)');
-        ylabel(app.GainvsAngle2DPattern, 'Gain (dBi)');
         lgd = legend(app.GainvsAngle2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
         axis(app.GainvsAngle2DPattern, 'tight');
         
