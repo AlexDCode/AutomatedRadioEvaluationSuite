@@ -118,7 +118,7 @@ This function enables or disables the specified channels on two power supply uni
 
 **Description:**
 
-This function measures the output RF power, DC drain power, and DC gate power based on the specified input RF power and test frequency.
+This function measures the output RF power, DC drain power, and DC gate power based on the specified input RF power and test frequency. Calls the de-embedding function to get corrected input and output RF power
 
 ```{admonition} Input Parameters
 :class: tip

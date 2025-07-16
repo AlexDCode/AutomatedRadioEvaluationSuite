@@ -30,13 +30,28 @@ try
     totalMeasurements = height(parametersTable);
     resultsTable = createPAResultsTable(app, totalMeasurements);
 
-    % Configure the signal analyzer settings.
-    writeline(app.SpectrumAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
-    writeline(app.SpectrumAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
-    writeline(app.SpectrumAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));
-    writeline(app.SpectrumAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
-    writeline(app.SpectrumAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
+    % Check if minimum needed instruments are connected
+    connectedSA = ~isempty(app.OutputSignalAnalyzer.ResourceName) | (~isempty(app.OutputSignalAnalyzer.ResourceName) & ~isempty(app.InputSignalAnalyzer.ResourceName));
+    connectedSG = ~isempty(app.SignalGenerator.ResourceName);
+    if ~(connectedSA & connectedSG)
+        error('Required instruments not connected.')
+    end
 
+    % Configure the signal analyzer settings.
+    if ~isempty(app.OutputSignalAnalyzer.ResourceName)
+        writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
+        writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
+        writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));
+        writeline(app.OutputSignalAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
+        writeline(app.OutputSignalAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
+    end
+    if ~isempty(app.InputSignalAnalyzer.ResourceName)
+        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
+        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
+        writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));
+        writeline(app.InputSignalAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
+        writeline(app.InputSignalAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
+    end
     % Create a progress dialog to inform the user of the progress.
     d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
     measurementStartTime = datetime('now');
@@ -104,8 +119,12 @@ try
         % Set target frequency in the signal generator.
         writeline(app.SignalGenerator, sprintf(':SOURce1:FREQuency:CW %d', frequency));
         % Set center frequency in the signal analyzer.
-        writeline(app.SpectrumAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
-
+        if ~isempty(app.OutputSignalAnalyzer.ResourceName)
+            writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
+        end
+        if ~isempty(app.InputSignalAnalyzer.ResourceName)
+            writeline(app.InputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
+        end
         % Set all active channel voltages and currents.
         for ch = 1:length(app.FilledPSUChannels)
             channelName = app.FilledPSUChannels{ch};
@@ -130,17 +149,7 @@ try
         pause(app.PAMeasurementDelayValueField.Value);
 
         % Measure RF Powwr, DC Current, and DC Power.
-        [RFOutputPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
-
-        % Apply de-embedding calibration based on user
-        % selected calibration mode.
-        [inCal, outCal] = deembedPA(app, frequency, RFInputPower);
-        %
-        % Subtract inCal to get actual PA input power.
-        correctedRFInputPower = RFInputPower - inCal;
-
-        % Add outCal to get actual PA output power.
-        correctedRFOutputPower = RFOutputPower + outCal;
+        [RFInputPower, RFOutputPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
 
         % Calculate total DC Current (A).
         TotalDCDrainCurrent = sum(DCDrainCurrent);
@@ -151,20 +160,20 @@ try
         TotalDCGatePower = sum(DCGatePower);
 
         % Calculate Gain.
-        Gain = correctedRFOutputPower - correctedRFInputPower;
+        Gain = RFOutputPower - RFInputPower;
 
         % Calculate DE and PAE.
         if TotalDCDrainPower == 0
             DE = 0;
             PAE = 0;
         else
-            [~, DE, PAE] = measureRFParameters(correctedRFInputPower, correctedRFOutputPower, TotalDCDrainPower);
+            [~, DE, PAE] = measureRFParameters(RFInputPower, RFOutputPower, TotalDCDrainPower);
         end
 
         % Add to results table
         resultsTable.("Frequency (MHz)")(i) = frequency/1e6;
-        resultsTable.("RF Input Power (dBm)")(i) = correctedRFInputPower;
-        resultsTable.("RF Output Power (dBm)")(i) = correctedRFOutputPower;
+        resultsTable.("RF Input Power (dBm)")(i) = RFInputPower;
+        resultsTable.("RF Output Power (dBm)")(i) = RFOutputPower;
         resultsTable.Gain(i) = Gain;
         resultsTable.("Total DC Drain Current (A)")(i) = TotalDCDrainCurrent;
         resultsTable.("Total DC Gate Current (A)")(i) = TotalDCGateCurrent;
@@ -197,9 +206,13 @@ try
     % Disable the channels.
     enablePSUChannels(app, app.FilledPSUChannels, false);
 
-    % Set spectrum analyzer to continous trigger
-    writeline(app.SpectrumAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
-
+    % Set signal analyzer to continous trigger
+    if ~isempty(app.OutputSignalAnalyzer.ResourceName)
+        writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
+    end
+    if ~isempty(app.InputSignalAnalyzer.ResourceName)
+        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
+    end
     % Save table as a variable in the app
     % TEST IF NEEDED
     app.PAMeasurementsTable = resultsTable;

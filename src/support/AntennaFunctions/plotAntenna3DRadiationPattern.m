@@ -94,6 +94,8 @@ function plotAntenna3DRadiationPattern(app)
 
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(ax, 'LineThickness', 2);
+        updateColorOrder(app);
+        updateColormap(app);
 
         setupContextMenuFor3DPlot(app)
     catch ME

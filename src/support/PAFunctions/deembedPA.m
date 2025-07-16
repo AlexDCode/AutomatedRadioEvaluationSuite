@@ -95,5 +95,47 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
             
             % Recalculate inCal to include driver gain.
             inCal = app.InputAttenuationValueField.Value + Att_in - driverGain;
+        case 'In-Situ Couplers'
+            % Directly measures the power at the DUT ports with directional
+            % couplers and de-embeds each coupler using the given
+            % S-parameters (Port 1 input, Port 2 output, Port 3 coupled, Port 4 optional).
+            SnP_in = sparameters(app.InputSpFile);
+            SnP_out = sparameters(app.OutputSpFile);
+
+            % Interpolate the attenuation at the measurement frequency.
+            if SnP_in.NumPorts > 2
+                % If given an S3P or S4P file, port 2 is treated as output
+                Att_in = -interp1(SnP_in.Frequencies, A2dB(squeeze(abs(SnP_in.Parameters(2,1,:)))), testFrequency, 'spline');
+            else
+                % If given an S2P, port 2 is treated as coupled port and assumed lossless
+                Att_in = 0;
+            end
+            if SnP_out.NumPorts > 2
+                % If given an S3P or S4P file, port 2 is treated as output
+                Att_out = -interp1(SnP_out.Frequencies, A2dB(squeeze(abs(SnP_out.Parameters(2,1,:)))), testFrequency, 'spline');
+            else
+                % If given an S2P, port 2 is treated as coupled port and assumed lossless
+                Att_out = 0;
+            end
+
+            % Interpolate the coupling at the measurement frequency.
+            if SnP_in.NumPorts > 2
+                % Treat port 3 as coupled port if given S3P or S4P file
+                C_in = interp1(SnP_in.Frequencies, A2dB(squeeze(abs(SnP_in.Parameters(3,1,:)))), testFrequency, 'spline');
+            else
+                % Treat port 2 as coupled if given S2P file
+                C_in = interp1(SnP_in.Frequencies, A2dB(squeeze(abs(SnP_in.Parameters(2,1,:)))), testFrequency, 'spline');
+            end
+            if SnP_out.NumPorts > 2
+                % Treat port 3 as coupled port if given S3P or S4P file
+                C_out = interp1(SnP_out.Frequencies, A2dB(squeeze(abs(SnP_out.Parameters(3,1,:)))), testFrequency, 'spline');
+            else
+                % Treat port 2 as coupled if given S2P file
+                C_out = interp1(SnP_out.Frequencies, A2dB(squeeze(abs(SnP_out.Parameters(2,1,:)))), testFrequency, 'spline');
+            end
+
+            % Combine fixed attenuation, lossed and coupling
+            inCal = app.InputAttenuationValueField.Value + Att_in + C_in;
+            outCal = -app.OutputAttenuationValueField.Value - C_out;
     end
 end

@@ -39,7 +39,7 @@ function ParametersTable = createPAParametersTable(app)
                arrayfun(@(i) {sprintf('Channel %d Voltage', i), ...
                               sprintf('Channel %d Current', i) }, ...
                1:numChannels, 'UniformOutput', false)];
-    varNames = horzcat(varNames{:});
+    % varNames = horzcat(varNames{:});
     
     % Populate the voltage/current containers using the values set by the
     % user in the app.

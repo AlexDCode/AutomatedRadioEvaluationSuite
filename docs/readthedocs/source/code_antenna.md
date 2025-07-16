@@ -11,13 +11,13 @@ This function calculates the absolute gain of a test antenna in decibels relativ
 
 ```{admonition} Input Parameters
 :class: tip
-- realizedGain   - A scalar or vector containing the realized antenna gain in dBi for the test antenna.
-- sParameter_dB  - A scalar or vector of S22 values (in dB), representing the magnitude of return loss between two antennas.
+- realizedGain    - A scalar or vector containing the realized antenna gain in dBi for the test antenna.
+- sParameter_dB   - A scalar or vector of S22 values (in dB), representing the magnitude of return loss between two antennas.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- absoluteGain   - A vector containing the calculated absolute antenna gain in dBi for the test antenna.
+- absoluteGain    - A vector containing the calculated absolute antenna gain in dBi for the test antenna.
 ```
 
 ---
@@ -84,8 +84,9 @@ This function initializes and preallocates a results table for storing antenna t
 - Return Loss (deg)
 - Return Loss Reference (dB)
 - Return Loss Reference (deg)
-- Path Loss (dB)
-- Path Loss (deg)
+- Insertion Loss (dB)
+- Insertion Loss (deg)
+- Absolute Gain (dBi)
 
 ```{admonition} Input Parameters
 :class: tip
@@ -130,15 +131,15 @@ This function calculates the gain of a test antenna in decibels relative to an i
 
 **Description:**
 
-This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPercentage` input, the function reads either smoothed or raw measurement data.
+This function measures 2-port S-parameters (S11, S21, S22) with magnitude in dB and phase in degrees using a Vector Network Analyzer (VNA). Depending on the `smoothingPoints` input, the function reads either smoothed or raw measurement data.
 
-- **Smoothed Data**: If smoothing is enabled (smoothingPercentage > 0), the function retrieves the smoothed magnitude and phase data.
-- **Raw Data**: If smoothing is disabled (smoothingPercentage = 0), the function retrieves raw data in the form of complex S Parameters and calculates the magnitude and phase from the complex data.
+- **Smoothed Data**: If smoothing is enabled (smoothingPoints > 1), the function retrieves the smoothed magnitude and phase data.
+- **Raw Data**: If smoothing is disabled (smoothingPoints = 1), the function retrieves raw data in the form of complex S Parameters and calculates the magnitude and phase from the complex data.
 
 ```{admonition} Input Parameters
 :class: tip
 - VNA                 - The instrument object for the VNA, used for communication and measurement control.
-- smoothingPercentage - The percentage of smoothing applied to the S-parameters data.
+- smoothingPoints     - The number of smoothing applied to the S-parameters data.  Has to be less than 25% the number of sweep points
 ```
 
 ```{admonition} Output Parameters
@@ -181,7 +182,7 @@ This function generates and displays several 2D plots related to antenna measure
 
 This function generates a 3D radiation pattern plot for the antenna based on the specified frequency and gain type. It creates a 3D visualization of the antenna's radiation characteristics using theta, phi, and gain values from the application data. The function:
 
-- Extracts the antenna gain data for the selected frequency and gain type
+- Extracts the antenna gain data for the selected frequency
 - Processes angle data for consistent representation
 - Creates a properly formatted gain matrix
 - Renders the 3D radiation pattern with appropriate visual elements

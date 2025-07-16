@@ -21,6 +21,25 @@ The function A2dB converts magnitudes (voltage or current) to dB.
 
 ---
 
+## P2dB.m
+`Path: src\support\SupportFunctions\P2dB.m`
+
+**Description:**
+
+The function P2dB converts magnitudes (power) to dB.
+
+```{admonition} Input Parameters
+:class: tip
+- P    - Magnitude (power) in linear scale
+```
+
+```{admonition} Output Parameters
+:class: tip
+- PdB  - Magnitude in decibels (dB)
+```
+
+---
+
 ## dB2A.m
 `Path: src\support\SupportFunctions\dB2A.m`
 
@@ -54,7 +73,7 @@ The function dB2P converts dB to magnitudes (power)
 
 ```{admonition} Output Parameters
 :class: tip
-- P  - A scalar or vector of magnitudes (power) in linear scale
+- P   - A scalar or vector of magnitudes (power) in linear scale
 ```
 
 ---
@@ -64,7 +83,7 @@ The function dB2P converts dB to magnitudes (power)
 
 **Description:**
 
-The function dBm2W converts dBm to Watts (W).
+The function dBm2mag converts dBm to Watts (W).
 
 ```{admonition} Input Parameters
 :class: tip
@@ -145,25 +164,6 @@ This function loads data from a CSV or Excel file containing a single or sweep P
 
 ---
 
-## P2dB.m
-`Path: src\support\SupportFunctions\P2dB.m`
-
-**Description:**
-
-The function P2dB converts magnitudes (power) to dB.
-
-```{admonition} Input Parameters
-:class: tip
-- P    - Magnitude (power) in linear scale
-```
-
-```{admonition} Output Parameters
-:class: tip
-- PdB  - Magnitude in decibels (dB)
-```
-
----
-
 ## saveData.m
 `Path: src\support\SupportFunctions\saveData.m`
 
@@ -194,6 +194,44 @@ This function sets up a right-click context menu for the 3D radiation pattern pl
 ```{admonition} Input Parameters
 :class: tip
 - app - Application object containing the 3D plot handle and export logic.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+```
+
+---
+
+## updateColorOrder.m
+`Path: src\support\SupportFunctions\updateColorOrder.m`
+
+**Description:**
+
+This function updates the colororder of UIAxes in MATLAB App Designer. Color order is primarily used on line plots (rectangular and polar axes)
+
+```{admonition} Input Parameters
+:class: tip
+- app             - MATLAB app which contains the UIAxes
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+```
+
+---
+
+## updateColormap.m
+`Path: src\support\SupportFunctions\updateColormap.m`
+
+**Description:**
+
+This function updates the colormaps of UIAxes in MATLAB App Designer. Colormaps are primarily used on 3D surfaces.
+
+```{admonition} Input Parameters
+:class: tip
+- app             - MATLAB app which contains the UIAxes
 ```
 
 ```{admonition} Output Parameters

@@ -41,6 +41,7 @@ function plotPADCMeasurement(app)
     % 1) Plot Drain Current vs. Output Power
     hold(app.PASupplyCurrentPlot, 'on');
 
+    idxPSU = (1:size(app.PA_DataTable, 1))';
     for i = 1:length(app.PA_PSU_SelectedVoltages)
         idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
         plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, ...
@@ -145,4 +146,6 @@ function plotPADCMeasurement(app)
     improveAxesAppearance(app.PASupplyPowerPlot, 'LineThickness', 2);
     improveAxesAppearance(app.PAPeakSupplyCurrentPlot, 'LineThickness', 2);
     improveAxesAppearance(app.PAPeakSupplyPowerPlot, 'LineThickness', 2);
+    updateColorOrder(app);
+    updateColormap(app);
 end

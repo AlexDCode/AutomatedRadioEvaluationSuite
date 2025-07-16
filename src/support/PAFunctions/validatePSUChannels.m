@@ -22,8 +22,8 @@ function isValid = validatePSUChannels(app)
     currentMode = resolvePSUMode(app.PSUMode);
 
     %% Validation Checks
-    % Check if no power supplies are connected.
-    if isempty(app.PowerSupplyA) && isempty(app.PowerSupplyB)
+    % Check if no power supplies are connected and .
+    if isempty(app.PowerSupplyA) && isempty(app.PowerSupplyB) & ~strcmp(currentMode, 'No Supply')
         uialert(app.UIFigure, 'No power supplies connected. Please connect at least one power supply before proceeding.', 'No Devices Connected');
         return;
     end

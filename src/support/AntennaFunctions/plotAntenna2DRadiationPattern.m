@@ -116,7 +116,7 @@ function plotAntenna2DRadiationPattern(app)
         h_theta = plot(app.GainvsAngle2DPattern, thetaCutAngles, thetaCutGain);
         hold(app.GainvsAngle2DPattern,'off');
         if app.PlotGainTypeDropDown.Value == "Realized Gain"
-            title(app.GainvsAngle2DPattern, sprintf('Realzied Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+            title(app.GainvsAngle2DPattern, sprintf('Realized Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
             ylabel(app.GainvsAngle2DPattern, 'Realized Gain (dBi)');
         elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
             title(app.GainvsAngle2DPattern, sprintf('Absolute Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
@@ -139,6 +139,9 @@ function plotAntenna2DRadiationPattern(app)
         improveAxesAppearance(app.GainvsFrequency2DPattern, 'LineThickness', 2);
         improveAxesAppearance(app.ReturnLoss2DPattern, 'LineThickness', 2);
         improveAxesAppearance(app.GainvsAngle2DPattern, 'LineThickness', 2);
+        updateColorOrder(app);
+        updateColormap(app);
+
         h = findobj(app.RadiationPlot2DPattern, 'Type', 'line');
         
         for i = 1:numel(h)

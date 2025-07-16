@@ -97,4 +97,6 @@ function plotPASweepMeasurement(app)
     improveAxesAppearance(app.PeakGainPlot, 'LineThickness', 2);
     improveAxesAppearance(app.PeakDEPAEPlot, 'LineThickness', 2);
     improveAxesAppearance(app.CompressionPointsPlot, 'LineThickness', 2);
+    updateColorOrder(app);
+    updateColormap(app);
 end
