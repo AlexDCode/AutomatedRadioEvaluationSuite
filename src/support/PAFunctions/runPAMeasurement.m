@@ -214,7 +214,6 @@ try
         writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
     end
     % Save table as a variable in the app
-    % TEST IF NEEDED
     app.PAMeasurementsTable = resultsTable;
 
     % Save the complete measurement data.

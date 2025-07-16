@@ -136,6 +136,6 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
 
             % Combine fixed attenuation, lossed and coupling
             inCal = app.InputAttenuationValueField.Value + Att_in + C_in;
-            outCal = -app.OutputAttenuationValueField.Value - C_out;
+            outCal = app.OutputAttenuationValueField.Value - C_out;
     end
 end

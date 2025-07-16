@@ -49,7 +49,7 @@ function plotPASingleMeasurement(app)
 
     % Plot Gain on the left y-axis.
     yyaxis(ax, 'left');
-    h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain);
+    h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain, '-k');
     ylabel(ax, 'Gain (dB)', 'FontWeight', 'bold');
 
     % Initialize legend entries.
