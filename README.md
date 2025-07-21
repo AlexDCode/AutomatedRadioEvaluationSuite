@@ -15,7 +15,7 @@
 [![License](https://img.shields.io/github/license/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
 
-The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
+The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurements for power amplifiers and antennas, interfacing seamlessly with existing laboratory equipment using standard communication protocols and offering a comprehensive and user-friendly interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
 
 <!-- ## Table of Contents
 
@@ -36,7 +36,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
   - Output Power
   - Drain Efficiency
   - Power Added Efficiency
-- Measure antenna gain characteristics by:
+- Measure antenna realized and absolute gain characteristics by:
   - Gain Comparison Method (i.e., Two-Antenna Method)
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
 - Measure antenna return loss (magnitude and phase).
@@ -46,13 +46,11 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## TODO
 
-- **How It Works**: Provide an overview of the app's inner workings, explaining how it communicates with instruments, processes measurements, and the general workflow.
-- **Update PA Documentation Images**: Showing new UI and plotting options.
-- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file. Add MATLAB-style toolbar and resizable panels.
-- **Antenna Measurements**: Add capabilities to measure antenna directivity, efficiency, and polarization. Enable measurement of circular polarized antennas.
-- **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
+- **Update Documentation Images**: Showing new UI and plotting options.
 - **Instrument Type Filter**: Filter the instrument address dropdown by instrument type and only display the instruments pertaining relevant category and 'Others'.
-- **Known Limitation**: The linear slider range and offset are hard coded in the app. The default values are for the Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to instrument database properties.
+- **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file.
+- **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
+- **Known Limitation**: The linear slider range and offset are hard-coded in the app. The default values are for Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to the instrument database as properties.
 
 
 ## Usage
