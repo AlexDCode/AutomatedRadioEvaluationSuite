@@ -47,7 +47,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 ## TODO
 
 - **Update Documentation Images**: Showing new UI and plotting options.
-- **PA Test Safety Features**: Add the option to pause the test after a predetermined time for cooldown and skip the remaining power points in the current sweep if the gain goes below the threshold (0 dB).
+- **PA Test Safety Features**: Add the option to pause the test after a predetermined time for cooldown and skip the remaining power points in the current sweep if the gain goes below the threshold (0 dB). Add option to stop test if power supply is current limited (short circuit).
 - **Instrument Type Filter**: Filter the instrument address dropdown by instrument type and only display the instruments pertaining relevant category and 'Others'.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
