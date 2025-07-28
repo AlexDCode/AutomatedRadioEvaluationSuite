@@ -57,7 +57,8 @@ try
     measurementStartTime = datetime('now');
     tic; lastTime = toc; totalTime = 0;
 
-    for i = 1:totalMeasurements
+    i = 1;
+    while i <= height(parametersTable)
         % Update timing info.
         now = toc;
         elapsedTime = now - lastTime;
@@ -112,12 +113,18 @@ try
             return;
         end
 
+        % Get indices for current power sweep
+        sweepVars = setdiff(parametersTable.Properties.VariableNames, {'RF Input Power'}); % Get all variable names except RF Input Power
+        powerSweepMask = ismember(parametersTable(:,sweepVars), parametersTable(i,sweepVars), 'rows'); % Get rows with similar sweep variable values
+        idxPowerSweep = find(powerSweepMask); % Get the indices
+
         % Loop RF parameters.
         RFInputPower = parametersTable.('RF Input Power')(i);
         frequency = parametersTable.Frequency(i);
 
         % Set target frequency in the signal generator.
         writeline(app.SignalGenerator, sprintf(':SOURce1:FREQuency:CW %d', frequency));
+
         % Set center frequency in the signal analyzer.
         if ~isempty(app.OutputSignalAnalyzer.ResourceName)
             writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
@@ -125,6 +132,7 @@ try
         if ~isempty(app.InputSignalAnalyzer.ResourceName)
             writeline(app.InputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
         end
+
         % Set all active channel voltages and currents.
         for ch = 1:length(app.FilledPSUChannels)
             channelName = app.FilledPSUChannels{ch};
@@ -139,7 +147,7 @@ try
             enablePSUChannels(app, app.FilledPSUChannels, true);
 
             % Longer delay to allow PA to settle.
-            pause(app.PAMeasurementDelayValueField.Value * 10);
+            pause(app.PSUDelaySpinner.Value);
 
             % Turn on signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
@@ -187,7 +195,66 @@ try
             resultsTable.(sprintf('Channel %d DC Current (A)', ch))(i) = DCDrainCurrent(1, ch);
             resultsTable.(sprintf('Channel %d DC Power (W)', ch))(i) = DCDrainPower(1, ch);
         end
+
+
+        %% Test safety options
+        % Minimum Gain: Skip remaining power sweep when below threshold
+        if app.MinimumGainSafetyState % Only if safety option is active
+            if Gain < app.MinimumGainSpinner.Value
+                % Skip remaining power sweep if gain is below threshold
+                i = idxPowerSweep(end)+1;
+
+                % Turn off signal generator.
+                writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+        
+                % Disable all channels.
+                enablePSUChannels(app, app.FilledPSUChannels, false);
+
+                % Pause for cooldown
+                pause(app.CooldownTimeSpinner.Value)
+
+                % Enable all channels.
+                enablePSUChannels(app, app.FilledPSUChannels, true);
+                
+                % Longer delay to allow PA to settle.
+                pause(app.PSUDelaySpinner.Value);
+
+                % Turn on signal generator.
+                writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
+
+            end
+        end
+
+        % Cooldown Time: Wait between power sweeps for each parameter combination
+        if i == idxPowerSweep(end)
+            % Turn off signal generator.
+            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+
+            % Disable all channels.
+            enablePSUChannels(app, app.FilledPSUChannels, false);
+
+            % Pause for cooldown in last power sweep row
+            pause(app.CooldownTimeSpinner.Value)
+
+            % Enable all channels.
+            enablePSUChannels(app, app.FilledPSUChannels, true);
+
+            % Longer delay to allow PA to settle.
+            pause(app.PSUDelaySpinner.Value);
+
+            % Turn on signal generator.
+            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
+        end
+
+        i = i+1;
     end
+
+    % Turn off the signal generator.
+    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
+    writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+
+    % Disable the channels.
+    enablePSUChannels(app, app.FilledPSUChannels, false);
 
     % Close progress dialog.
     close(d);
@@ -199,13 +266,6 @@ try
     % Log measurement completion time to the user path.
     logMeasurementTime(app, 'PA', measurementStartTime, measurementEndTime, measurementDuration, totalMeasurements);
 
-    % Turn off the signal generator.
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
-    writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
-
-    % Disable the channels.
-    enablePSUChannels(app, app.FilledPSUChannels, false);
-
     % Set signal analyzer to continous trigger
     if ~isempty(app.OutputSignalAnalyzer.ResourceName)
         writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
@@ -213,6 +273,10 @@ try
     if ~isempty(app.InputSignalAnalyzer.ResourceName)
         writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
     end
+
+    % Remove zero rows that may be left empty during safety checks
+    resultsTable(all(resultsTable{:,:} == 0, 2), :) = [];
+
     % Save table as a variable in the app
     app.PAMeasurementsTable = resultsTable;
 
