@@ -129,7 +129,7 @@ Use the *VNA* tab to review and adjust Vector Network Analyzer (VNA) settings. W
 
 To avoid invalidating the calibration, it is recommended to perform the VNA calibration before connecting to the VNA and then leave the loaded values unchanged. Keep in mind that the frequency and power ranges are constrained by the capabilities of the connected instrument.
 
-Optionally, the app can apply smoothing to the VNA data using a moving average filter with the given number of samples. This is controlled via the *Smoothing Percentage* setting. If set to zero, smoothing is disabled.
+Optionally, the app can apply smoothing to the VNA data using a moving average filter with the given number of samples. This is controlled via the *Smoothing Points* setting. If set to zero, smoothing is disabled.
 
 ```{image} ./assets/Ant/vna_conf.png
 :alt: VNA Configuration

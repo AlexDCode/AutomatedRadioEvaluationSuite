@@ -155,11 +155,11 @@ function runAntennaMeasurement(app)
             if isempty(app.ReferenceGainFile)
                 % Two-Antenna Method.
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
-                AbsoluteGain_dBi = caulculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
+                AbsoluteGain_dBi = calculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
                 app.ReferenceGainFile.GaindBi = Gain_dBi;
                 app.ReferenceGainFile.FrequencyMHz = VNAFrequencies/1E6;
-                app.ReferenceGainFile.ReturnLossdB = SParameters_dB{2};
-                app.ReferenceGainFile.ReturnLossdeg = SParameters_Phase{2};
+                app.ReferenceGainFile.ReturnLossdB = SParameters_dB{1};
+                app.ReferenceGainFile.ReturnLossdeg = SParameters_Phase{1};
 
                 plotReferenceAntenna(app);
             else
