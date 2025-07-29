@@ -19,7 +19,7 @@ function [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = mea
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Filtered PA data using the index.
-    PATable = app.PA_DataTable(idx, :);
+    PATable = rmmissing(app.PA_DataTable(idx, :));
 
     % Maximum RF Output Power (Psat) per frequency.
     Psat = groupsummary(PATable, 'FrequencyMHz', 'max', 'RFOutputPowerdBm');

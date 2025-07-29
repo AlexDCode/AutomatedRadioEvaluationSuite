@@ -29,6 +29,10 @@ try
     parametersTable = createPAParametersTable(app);
     totalMeasurements = height(parametersTable);
     resultsTable = createPAResultsTable(app, totalMeasurements);
+    biasTable = parametersTable;
+    biasTable.("RF Input Power") = [];
+    biasTable = unique(biasTable);
+    biasTable = table(biasTable.Frequency, 'VariableNames', {'Frequency'});
 
     % Check if minimum needed instruments are connected
     connectedSA = ~isempty(app.OutputSignalAnalyzer.ResourceName) | (~isempty(app.OutputSignalAnalyzer.ResourceName) & ~isempty(app.InputSignalAnalyzer.ResourceName));
@@ -57,7 +61,8 @@ try
     measurementStartTime = datetime('now');
     tic; lastTime = toc; totalTime = 0;
 
-    i = 1;
+    i = 1; i_bias = i;
+    statePSU = false;
     while i <= height(parametersTable)
         % Update timing info.
         now = toc;
@@ -83,6 +88,7 @@ try
             % If the user stops the PA test measurement, then for
             % safety reasons the instruments will be turned off.
             enablePSUChannels(app, app.FilledPSUChannels, false);
+            statePSU = false;
             writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
 
@@ -141,22 +147,48 @@ try
             setPSUChannels(app, channelName, voltage, current);
         end
 
-        if i == 1
+        if ~statePSU
             % For the first measurement:
             % Enable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, true);
-
+            statePSU = true;
+            
             % Longer delay to allow PA to settle.
             pause(app.PSUDelaySpinner.Value);
 
+            % Measure quiescent bias point
+            [~, ~, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
+    
+            % Calculate total DC Current (A).
+            TotalDCDrainCurrent = sum(DCDrainCurrent);
+            TotalDCGateCurrent = sum(DCGateCurrent);
+    
+            % Calculate total DC Power (W).
+            TotalDCDrainPower = sum(DCDrainPower);
+            TotalDCGatePower = sum(DCGatePower);
+
+            % Measure quiescent current
+            biasTable.("Frequency (MHz)")(i_bias) = frequency/1e6;
+            biasTable.("Total DC Drain Current (A)")(i_bias) = TotalDCDrainCurrent;
+            biasTable.("Total DC Gate Current (A)")(i_bias) = TotalDCGateCurrent;
+            biasTable.("Total DC Drain Power (W)")(i_bias) = TotalDCDrainPower;
+            biasTable.("Total DC Gate Power (W)")(i_bias) = TotalDCGatePower;
+            for ch = 1:length(app.FilledPSUChannels)
+                biasTable.(sprintf('Channel %d Voltages (V)', ch))(i_bias) = parametersTable.(sprintf('Channel %d Voltage', ch))(i);
+                biasTable.(sprintf('Channel %d DC Current (A)', ch))(i_bias) = DCDrainCurrent(1, ch);
+                biasTable.(sprintf('Channel %d DC Power (W)', ch))(i_bias) = DCDrainPower(1, ch);
+            end
+            i_bias = i_bias + 1;
+
             % Turn on signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
+            pause(app.PAMeasurementDelayValueField.Value);
         end
 
         % Small delay.
         pause(app.PAMeasurementDelayValueField.Value);
 
-        % Measure RF Powwr, DC Current, and DC Power.
+        % Measure RF Power, DC Current, and DC Power.
         [RFInputPower, RFOutputPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
 
         % Calculate total DC Current (A).
@@ -209,19 +241,10 @@ try
         
                 % Disable all channels.
                 enablePSUChannels(app, app.FilledPSUChannels, false);
+                statePSU = false;
 
                 % Pause for cooldown
                 pause(app.CooldownTimeSpinner.Value)
-
-                % Enable all channels.
-                enablePSUChannels(app, app.FilledPSUChannels, true);
-                
-                % Longer delay to allow PA to settle.
-                pause(app.PSUDelaySpinner.Value);
-
-                % Turn on signal generator.
-                writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
-
             end
         end
 
@@ -235,18 +258,9 @@ try
 
             % Disable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, false);
-
+            statePSU = false;
             % Pause for cooldown in last power sweep row
             pause(app.CooldownTimeSpinner.Value)
-
-            % Enable all channels.
-            enablePSUChannels(app, app.FilledPSUChannels, true);
-
-            % Longer delay to allow PA to settle.
-            pause(app.PSUDelaySpinner.Value);
-
-            % Turn on signal generator.
-            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
         end
 
         i = i+1;
@@ -258,6 +272,7 @@ try
 
     % Disable the channels.
     enablePSUChannels(app, app.FilledPSUChannels, false);
+    statePSU = false;
 
     % Close progress dialog.
     close(d);
@@ -283,10 +298,14 @@ try
     % Save table as a variable in the app
     app.PAMeasurementsTable = resultsTable;
 
+    % TODO: Save quiescent bias point data
+    biasTable.Frequency = [];
+    disp(biasTable)
+
     % Save the complete measurement data.
     fullFilename = saveData(resultsTable);
     loadData(app, 'PA', fullFilename);
-
+    
     % Update dropdown values to match the data.
     updatePAPlotDropdowns(app);
 
@@ -298,6 +317,7 @@ catch ME
     % If an error occurs during the PA test measurement, then
     % for safety reasons the instruments will be turned off.
     enablePSUChannels(app, app.FilledPSUChannels, false);
+    statePSU = false;
     writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
     writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
     app.displayError(ME);

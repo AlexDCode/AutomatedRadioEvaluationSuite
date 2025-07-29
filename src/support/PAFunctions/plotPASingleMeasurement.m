@@ -18,6 +18,7 @@ function plotPASingleMeasurement(app)
     %   None
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    if str2double(app.FrequencySingleDropDown.Value) > 0
     ax = app.SingleFrequencyPAPlot;
     cla(ax, "reset");
     clear legendEntries legendHandles;
@@ -78,6 +79,7 @@ function plotPASingleMeasurement(app)
         lgd.FontSize = 12;
     else
         error('Mismatch between legend handles and entries.');
+    end
     end
 end
 

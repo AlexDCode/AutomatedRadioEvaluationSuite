@@ -304,8 +304,6 @@ function plotCalibration(app)
                     plot(ax, SnP_out.Frequencies/1e6, A2dB(squeeze(abs(SnP_out.Parameters(4,1,:)))), 'DisplayName', 'Isolation Loss');
                 end
                 plot(ax, SnP_out.Frequencies/1e6, outCal, 'DisplayName', 'Calibration');
-
-                hold off;
             else
                 if app.MeasurementTypeDropDown.Value == "Single Frequency"
                 freq = [app.StartFrequency.Value];
