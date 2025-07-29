@@ -18,6 +18,19 @@ Sample datasets are available in the [data/Antenna](https://github.com/AlexDCode
 
 ## Theory
 
+ARES is built to test antennas assuming the following setup:
+
+* Port 1 of the VNA is connected to the reference antenna
+* Port 2 of the VNA is connected to the antenna under test (AUT)
+
+```{image} ./assets/Ant/test_diagram.png
+:alt: Test Setup Diagram
+:class: bg-primary
+:width: 100%
+:align: center
+```
+
+
 ### Foundational Equations
 
 Friis Transmission Equation:
