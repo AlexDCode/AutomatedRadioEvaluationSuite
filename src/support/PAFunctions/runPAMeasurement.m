@@ -227,6 +227,9 @@ try
 
         % Cooldown Time: Wait between power sweeps for each parameter combination
         if i == idxPowerSweep(end)
+            if i == totalMeasurements
+                break;
+            end
             % Turn off signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
 
