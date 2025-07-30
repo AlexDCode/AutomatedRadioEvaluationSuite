@@ -17,6 +17,8 @@ function runPAMeasurement(app)
 %   - Providing a progress UI dialog with estimated time updates.
 %   - Saving the results and loading them back into the application.
 %
+% *TODO:* Verify if gate PSU data is saved to results table in individual PSU channel columns
+%
 % INPUT:
 %   app  - Application object containing hardware interfaces, user settings, and UI components.
 %
@@ -29,10 +31,6 @@ try
     parametersTable = createPAParametersTable(app);
     totalMeasurements = height(parametersTable);
     resultsTable = createPAResultsTable(app, totalMeasurements);
-    biasTable = parametersTable;
-    biasTable.("RF Input Power") = [];
-    biasTable = unique(biasTable);
-    biasTable = table(biasTable.Frequency, 'VariableNames', {'Frequency'});
 
     % Check if minimum needed instruments are connected
     connectedSA = ~isempty(app.OutputSignalAnalyzer.ResourceName) | (~isempty(app.OutputSignalAnalyzer.ResourceName) & ~isempty(app.InputSignalAnalyzer.ResourceName));
@@ -56,13 +54,14 @@ try
         writeline(app.InputSignalAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
         writeline(app.InputSignalAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
     end
+
     % Create a progress dialog to inform the user of the progress.
     d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
     measurementStartTime = datetime('now');
     tic; lastTime = toc; totalTime = 0;
 
-    i = 1; i_bias = i;
-    statePSU = false;
+    i = 1;
+    statePSU = false; % Flag for PSU output enable
     while i <= height(parametersTable)
         % Update timing info.
         now = toc;
@@ -88,7 +87,6 @@ try
             % If the user stops the PA test measurement, then for
             % safety reasons the instruments will be turned off.
             enablePSUChannels(app, app.FilledPSUChannels, false);
-            statePSU = false;
             writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
 
@@ -148,7 +146,9 @@ try
         end
 
         if ~statePSU
-            % For the first measurement:
+            % When the PSU is switched back on use the PSU delay, save
+            % quiescent current, and turn signal generator on 
+
             % Enable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, true);
             statePSU = true;
@@ -156,29 +156,20 @@ try
             % Longer delay to allow PA to settle.
             pause(app.PSUDelaySpinner.Value);
 
-            % Measure quiescent bias point
-            [~, ~, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, RFInputPower, frequency);
+            % Measure quiescent current
+            [~, ~, DCDrainQuiescentCurrent, DCGateQuiescentCurrent, ~, ~] = measureRFOutputandDCPower(app, RFInputPower, frequency);
     
             % Calculate total DC Current (A).
-            TotalDCDrainCurrent = sum(DCDrainCurrent);
-            TotalDCGateCurrent = sum(DCGateCurrent);
+            TotalDCDrainQuiescentCurrent = sum(DCDrainQuiescentCurrent);
+            TotalDCGateQuiescentCurrent = sum(DCGateQuiescentCurrent);
     
-            % Calculate total DC Power (W).
-            TotalDCDrainPower = sum(DCDrainPower);
-            TotalDCGatePower = sum(DCGatePower);
-
-            % Measure quiescent current
-            biasTable.("Frequency (MHz)")(i_bias) = frequency/1e6;
-            biasTable.("Total DC Drain Current (A)")(i_bias) = TotalDCDrainCurrent;
-            biasTable.("Total DC Gate Current (A)")(i_bias) = TotalDCGateCurrent;
-            biasTable.("Total DC Drain Power (W)")(i_bias) = TotalDCDrainPower;
-            biasTable.("Total DC Gate Power (W)")(i_bias) = TotalDCGatePower;
+            % Save quiescent current data to results table
+            % (in the first row of power sweep)
+            resultsTable.("Total DC Drain Quiescent Current (A)")(i) = TotalDCDrainQuiescentCurrent;
+            resultsTable.("Total DC Gate Quiescent Current (A)")(i) = TotalDCGateQuiescentCurrent;
             for ch = 1:length(app.FilledPSUChannels)
-                biasTable.(sprintf('Channel %d Voltages (V)', ch))(i_bias) = parametersTable.(sprintf('Channel %d Voltage', ch))(i);
-                biasTable.(sprintf('Channel %d DC Current (A)', ch))(i_bias) = DCDrainCurrent(1, ch);
-                biasTable.(sprintf('Channel %d DC Power (W)', ch))(i_bias) = DCDrainPower(1, ch);
+                resultsTable.(sprintf('Channel %d DC Quiescent Current (A)', ch))(i) = DCDrainQuiescentCurrent(1, ch);
             end
-            i_bias = i_bias + 1;
 
             % Turn on signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
@@ -233,9 +224,6 @@ try
         % Minimum Gain: Skip remaining power sweep when below threshold
         if app.MinimumGainSafetyState % Only if safety option is active
             if Gain < app.MinimumGainSpinner.Value
-                % Skip remaining power sweep if gain is below threshold
-                i = idxPowerSweep(end)+1;
-
                 % Turn off signal generator.
                 writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
         
@@ -243,8 +231,34 @@ try
                 enablePSUChannels(app, app.FilledPSUChannels, false);
                 statePSU = false;
 
+                % Plot at current sweep  
+                combinedData = resultsTable;
+    
+                % Remove spaces and parenthesis from the variable names.
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
+    
+                % Process data
+                processPAData(app, combinedData);
+                
+                % Index the data for the current frequency and power supply values
+                app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
+                for ch = 1:length(app.PA_PSU_Channels)
+                    app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
+                end
+    
+                % Plot with updated dropdown values.
+                plotPASingleMeasurement(app);
+                plotPASweepMeasurement(app);
+                plotPADCMeasurement(app);
+
                 % Pause for cooldown
                 pause(app.CooldownTimeSpinner.Value)
+
+                % Skip remaining power sweep if gain is below threshold
+                i = idxPowerSweep(end)+1;
             end
         end
 
@@ -259,6 +273,31 @@ try
             % Disable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, false);
             statePSU = false;
+
+
+            % Plot at current sweep  
+            combinedData = resultsTable;
+
+            % Remove spaces and parenthesis from the variable names.
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
+
+            % Process data
+            processPAData(app, combinedData);
+            
+            % Index the data for the current frequency and power supply values
+            app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
+            for ch = 1:length(app.PA_PSU_Channels)
+                app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
+            end
+
+            % Plot with updated dropdown values.
+            plotPASingleMeasurement(app);
+            plotPASweepMeasurement(app);
+            plotPADCMeasurement(app);
+
             % Pause for cooldown in last power sweep row
             pause(app.CooldownTimeSpinner.Value)
         end
@@ -272,7 +311,6 @@ try
 
     % Disable the channels.
     enablePSUChannels(app, app.FilledPSUChannels, false);
-    statePSU = false;
 
     % Close progress dialog.
     close(d);
@@ -298,28 +336,16 @@ try
     % Save table as a variable in the app
     app.PAMeasurementsTable = resultsTable;
 
-    % TODO: Save quiescent bias point data
-    biasTable.Frequency = [];
-    disp(biasTable)
-
     % Save the complete measurement data.
     fullFilename = saveData(resultsTable);
     loadData(app, 'PA', fullFilename);
-    
-    % Update dropdown values to match the data.
-    updatePAPlotDropdowns(app);
 
-    % Plot with updated dropdown values.
-    plotPASingleMeasurement(app);
-    plotPASweepMeasurement(app);
-    plotPADCMeasurement(app);
 catch ME
     % If an error occurs during the PA test measurement, then
     % for safety reasons the instruments will be turned off.
-    enablePSUChannels(app, app.FilledPSUChannels, false);
-    statePSU = false;
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
     writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
+    enablePSUChannels(app, app.FilledPSUChannels, false);
     app.displayError(ME);
 end
 end

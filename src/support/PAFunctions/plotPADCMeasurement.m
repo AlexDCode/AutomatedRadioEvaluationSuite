@@ -104,6 +104,57 @@ function plotPADCMeasurement(app)
     for i = 2:width(PeakSupply)
         plot(app.PAPeakSupplyCurrentPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
     end
+
+    % Plot Quiescent Current
+
+    % Get data variable names
+    varNames = app.PA_DataTable.Properties.VariableNames;
+    
+    % Find quiescent current variables
+    quiescentVars = varNames(contains(varNames, 'Quiescent'));
+    if ~isempty(quiescentVars)
+        % Append PSU channel voltage and frequency variables
+        channelVars = varNames(contains(varNames, 'VoltagesV'));
+        allVars = [{'FrequencyMHz'}, channelVars, quiescentVars];
+
+        for j = 1:length(app.PA_PSU_SelectedVoltages)
+            % Get selected voltages
+            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
+            
+            % Build table for quiescent currents and drop rows which do not
+            % contain neccesary data
+            QuiescentCurrent = app.PA_DataTable(idxPSU, allVars);
+            rowsToDrop = all(QuiescentCurrent{:, quiescentVars} == 0, 2);
+            QuiescentCurrent(rowsToDrop,:) = [];
+            QuiescentCurrent(:,channelVars) = [];
+        end
+
+        % Rename variable names for plotting
+        % Initialize old and new name lists
+        oldNames = {'TotalDCDrainQuiescentCurrentA', 'TotalDCGateQuiescentCurrentA'};
+        newNames = {'Drain Quiescent', 'Gate Quiescent'};
+        % Loop through all variable names to find matching pattern
+        for i = 1:numel(allVars)
+            name = allVars{i};
+            
+            % Match "Channel<number>DCQuiescentCurrentA"
+            tokens = regexp(name, '^Channel(\d+)DCQuiescentCurrentA$', 'tokens');
+            
+            if ~isempty(tokens)
+                channelNum = tokens{1}{1};
+                oldNames{end+1} = name;
+                newNames{end+1} = sprintf('Channel %s Quiescent', channelNum);
+            end
+        end
+        
+        % Rename matching variables
+        QuiescentCurrent = renamevars(QuiescentCurrent, oldNames, newNames);
+
+        % Plot Quiescent Current
+        for i = 2:width(QuiescentCurrent)
+            plot(app.PAPeakSupplyCurrentPlot, QuiescentCurrent.FrequencyMHz, QuiescentCurrent(:,i).Variables, 'DisplayName', string(QuiescentCurrent(:,i).Properties.VariableNames));
+        end
+    end
     
     % Labels
     hold(app.PAPeakSupplyCurrentPlot, 'off');
