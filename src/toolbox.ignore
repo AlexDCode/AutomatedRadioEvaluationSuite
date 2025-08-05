@@ -24,6 +24,7 @@
 %
 **/resources/project/**/*
 resources
+resources/*
 **/*.prj
 **/*.prj.bak
 **/.git/**/*

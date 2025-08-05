@@ -2813,7 +2813,7 @@ function alpha = normalizedAlphaValues(m2t, alpha, handle)
             alpha = ind2rgb(alpha, get(m2t.current.gcf, 'Alphamap'));
         otherwise
             error('matlab2tikz:UnknownAlphaMapping', ...
-                  'Unknown alpha mapping "%s"', alphaMapping);
+                  'Unknown alpha mapping "%s"', alphaDataMapping);
     end
 
     if isfloat(alpha) %important, alpha data can have integer type which should not be scaled
@@ -5353,7 +5353,7 @@ function [m2t, colorindex] = cdata2colorindex(m2t, cdata, imagehandle)
 
         otherwise
             error('matlab2tikz:anycolor2rgb:unknownCDataMapping',...
-                'Unknown CDataMapping ''%s''.',cdatamapping);
+                'Unknown CDataMapping ''%s''.',mapping);
     end
 end
 % ==============================================================================
