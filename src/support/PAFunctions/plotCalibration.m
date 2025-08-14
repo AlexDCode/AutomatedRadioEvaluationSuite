@@ -26,7 +26,7 @@ function plotCalibration(app)
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
 
@@ -39,7 +39,7 @@ function plotCalibration(app)
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
 
@@ -82,7 +82,7 @@ function plotCalibration(app)
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
 
@@ -123,7 +123,7 @@ function plotCalibration(app)
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
         case "Small + Large Signal"
@@ -165,7 +165,7 @@ function plotCalibration(app)
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
 
@@ -206,7 +206,7 @@ function plotCalibration(app)
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
         case "In-Situ Couplers"
@@ -271,7 +271,7 @@ function plotCalibration(app)
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
 
@@ -325,7 +325,7 @@ function plotCalibration(app)
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
     end

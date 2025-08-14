@@ -1,4 +1,4 @@
-function improveAxesAppearance(axesObj, varargin)
+function improveAxesAppearance(app, axesObj, varargin)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function improves the appearance of UIAxes in MATLAB App Designer. It supports enhancing single or dual
@@ -35,9 +35,13 @@ function improveAxesAppearance(axesObj, varargin)
     axesObj.LineWidth = 1.5;
 
     % Grid styling.
+    GridStatus = regexp(app.GridCurrentStatusLabel.Text, '(On|Off)', 'match');
     axesObj.GridLineStyle = ':';
     axesObj.GridAlpha = 0.3;
     axesObj.GridColor = [0.5, 0.5, 0.5];
+    if strcmp(GridStatus{1}, 'On')
+        grid(axesObj,"on");
+    end
 
     % Axis label styling.
     axesObj.XLabel.FontWeight = 'bold';

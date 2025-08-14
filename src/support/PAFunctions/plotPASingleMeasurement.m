@@ -51,7 +51,15 @@ function plotPASingleMeasurement(app)
         
             % Plot Gain on the left y-axis.
             yyaxis(ax, 'left');
+            
+            ThemeStatus = regexp(app.CurrentThemeLabel.Text, '(light|dark)', 'match');
+            if strcmp(ThemeStatus{1}, 'light')
             h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain, '-k');
+            elseif strcmp(ThemeStatus{1}, 'dark')
+                h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain, '-w');
+            else
+                h3 = plot(ax, PATable.RFOutputPowerdBm, PATable.Gain);
+            end
             ylabel(ax, 'Gain (dB)', 'FontWeight', 'bold');
         
             % Initialize legend entries.
@@ -59,7 +67,7 @@ function plotPASingleMeasurement(app)
             legendHandles = [h1, h2, h3];
             
             % Get the peak values.
-            [Psat, ~, ~, ~, compression1dB, compression3dB] = measureRFParametersPeaks(app, idx);
+            [Psat, ~, ~, ~, compression1dB, compression3dB] = calculateCompression(app, idx);
         
             % Plot Psat as a green X.
             [legendHandles, legendEntries] = plotPeakMarkers(ax, Psat, 'gx', 'P_{sat}', legendHandles, legendEntries);
@@ -70,7 +78,7 @@ function plotPASingleMeasurement(app)
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
-            improveAxesAppearance(ax, 'YYAxis', true, 'LineThickness', 2);
+            improveAxesAppearance(app, ax, 'YYAxis', true, 'LineThickness', 2);
             updateColorOrder(app);
             updateColormap(app);
         

@@ -31,7 +31,7 @@ function plotPASweepMeasurement(app)
     end
     
     % Getting the peak values.
-    [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = measureRFParametersPeaks(app,idx);
+    [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = calculateCompression(app,idx);
 
     % 1) Peak Gain vs. Frequency
     plot(app.PeakGainPlot, peakGain.FrequencyMHz, peakGain.max_Gain, '-o');
@@ -94,9 +94,9 @@ function plotPASweepMeasurement(app)
     end
     
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.
-    improveAxesAppearance(app.PeakGainPlot, 'LineThickness', 2);
-    improveAxesAppearance(app.PeakDEPAEPlot, 'LineThickness', 2);
-    improveAxesAppearance(app.CompressionPointsPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PeakGainPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PeakDEPAEPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.CompressionPointsPlot, 'LineThickness', 2);
     updateColorOrder(app);
     updateColormap(app);
 end

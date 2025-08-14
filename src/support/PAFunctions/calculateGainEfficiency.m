@@ -1,4 +1,4 @@
-function [Gain, DE, PAE] = measureRFParameters(inputRFPower, outputRFPower, DCDrainPower)
+function [Gain, DE, PAE] = calculateGainEfficiency(inputRFPower, outputRFPower, DCDrainPower)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the 
@@ -22,11 +22,17 @@ function [Gain, DE, PAE] = measureRFParameters(inputRFPower, outputRFPower, DCDr
     inputRFPowerW = dBm2W(inputRFPower);
     outputRFPowerW = dBm2W(outputRFPower);
 
-    % Calculate Drain Efficiency (DE) as a percentage.
-    DE = (outputRFPowerW ./ DCDrainPower) * 100;
-
-    % Calculate Power Added Efficiency (PAE) as a percentage.
-    PAE = ((outputRFPowerW - inputRFPowerW) ./ DCDrainPower) * 100;
+    if DCDrainPower ~= 0
+        % Calculate Drain Efficiency (DE) as a percentage.
+        DE = (outputRFPowerW ./ DCDrainPower) * 100;
+    
+        % Calculate Power Added Efficiency (PAE) as a percentage.
+        PAE = ((outputRFPowerW - inputRFPowerW) ./ DCDrainPower) * 100;
+    else
+        % Set to NaN if no DC power is given
+        DE = NaN;
+        PAE = NaN;
+    end
 
     % Remove negative efficiencies as they occur when the PA is off (Class C).
     DE(DE<0) = NaN;

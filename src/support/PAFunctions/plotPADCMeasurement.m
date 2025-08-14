@@ -24,6 +24,9 @@ function plotPADCMeasurement(app)
     cla(app.PAPeakSupplyPowerPlot, "reset");
     clear legendEntries legendHandles;
 
+
+    if ~isempty(app.PA_PSU_SelectedVoltages)  
+    try
     % Index the plot for the selected supply voltages.
     idx = true(height(app.PA_DataTable), 1);
     for i = 1:length(app.PA_PSU_SelectedVoltages)
@@ -193,10 +196,14 @@ function plotPADCMeasurement(app)
     legend(app.PAPeakSupplyPowerPlot,'Location','best');
 
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.
-    improveAxesAppearance(app.PASupplyCurrentPlot, 'LineThickness', 2);
-    improveAxesAppearance(app.PASupplyPowerPlot, 'LineThickness', 2);
-    improveAxesAppearance(app.PAPeakSupplyCurrentPlot, 'LineThickness', 2);
-    improveAxesAppearance(app.PAPeakSupplyPowerPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PASupplyCurrentPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PASupplyPowerPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PAPeakSupplyCurrentPlot, 'LineThickness', 2);
+    improveAxesAppearance(app, app.PAPeakSupplyPowerPlot, 'LineThickness', 2);
     updateColorOrder(app);
     updateColormap(app);
+    catch ME
+        app.displayError(ME);
+    end
+    end
 end

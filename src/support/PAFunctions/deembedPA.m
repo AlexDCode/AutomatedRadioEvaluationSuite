@@ -20,6 +20,10 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
     % OUTPUT:
     %   inCal          - The input attenuation calibration factor (dB). Subtracts this from the input RF power to obtain the corrected PA input power.
     %   outCal         - The output attenuation calibration factor (dB). Adds this to the measured output power to get the corrected PA output power.
+    %
+    % TODO:
+    %   - Receive an array of test frequencies and respond with calibration
+    %   factors of equal size (single input power).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     calMode = app.CalibrationModeDropDown.Value;

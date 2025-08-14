@@ -32,8 +32,8 @@ function plotReferenceAntenna(app)
     axis(app.ReturnLossBoresight, 'tight');
 
     % Improves the plot appeareance, line thickness can be modified.
-    improveAxesAppearance(app.GainvsFrequencyBoresight, 'LineThickness', 2);
-    improveAxesAppearance(app.ReturnLossBoresight, 'LineThickness', 2);
+    improveAxesAppearance(app, app.GainvsFrequencyBoresight, 'LineThickness', 2);
+    improveAxesAppearance(app, app.ReturnLossBoresight, 'LineThickness', 2);
     updateColorOrder(app);
     updateColormap(app);
 end

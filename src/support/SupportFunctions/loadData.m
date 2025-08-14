@@ -33,7 +33,7 @@ function combinedData = loadData(app, RFcomponent, FileName)
         w = warning('off','MATLAB:table:ModifiedAndSavedVarnames');    
 
         % Load the table from the file.
-        combinedData = readtable(FileName);
+        combinedData = readtable(FileName,'Delimiter',',');
 
         % Reset warning level.
         warning(w);       

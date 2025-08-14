@@ -1,4 +1,4 @@
-function [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = measureRFParametersPeaks(app, idx)
+function [Psat, peakGain, peakDE, peakPAE, compression1dB, compression3dB] = calculateCompression(app, idx)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including

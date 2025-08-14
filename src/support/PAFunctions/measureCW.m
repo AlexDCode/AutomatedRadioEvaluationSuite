@@ -1,7 +1,7 @@
-function [InputRFPower, OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureRFOutputandDCPower(app, inputRFPower, frequency)
+function [InputRFPower, OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPower, DCGatePower] = measureCW(app, inputRFPower, frequency)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
-    % This function measures the output RF power, DC drain power, and DC gate power based on the specified input
+    % This function measures the RF power, DC drain power, and DC gate power based on the specified input
     % RF power and test frequency. Calls the de-embedding function to get corrected input and output RF power
     %
     % INPUT:
@@ -23,9 +23,6 @@ function [InputRFPower, OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPow
     % Set the power of the signal generator.
     writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %g', inputRFPower));
     waitForInstrument(app, app.SignalGenerator);
-
-    % Turn on the signal generator.
-    writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
 
     %% Get the input RF power
     if strcmp(calMode, 'In-Situ Couplers')

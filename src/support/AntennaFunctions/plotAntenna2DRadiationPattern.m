@@ -136,9 +136,9 @@ function plotAntenna2DRadiationPattern(app)
         lgd = legend(app.RadiationPlot2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
     
         % Improves the plot appearance, line thickness can be modified.
-        improveAxesAppearance(app.GainvsFrequency2DPattern, 'LineThickness', 2);
-        improveAxesAppearance(app.ReturnLoss2DPattern, 'LineThickness', 2);
-        improveAxesAppearance(app.GainvsAngle2DPattern, 'LineThickness', 2);
+        improveAxesAppearance(app, app.GainvsFrequency2DPattern, 'LineThickness', 2);
+        improveAxesAppearance(app, app.ReturnLoss2DPattern, 'LineThickness', 2);
+        improveAxesAppearance(app, app.GainvsAngle2DPattern, 'LineThickness', 2);
         updateColorOrder(app);
         updateColormap(app);
 

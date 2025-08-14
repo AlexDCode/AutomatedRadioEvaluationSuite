@@ -35,12 +35,15 @@ function ParametersTable = createPAParametersTable(app)
     
     % Build the variable names dynamically depnding on the number of
     % channels that will be used in the PA test.
-    varNames = [{'Frequency', 'RF Input Power'},... 
+    varNames = [{'Frequency'; 'RF Input Power'},... 
                arrayfun(@(i) {sprintf('Channel %d Voltage', i), ...
-                              sprintf('Channel %d Current', i) }, ...
+                              sprintf('Channel %d Current', i) },...
                1:numChannels, 'UniformOutput', false)];
-    varNames = horzcat(varNames{:});
-    
+    if numChannels > 0
+        % Prevent concatenation of first two variables if no PSU is specified
+        varNames = horzcat(varNames{:});
+    end
+
     % Populate the voltage/current containers using the values set by the
     % user in the app.
     for i = 1:numChannels
