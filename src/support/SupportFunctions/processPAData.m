@@ -22,10 +22,41 @@ function combinedData = processPAData(app, combinedData)
 
         % Update dropdown values to match the data.
         updatePAPlotDropdowns(app);
-                
-        % Plot with updated dropdown values.
-        plotPASingleMeasurement(app);
-        plotPASweepMeasurement(app);
-        plotPADCMeasurement(app);
+
+        mode = detectMeasurement(varNames);
+        
+        if mode == "CW"
+            % Plot with updated dropdown values.
+            plotPASingleMeasurement(app);
+            plotPASweepMeasurement(app);
+            plotPADCMeasurement(app);
+        elseif mode == "Modulated"
+            plotPAModulatedMeasurement(app);
+        elseif mode == "Unknown"
+            app.displayError("Unknown PA data format which not contains the expected columns.")
+        end
+    end
+end
+
+function mode = detectMeasurement(varNames)
+    % Define keyword groups
+    cwKeywords = {'RFOutputPowerdBm', 'DE', 'PAE'};
+    modulatedKeywords = {'AverageGaindB', 'RFInputChannelPowerdBm', 'RFOutputChannelPowerdBm', ...
+        'InputOccupiedBandwidth', 'OutputOccupiedBandwidth', 'AverageDE', 'AveragePAE', ...
+        'InputACPRLowerUpperdBc' ,'OutputACPRLowerUpperdBc',...
+        'RFInputPowerSpectrumFrequencyAverageMaximumdBm', ...
+        'RFOutputPowerSpectrumFrequencyAverageMaximumdBm'};
+
+    % Check presence in variable names
+    hasCW = any(ismember(cwKeywords, varNames));
+    hasModulated = any(ismember(modulatedKeywords, varNames));
+
+    % Set mode
+    if hasModulated
+        mode = 'Modulated';
+    elseif hasCW
+        mode = 'CW';
+    else
+        mode = 'Unknown';
     end
 end

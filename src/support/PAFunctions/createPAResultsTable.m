@@ -39,36 +39,72 @@ function ResultsTable = createPAResultsTable(app, totalMeasurements)
     % Number of channels that will be used.
     numChannels = length(app.FilledPSUChannels);
 
-    % Add voltage columns based on the number of active channels.
-    for i = 1:numChannels
-        varNames{end+1} = sprintf('Channel %d Voltages (V)', i); %#ok<AGROW>
-    end
-    
-    % Add measurement columns independent of active channels.
-    varNames = [varNames, 'RF Input Power (dBm)', 'RF Output Power (dBm)', 'Gain'];
-
-    % Add current columns based on the number of active channels.
-    for i = 1:numChannels
-        varNames{end+1} = sprintf('Channel %d DC Current (A)', i); %#ok<AGROW> 
-    end
-    
-    % Add DC power coumns based on the number of active channels.
-    for i = 1:numChannels
-        varNames{end+1} = sprintf('Channel %d DC Power (W)', i); %#ok<AGROW>
-    end
-    
-    % Add total DC drain power if there are multiple channels.
-    if numChannels > 1
-        varNames{end+1} = 'Total DC Drain Current (A)';
-        varNames{end+1} = 'Total DC Gain Current (A)';
-        varNames{end+1} = 'Total DC Drain Power (W)';
-        varNames{end+1} = 'Total DC Gate Power (W)';
-    end
+    if app.StimulusDropDown.Value == "CW"
+        % Add voltage columns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d Voltages (V)', i); %#ok<AGROW>
+        end
         
-    % Add efficiency columns independent of active channels.
-    varNames = [varNames, 'DE (%)', 'PAE (%)'];
-    varTypes = repmat({'double'}, 1, length(varNames));
+        % Add measurement columns independent of active channels.
+        varNames = [varNames, 'RF Input Power (dBm)', 'RF Output Power (dBm)', 'Gain'];
     
+        % Add current columns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d DC Current (A)', i); %#ok<AGROW> 
+        end
+        
+        % Add DC power coumns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d DC Power (W)', i); %#ok<AGROW>
+        end
+        
+        % Add total DC drain power if there are multiple channels.
+        if numChannels > 1
+            varNames{end+1} = 'Total DC Drain Current (A)';
+            varNames{end+1} = 'Total DC Gain Current (A)';
+            varNames{end+1} = 'Total DC Drain Power (W)';
+            varNames{end+1} = 'Total DC Gate Power (W)';
+        end
+            
+        % Add efficiency columns independent of active channels.
+        varNames = [varNames, 'DE (%)', 'PAE (%)'];
+        varTypes = repmat({'double'}, 1, length(varNames));
+    elseif app.StimulusDropDown.Value == "Modulated"
+        % Add voltage columns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d Voltages (V)', i); %#ok<AGROW>
+        end
+
+        % Add current columns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d DC Current Modulated (A)', i); %#ok<AGROW> 
+        end
+        
+        % Add DC power coumns based on the number of active channels.
+        for i = 1:numChannels
+            varNames{end+1} = sprintf('Channel %d DC Power Modulated (W)', i); %#ok<AGROW>
+        end
+        
+        % Add total DC drain power if there are multiple channels.
+        if numChannels > 1
+            varNames{end+1} = 'Total DC Drain Current Modulated (A)';
+            varNames{end+1} = 'Total DC Gain Current Modulated (A)';
+            varNames{end+1} = 'Total DC Drain Power Modulated (W)';
+            varNames{end+1} = 'Total DC Gate Power Modulated (W)';
+        end
+        
+        varNames = [varNames, 'RF Input Power (dBm)', ...
+            'Input Occupied Bandwidth (MHz)', 'Output Occupied Bandwidth (MHz)', ...
+            'Average Gain (dB)', 'Average DE (%)' 'Average PAE (%)', ...
+            'Input ACPR {Lower;Upper} (dBc)', 'Output ACPR {Lower;Upper} (dBc)', ...
+            'RF Input Power Spectrum {Frequency;Average;Maximum} (dBm)', ...
+            'RF Output Power Spectrum {Frequency;Average;Maximum} (dBm)',];
+            
+        varTypes = repmat({'double'}, 1, length(varNames));
+        varTypes(end-3:end) = {'string'};
+    end
+
+
     % Create the PA results table.
     ResultsTable = table('Size', [totalMeasurements, length(varNames)], ...
                          'VariableTypes', varTypes, ...
