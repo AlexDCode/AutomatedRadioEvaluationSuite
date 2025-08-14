@@ -26,14 +26,6 @@ function runPAMeasurement(app)
 %   None   (Results are saved to the user's machine and updated in the application UI).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-try
-    % Initialize tables for parameters and results.
-    exitFlag = 0;
-    parametersTable = createPAParametersTable(app);
-    totalMeasurements = height(parametersTable);
-    resultsTable = createPAResultsTable(app, totalMeasurements);
-    Gain = NaN; averageGain = NaN;
-    
     % Check if minimum needed instruments are connected
     connectedSA = ~isempty(app.OutputSignalAnalyzer) | (~isempty(app.OutputSignalAnalyzer) & ~isempty(app.InputSignalAnalyzer));
     connectedSG = ~isempty(app.SignalGenerator);
@@ -41,6 +33,14 @@ try
         error('Required instruments not connected.')
     end
 
+    % Initialize tables for parameters and results.
+    exitFlag = 0;
+    parametersTable = createPAParametersTable(app);
+    totalMeasurements = height(parametersTable);
+    resultsTable = createPAResultsTable(app, totalMeasurements);
+    Gain = NaN; averageGain = NaN;
+
+try
     % Configure the signal analyzer settings.
     if ~isempty(app.OutputSignalAnalyzer)
         writeline(app.OutputSignalAnalyzer, sprintf('*RST'));

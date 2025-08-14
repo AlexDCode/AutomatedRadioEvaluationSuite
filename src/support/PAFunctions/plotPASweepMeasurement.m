@@ -47,8 +47,9 @@ function plotPASweepMeasurement(app)
     title(app.PeakDEPAEPlot, 'Peak DE and PAE');
     xlabel(app.PeakDEPAEPlot, 'Frequency (MHz)');
     ylabel(app.PeakDEPAEPlot, 'Efficiency (%)');
-    legend(app.PeakDEPAEPlot, [h1, h2], {'DE', 'PAE'}, 'Location', 'best');
-    
+    lgd = legend(app.PeakDEPAEPlot, [h1, h2], {'DE', 'PAE'}, 'Location', 'best');
+    enableLegendToggle(lgd);
+
     % 3) Saturation Power & Compression Points
     hold(app.CompressionPointsPlot, 'on');
     legendLabels = {};
@@ -90,7 +91,8 @@ function plotPASweepMeasurement(app)
     hold(app.CompressionPointsPlot, 'off');
 
     if ~isempty(plotHandles)
-        legend(app.CompressionPointsPlot, plotHandles, legendLabels, 'Location', 'best');
+        lgd = legend(app.CompressionPointsPlot, plotHandles, legendLabels, 'Location', 'best');
+        enableLegendToggle(lgd);
     end
     
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.

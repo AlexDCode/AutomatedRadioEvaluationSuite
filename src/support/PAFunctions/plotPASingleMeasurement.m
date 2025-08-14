@@ -86,6 +86,7 @@ function plotPASingleMeasurement(app)
                 lgd = legend(ax, legendHandles, legendEntries, 'Location', 'west');
                 lgd.Box = 'on';
                 lgd.FontSize = 12;
+                enableLegendToggle(lgd);
             else
                 error('Mismatch between legend handles and entries.');
             end

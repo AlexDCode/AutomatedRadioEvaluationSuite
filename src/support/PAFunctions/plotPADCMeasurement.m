@@ -56,7 +56,8 @@ function plotPADCMeasurement(app)
         'DisplayName', 'Total Drain'); 
     plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGateCurrentA, ...
         'DisplayName', 'Total Gate'); 
-    legend(app.PASupplyCurrentPlot,'Location','best');
+    lgd = legend(app.PASupplyCurrentPlot,'Location','best');
+    enableLegendToggle(lgd);
 
     % Labels
     hold(app.PASupplyCurrentPlot, 'off');
@@ -79,7 +80,8 @@ function plotPADCMeasurement(app)
         'DisplayName', 'Total Drain'); 
     plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGatePowerW, ...
         'DisplayName', 'Total Gate'); 
-    legend(app.PASupplyPowerPlot,'Location','best');
+    lgd = legend(app.PASupplyPowerPlot,'Location','best');
+    enableLegendToggle(lgd);
 
     % Labels
     hold(app.PASupplyPowerPlot, 'off');
@@ -165,7 +167,8 @@ function plotPADCMeasurement(app)
     xlabel(app.PAPeakSupplyCurrentPlot, 'Frequency (MHz)');
     ylabel(app.PAPeakSupplyCurrentPlot, 'DC Current (A)');
     axis(app.PAPeakSupplyCurrentPlot,'tight');
-    legend(app.PAPeakSupplyCurrentPlot,'Location','best');
+    lgd = legend(app.PAPeakSupplyCurrentPlot,'Location','best');
+    enableLegendToggle(lgd);
 
     % 4) Plot Peak Supply Power vs. Frequency
     hold(app.PAPeakSupplyPowerPlot, 'on'); 
@@ -193,7 +196,8 @@ function plotPADCMeasurement(app)
     xlabel(app.PAPeakSupplyPowerPlot, 'Frequency (MHz)');
     ylabel(app.PAPeakSupplyPowerPlot, 'DC Power (W)');
     axis(app.PAPeakSupplyPowerPlot,'tight');
-    legend(app.PAPeakSupplyPowerPlot,'Location','best');
+    lgd = legend(app.PAPeakSupplyPowerPlot,'Location','best');
+    enableLegendToggle(lgd);
 
     % Improves the appearance of each plot, can adjust the line thickness/width as desired.
     improveAxesAppearance(app, app.PASupplyCurrentPlot, 'LineThickness', 2);

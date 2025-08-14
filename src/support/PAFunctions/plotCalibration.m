@@ -78,8 +78,9 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Input Calibration');
-            legend(ax);
-        
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
+
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
             improveAxesAppearance(app, ax, 'LineThickness', 2);
@@ -119,7 +120,9 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Output Calibration');
-            legend(ax);
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
+
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
@@ -161,7 +164,8 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Small Signal Input Calibration');
-            legend(ax);
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
@@ -202,7 +206,8 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Small Signal Output Calibration');
-            legend(ax);
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
@@ -267,7 +272,8 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Input Calibration');
-            legend(ax);
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
         
             % Tighten and improve the axes appearance.
             axis(ax,'tight')
@@ -321,7 +327,8 @@ function plotCalibration(app)
             xlabel(ax, 'Frequency (MHz)');
             ylabel(ax, 'Attenuation (dB)');
             title(ax, 'Output Calibration');
-            legend(ax);
+            lgd = legend(ax);
+            enableLegendToggle(lgd);
 
             % Tighten and improve the axes appearance.
             axis(ax,'tight')

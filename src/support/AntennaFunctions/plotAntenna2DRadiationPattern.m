@@ -124,6 +124,7 @@ function plotAntenna2DRadiationPattern(app)
         end
         xlabel(app.GainvsAngle2DPattern, 'Angle (degrees)');
         lgd = legend(app.GainvsAngle2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
+        enableLegendToggle(lgd);
         axis(app.GainvsAngle2DPattern, 'tight');
         
         % 4) 2D Radiation Pattern Polar Plot 
@@ -134,6 +135,7 @@ function plotAntenna2DRadiationPattern(app)
         title(app.RadiationPlot2DPattern, sprintf('Radiation Pattern at %s MHz', app.PlotFrequencyMHzDropDown.Value));
         axis(app.RadiationPlot2DPattern, 'tight');
         lgd = legend(app.RadiationPlot2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
+        enableLegendToggle(lgd);
     
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(app, app.GainvsFrequency2DPattern, 'LineThickness', 2);
