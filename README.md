@@ -49,6 +49,7 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 - **Update Documentation Images**: Showing new UI and plotting options.
 - **PA Test Safety Features**: Add the option to pause the test after a predetermined time for cooldown and skip the remaining power points in the current sweep if the gain goes below the threshold (0 dB). Add option to stop test if power supply is current limited (short circuit).
 - **Instrument Type Filter**: Filter the instrument address dropdown by instrument type and only display the instruments pertaining relevant category and 'Others'.
+- **Object Oriented Instruments**: Configure a class for each instrument to execute the commands instead of hardcoding. This should allow different classes to be configured for specific command sets or special cases on particular instruments.
 - **Advanced Features**: Save and load test parameters with custom configurations and unique app settings with a JSON file.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
 - **Known Limitation**: The linear slider range and offset are hard-coded in the app. The default values are for Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to the instrument database as properties.
