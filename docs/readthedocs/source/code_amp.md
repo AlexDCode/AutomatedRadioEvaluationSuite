@@ -2,6 +2,48 @@
 
 ---
 
+## calculateCompression.m
+`Path: src\support\PAFunctions\calculateCompression.m`
+
+**Description:**
+
+This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including saturation power, peak gain, peak drain efficiency (DE), peak power-added efficiency (PAE), and -1 dB and -3 dB compression points.
+
+```{admonition} Input Parameters
+:class: tip
+- app     - The application object containing the PA measurement data table.
+- idx     - Logical or numeric index used to filter the rows of the PA data table for analysis.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- Psat            - Table containing the maximum RF output power (Psat) per frequency and corresponding gain.
+- peakGain        - Table of peak small-signal gain values per frequency.
+- peakDE          - Table of maximum drain efficiency per frequency.
+- peakPAE         - Table of maximum power-added efficiency per frequency.
+- compression1dB  - Table containing the -1 dB gain compression points per frequency.
+- compression3dB  - Table containing the -3 dB gain compression points per frequency.
+```
+
+---
+
+## calculateGainEfficiency.m
+`Path: src\support\PAFunctions\calculateGainEfficiency.m`
+
+**Description:**
+
+This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the specified input and output RF power and the DC power supplied to the drain.
+
+```{admonition} Output Parameters
+:class: tip
+- DCDrainPower    - DC power supplied to the drain (in W).
+- Gain            - RF Gain (dB).
+- DE              - Drain Efficiency (%).
+- PAE             - Power Added Efficiency (%).
+```
+
+---
+
 ## createPAParametersTable.m
 `Path: src\support\PAFunctions\createPAParametersTable.m`
 
@@ -70,7 +112,7 @@ This function initializes an empty results table for Power Amplifier (PA) measur
 
 **Description:**
 
-This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices. It generates calibration factors for both the input and output of the PA, which are applied to the measured RF power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed based on the selected calibration mode and available data on the app. The function supports the following calibration modes:
+This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices. It generates calibration factors for both the input and output of the PA, which are applied to the measured RF power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed based on the selected calibration mode and available data on the app. An array of test frequencies can be passed and the calibration factors will be given for each value. The function supports the following calibration modes:
 
 - **None**: No calibration is applied, and both input and output calibration factors are set to 0.
 - **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
@@ -113,12 +155,12 @@ This function enables or disables the specified channels on two power supply uni
 
 ---
 
-## measureRFOutputandDCPower.m
-`Path: src\support\PAFunctions\measureRFOutputandDCPower.m`
+## measureCW.m
+`Path: src\support\PAFunctions\measureCW.m`
 
 **Description:**
 
-This function measures the output RF power, DC drain power, and DC gate power based on the specified input RF power and test frequency. Calls the de-embedding function to get corrected input and output RF power
+This function measures the RF power, DC drain power, and DC gate power based on the specified input RF power and test frequency. Calls the de-embedding function to get corrected input and output RF power
 
 ```{admonition} Input Parameters
 :class: tip
@@ -134,45 +176,38 @@ This function measures the output RF power, DC drain power, and DC gate power ba
 
 ---
 
-## measureRFParameters.m
-`Path: src\support\PAFunctions\measureRFParameters.m`
+## measureModulated.m
+`Path: src\support\PAFunctions\measureModulated.m`
 
 **Description:**
 
-This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the specified input and output RF power and the DC power supplied to the drain.
+This function measures the RF power spectrum, DC drain power, and DC gate power based on the specified input RF power and test frequency. Calls the de-embedding function to get corrected input and output RF power
+
+```{admonition} Input Parameters
+:class: tip
+- app            - The application object containing instrument configurations.
+- frequency      - The test frequency for measurement.
+```
 
 ```{admonition} Output Parameters
 :class: tip
-- DCDrainPower    - DC power supplied to the drain (in W).
-- Gain            - RF Gain (dB).
-- DE              - Drain Efficiency (%).
-- PAE             - Power Added Efficiency (%).
+- DCDrainCurrent     - The DC current delivered to the drain from each PSU (A)
+- DCGateCurrent      - The DC current delivered to the gate from each PSU (A)
+- DCDrainPower       - The DC power delivered to the drain (W).
+- DCGatePower        - The DC power delivered to the gate (W).
+- TODO:
+- The calibration assumes a narrowband device where the losses of
+- the signal bandwidth can be approximated to the center frequency
 ```
 
 ---
 
-## measureRFParametersPeaks.m
-`Path: src\support\PAFunctions\measureRFParametersPeaks.m`
+## plotCalibration.m
+`Path: src\support\PAFunctions\plotCalibration.m`
 
 **Description:**
 
-This function calculates peak RF performance metrics from power amplifier (PA) measurement data, including saturation power, peak gain, peak drain efficiency (DE), peak power-added efficiency (PAE), and -1 dB and -3 dB compression points.
-
-```{admonition} Input Parameters
-:class: tip
-- app     - The application object containing the PA measurement data table.
-- idx     - Logical or numeric index used to filter the rows of the PA data table for analysis.
-```
-
-```{admonition} Output Parameters
-:class: tip
-- Psat            - Table containing the maximum RF output power (Psat) per frequency and corresponding gain.
-- peakGain        - Table of peak small-signal gain values per frequency.
-- peakDE          - Table of maximum drain efficiency per frequency.
-- peakPAE         - Table of maximum power-added efficiency per frequency.
-- compression1dB  - Table containing the -1 dB gain compression points per frequency.
-- compression3dB  - Table containing the -3 dB gain compression points per frequency.
-```
+plotCalibration Plots the Input and Output Calibration Detailed explanation goes here
 
 ---
 
@@ -191,6 +226,25 @@ This function plots DC performance metrics from a frequency sweep Power Amplifie
 ```{admonition} Input Parameters
 :class: tip
 - app  - Application object containing PA measurement data and plotting components.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+```
+
+---
+
+## plotPAModulatedMeasurement.m
+`Path: src\support\PAFunctions\plotPAModulatedMeasurement.m`
+
+**Description:**
+
+This function plots.....
+
+```{admonition} Input Parameters
+:class: tip
+- app  - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
 ```
 
 ```{admonition} Output Parameters
@@ -291,7 +345,7 @@ This function resets all power supply unit (PSU) channels to their default setti
 
 **Description:**
 
-This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes:
+This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes: *TODO:* Verify if gate PSU data is saved to results table in individual PSU channel columns
 
 - Generating test parameter combinations and initializing the output results table.
 - Configuring the signal analyzer and initializing the measurement loop.

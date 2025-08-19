@@ -40,6 +40,24 @@ The function P2dB converts magnitudes (power) to dB.
 
 ---
 
+## addLineAndLegendContextMenu.m
+`Path: src\support\SupportFunctions\addLineAndLegendContextMenu.m`
+
+**Description:**
+
+Add context menu to both lines and corresponding legend items hLine: array of line handles hLegend: handle to legend
+
+---
+
+## addLineContextMenu.m
+`Path: src\support\SupportFunctions\addLineContextMenu.m`
+
+**Description:**
+
+addLineContextMenu Adds a right-click context menu to a line object. hLine: handle to the line or array of line objects.
+
+---
+
 ## dB2A.m
 `Path: src\support\SupportFunctions\dB2A.m`
 
@@ -97,6 +115,43 @@ The function dBm2mag converts dBm to Watts (W).
 
 ---
 
+## detectPAMeasurementType.m
+`Path: src\support\SupportFunctions\detectPAMeasurementType.m`
+
+**Description:**
+
+Define keyword groups
+
+---
+
+## enableLegendToggle.m
+`Path: src\support\SupportFunctions\enableLegendToggle.m`
+
+**Description:**
+
+This function enables interactive toggling of plot visibility through the figure legend. When enabled, clicking on any legend entry will hide or show the corresponding plot object (line, patch, or other graphics). This feature improves the user experience by allowing selective visualization of traces without removing them from the plot. The function sets the `ItemHitFcn` callback for the legend to toggle the `Visible` property of the plot object.
+
+```{admonition} Input Parameters
+:class: tip
+- lgd  - Legend handle created for the target plot. Must be a valid legend object returned by the `legend()` function.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+- USAGE:
+- figure;
+- plot(x, y1, 'LineWidth', 2); hold on;
+- plot(x, y2, 'LineWidth', 2);
+- lgd = legend('Trace 1', 'Trace 2');
+- enableLegendToggle(lgd);
+- NOTES:
+- Requires MATLAB R2016a or newer (support for `ItemHitFcn`).
+- Works with lines, patches, and most common plot objects.
+```
+
+---
+
 ## extractDocs.m
 `Path: src\support\SupportFunctions\extractDocs.m`
 
@@ -119,6 +174,30 @@ Extracts documentation from .m files within a given folder and writes it to a Ma
 ```{admonition} Output Parameters
 :class: tip
 - None
+```
+
+---
+
+## extractTODOs.m
+`Path: src\support\SupportFunctions\extractTODOs.m`
+
+**Description:**
+
+Extracts TODO comments from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows. Example usage:
+
+- extractTODOs(pwd+"\src", "./docs/readthedocs/source/TODOs.md")
+
+```{admonition} Input Parameters
+:class: tip
+- folderPath      - Path to folder containing .m files (recursively searched)
+- outFilename     - Path to output .md file
+- excludedFolders - (Optional) Cell array of subfolders to exclude (by name)
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+- extractTODOs.m: IGNORE
 ```
 
 ---
@@ -164,6 +243,33 @@ This function loads data from a CSV or Excel file containing a single or sweep P
 
 ---
 
+## processAntennaData.m
+`Path: src\support\SupportFunctions\processAntennaData.m`
+
+**Description:**
+
+Modular function to handle Antenna Data
+
+---
+
+## processAntennaReferenceData.m
+`Path: src\support\SupportFunctions\processAntennaReferenceData.m`
+
+**Description:**
+
+Modular function to handle Antenna Reference Data
+
+---
+
+## processPAData.m
+`Path: src\support\SupportFunctions\processPAData.m`
+
+**Description:**
+
+Modular function to handle PA Data
+
+---
+
 ## saveData.m
 `Path: src\support\SupportFunctions\saveData.m`
 
@@ -199,6 +305,70 @@ This function sets up a right-click context menu for the 3D radiation pattern pl
 ```{admonition} Output Parameters
 :class: tip
 - None
+```
+
+---
+
+## string2table.m
+`Path: src\support\SupportFunctions\string2table.m`
+
+**Description:**
+
+This function reconstructs a MATLAB table from a string formatted by the `tableToString` function. The input string contains rows enclosed in curly braces `{}` with elements separated by semicolons `;`. The function parses this string, splits it into rows and columns, and returns a MATLAB table. If all elements of the parsed data are numeric, they are converted to numeric values; otherwise, the output remains as text. Generic column names (`Col1`, `Col2`, ..., `ColM`) are assigned automatically since the original variable names are not stored in the string.
+
+```{admonition} Input Parameters
+:class: tip
+- str - A character array or string scalar representing table data in the format:
+- {col11;col12;...;col1M}{col21;col22;...;col2M}...{colN1;colN2;...;colNM}
+- where N is the number of rows and M is the number of columns.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- T   - A MATLAB table reconstructed from the input string. Column names are automatically assigned as
+- 'Col1', 'Col2', ..., 'ColM'. Data types are automatically detected and converted to numeric if all
+- values are numeric; otherwise, data is returned as text.
+- EXAMPLE:
+- s = '{1;3;A}{2;4;B}';
+- T = string2table(s);
+- T =
+- Col1    Col2    Col3
+- 1       3       'A'
+- 2       4       'B'
+- NOTES:
+- The function does not preserve original variable names (can be extended if needed).
+- Handles arbitrary table sizes.
+- Optimized for performance using regular expressions and vectorized operations.
+```
+
+---
+
+## table2string.m
+`Path: src\support\SupportFunctions\table2string.m`
+
+**Description:**
+
+This function converts a MATLAB table of any size (N-by-M) into a single formatted string representation. Each row of the table is enclosed in curly braces `{}` and the elements within a row are separated by semicolons `;`. The rows are concatenated together without spaces. This format is useful for serializing table data into a compact, structured string that can be stored, transmitted, or embedded into text-based files or databases. The function works with both numeric and string data types. All elements are converted to string form internally. Mixed data types are preserved as text in the output string. The function uses vectorized operations for efficiency and scales well for large tables.
+
+```{admonition} Input Parameters
+:class: tip
+- T  - MATLAB table of size N-by-M containing numeric, string, or mixed data types. There is no restriction
+- on the number of rows (N) or columns (M).
+```
+
+```{admonition} Output Parameters
+:class: tip
+- str - A single string representing the entire table. Each row of the table is formatted as:
+- {col1;col2;col3;...;colM}, and all rows are concatenated together as:
+- {row1}{row2}{row3}...{rowN}
+- EXAMPLE:
+- T = table([1;2], [3;4], {'A';'B'}, 'VariableNames', {'X','Y','Z'});
+- s = tableToString(T);
+- s = '{1;3;A}{2;4;B}'
+- NOTES:
+- Handles arbitrary table sizes.
+- Preserves original data as strings.
+- Optimized for speed using columnwise and vectorized operations.
 ```
 
 ---
