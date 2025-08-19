@@ -1,5 +1,33 @@
-% Modular function to handle PA Data
 function combinedData = processPAData(app, combinedData)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % Processes Power Amplifier (PA) measurement data by storing it in the app, extracting PSU channel information,
+    % updating voltage selections, and refreshing relevant UI elements. Based on the detected measurement type 
+    % (CW, Modulated, or Unknown), the function automatically triggers the appropriate plotting routines or 
+    % displays an error message if the data format is unrecognized.
+    %
+    % Example usage:
+    %
+    %   - combinedData = processPAData(app, combinedData)
+    %
+    % INPUT:
+    %   app          - Handle to the app instance containing UI components and data tables.
+    %   combinedData - Table containing PA measurement data. If empty, no processing is performed.
+    %
+    % OUTPUT:
+    %   combinedData - Same as input, returned for consistency.
+    %
+    % Notes:
+    %   - Updates app.PA_DataTable with the provided data.
+    %   - Extracts PSU channel numbers and corresponding voltage values from variable names.
+    %   - Initializes and updates dropdown selections in the UI.
+    %   - Determines PA measurement mode using detectPAMeasurementType and calls the appropriate plotting functions:
+    %       * "CW"        → plotPASingleMeasurement, plotPASweepMeasurement, plotPADCMeasurement
+    %       * "Modulated" → plotPAModulatedMeasurement, plotPADCMeasurement
+    %       * "Unknown"   → Displays error message in UI.
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
     if ~isempty(combinedData)  
         app.PA_DataTable = combinedData;
 
@@ -32,6 +60,7 @@ function combinedData = processPAData(app, combinedData)
             plotPADCMeasurement(app);
         elseif mode == "Modulated"
             plotPAModulatedMeasurement(app);
+            plotPADCMeasurement(app);
         elseif mode == "Unknown"
             app.displayError("Unknown PA data format which not contains the expected columns.")
         end

@@ -1,4 +1,24 @@
 function mode = detectPAMeasurementType(varNames)
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % Detects the type of Power Amplifier (PA) measurement based on the presence of specific variable names in a 
+    % dataset. The function checks for Continuous Wave (CW) or Modulated measurement indicators and returns the 
+    % corresponding measurement mode. If no matching variables are found, the mode is classified as "Unknown".
+    %
+    % Example usage:
+    %
+    %   - mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
+    %
+    % INPUT:
+    %   varNames - Cell array of variable names to analyze.
+    %
+    % OUTPUT:
+    %   mode - String indicating the detected measurement type:
+    %                 "CW"        - Continuous Wave measurement
+    %                 "Modulated" - Modulated signal measurement
+    %                 "Unknown"   - No matching pattern detected
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     % Define keyword groups
     cwKeywords = {'RFOutputPowerdBm', 'DE', 'PAE'};
     modulatedKeywords = {'AverageGaindB', 'RFInputChannelPowerdBm', 'RFOutputChannelPowerdBm', ...
@@ -13,10 +33,10 @@ function mode = detectPAMeasurementType(varNames)
 
     % Set mode
     if hasModulated
-        mode = 'Modulated';
+        mode = "Modulated";
     elseif hasCW
-        mode = 'CW';
+        mode = "CW";
     else
-        mode = 'Unknown';
+        mode = "Unknown";
     end
 end

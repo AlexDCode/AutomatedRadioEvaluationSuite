@@ -4,8 +4,8 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
     % This function de-embeds Power Amplifier (PA) measurements by removing the effects of passive and active devices.
     % It generates calibration factors for both the input and output of the PA, which are applied to the measured RF
     % power values in order to obtain the corrected PA input and output RF power. The calibration factors are computed
-    % based on the selected calibration mode and available data on the app. The function supports the following 
-    % calibration modes:
+    % based on the selected calibration mode and available data on the app. An array of test frequencies can be passed 
+    % and the calibration factors will be given for each value. The function supports the following calibration modes:
     %
     %   - **None**: No calibration is applied, and both input and output calibration factors are set to 0.
     %   - **Fixed Attenuation**: The function directly applies the attenuation values set in the application for both input and output.
@@ -20,13 +20,15 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
     % OUTPUT:
     %   inCal          - The input attenuation calibration factor (dB). Subtracts this from the input RF power to obtain the corrected PA input power.
     %   outCal         - The output attenuation calibration factor (dB). Adds this to the measured output power to get the corrected PA output power.
-    %
-    % TODO:
-    %   - Receive an array of test frequencies and respond with calibration
-    %   factors of equal size (single input power).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     calMode = app.CalibrationModeDropDown.Value;
+    testFrequency = testFrequency(:); % ensure column vector
+    nFreq = numel(testFrequency);
+
+    % Preallocate outputs
+    inCal = zeros(nFreq,1);
+    outCal = zeros(nFreq,1);
 
     switch calMode
         case 'None'
@@ -70,35 +72,31 @@ function [inCal, outCal] = deembedPA(app, testFrequency, RFInputPower)
             driver = readtable(app.DriverFile, 'VariableNamingRule', 'preserve');
     
             % Get measured driver frequencies and input powers.
-            driverFreq = unique(driver.('Frequency (MHz)')) * 1E6;
-            driverPower = unique(driver.('RF Input Power (dBm)'));
-            
-            % Interpolate the measurement frequency with driver data.
-            driverFreq = interp1(driverFreq, driverFreq, testFrequency, 'nearest', 'extrap');
-    
-            % Interpolate the measurement RF input power with driver data.
-            driverPower = interp1(driverPower, driverPower, RFInputPower - inCal, 'nearest', 'extrap');
-
-            % Find rows matching the frequency and input power criteria.
-            freqMatch = driver.('Frequency (MHz)') == driverFreq/1E6;
-            powerMatch = driver.('RF Input Power (dBm)') == driverPower;
-            matchingRows = freqMatch & powerMatch; 
-
-            % Get the driver gain from the matching row(s).
-            if any(matchingRows)
-                driverGain = driver.Gain(matchingRows);
+            driverFreqs = unique(driver.('Frequency (MHz)')) * 1E6;
+            driverPowers = unique(driver.('RF Input Power (dBm)'));
+              
+            % Interpolate driver gain for each frequency
+            for i = 1:nFreq
+                % Interpolate the measurement frequency with driver data.
+                nearestFreq = interp1(driverFreqs, driverFreqs, testFrequency(i), 'nearest', 'extrap');
                 
-                % For safety if there are multiple values (unlikely), we 
-                % take the first one.
-                if length(driverGain) > 1
-                    driverGain = driverGain(1);
+                % Interpolate the measurement RF input power with driver data.
+                nearestPower = interp1(driverPowers, driverPowers, RFInputPower - inCal(i), 'nearest', 'extrap');
+                
+                % Find rows matching the frequency and input power criteria.
+                freqMatch = driver.('Frequency (MHz)') == nearestFreq/1e6;
+                powerMatch = driver.('RF Input Power (dBm)') == nearestPower;
+                matchIdx = freqMatch & powerMatch;
+                
+                % Get the driver gain from the matching row(s).
+                if any(matchIdx)
+                    driverGain = driver.Gain(find(matchIdx, 1, 'first'));
+                else
+                    error('No driver data for %.2f MHz, %.2f dBm', nearestFreq/1e6, nearestPower);
                 end
-            else
-                error('No matching driver data found for frequency %.2f MHz and power %.2f dBm', driverFreq/1E6, driverPower);
+                
+                inCal(i) = inCal(i) - driverGain;
             end
-            
-            % Recalculate inCal to include driver gain.
-            inCal = app.InputAttenuationValueField.Value + Att_in - driverGain;
         case 'In-Situ Couplers'
             % Directly measures the power at the DUT ports with directional
             % couplers and de-embeds each coupler using the given

@@ -1,30 +1,31 @@
 function runPAMeasurement(app)
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% DESCRIPTION:
-% This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely
-% turned off, and the error message is displayed in the app and logged to the user path. The function process
-% includes:
-%
-%   - Generating test parameter combinations and initializing the output results table.
-%   - Configuring the signal analyzer and initializing the measurement loop.
-%   - For each test point:
-%     -- Sets frequency and signal levels
-%     -- Configures PSU voltages and currents
-%     -- Measures RF output power and DC power
-%     -- Applies calibration factors (de-embedding)
-%     -- Calculates Gain, DE (Drain Efficiency), and PAE (Power Added Efficiency)
-%     -- Stores results in a structured table
-%   - Providing a progress UI dialog with estimated time updates.
-%   - Saving the results and loading them back into the application.
-%
-% *TODO:* Verify if gate PSU data is saved to results table in individual PSU channel columns
-%
-% INPUT:
-%   app  - Application object containing hardware interfaces, user settings, and UI components.
-%
-% OUTPUT:
-%   None   (Results are saved to the user's machine and updated in the application UI).
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % DESCRIPTION:
+    % This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely
+    % turned off, and the error message is displayed in the app and logged to the user path. The function process
+    % includes:
+    %
+    %   - Generating test parameter combinations and initializing the output results table.
+    %   - Configuring the signal analyzer and initializing the measurement loop.
+    %   - For each test point:
+    %     -- Sets frequency and signal levels
+    %     -- Configures PSU voltages and currents
+    %     -- Measures RF output power and DC power
+    %     -- Applies calibration factors (de-embedding)
+    %     -- Calculates Gain, DE (Drain Efficiency), and PAE (Power Added Efficiency)
+    %     -- Stores results in a structured table
+    %   - Providing a progress UI dialog with estimated time updates.
+    %   - Saving the results and loading them back into the application.
+    %
+    % TODO:
+    %   - Verify if gate PSU data is saved to results table in individual PSU channel columns
+    %
+    % INPUT:
+    %   app  - Application object containing hardware interfaces, user settings, and UI components.
+    %
+    % OUTPUT:
+    %   None   (Results are saved to the user's machine and updated in the application UI).
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % Check if minimum needed instruments are connected
     connectedSA = ~isempty(app.OutputSignalAnalyzer) | (~isempty(app.OutputSignalAnalyzer) & ~isempty(app.InputSignalAnalyzer));
@@ -32,7 +33,9 @@ function runPAMeasurement(app)
     if ~(connectedSA & connectedSG)
         error('Required instruments not connected.')
     end
-
+    if app.StimulusDropDown.Value == "Modulated" && app.SpanValueField.Value < app.ChannelBandwidthValueField
+        error('Span smaller than channel bandwidth.');
+    end
     % Initialize tables for parameters and results.
     exitFlag = 0;
     parametersTable = createPAParametersTable(app);
@@ -105,6 +108,7 @@ try
 
     i = 1;
     statePSU = false; % Flag for PSU output enable
+    safetyFlag = false; % Flag to stop remaining power sweep
     while i <= height(parametersTable) & ~exitFlag
         % Update timing info.
         now = toc;
@@ -310,53 +314,19 @@ try
         % Minimum Gain: Skip remaining power sweep when below threshold
         if app.MinimumGainSafetyState % Only if safety option is active
             if Gain < app.MinimumGainSpinner.Value || averageGain < app.MinimumGainSpinner.Value
-                % Turn off signal generator.
-                writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
-        
-                % Disable all channels.
-                enablePSUChannels(app, app.FilledPSUChannels, false);
-                statePSU = false;
+                safetyFlag = true;
+            end
+        end
 
-                % Plot at current sweep  
-                combinedData = resultsTable;
-    
-                % Remove spaces and parenthesis from the variable names.
-                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
-                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
-                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
-                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
-    
-                try
-                    % Process data
-                    processPAData(app, combinedData);
-                    
-                    % Index the data for the current frequency and power supply values
-                    app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
-                    for ch = 1:length(app.PA_PSU_Channels)
-                        app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
-                    end
-        
-                    % Plot with updated dropdown values.
-                    plotPASingleMeasurement(app);
-                    plotPASweepMeasurement(app);
-                    plotPADCMeasurement(app);
-                catch
-                    % Silent Catch
-                end
-
-                % Pause for cooldown
-                pause(app.CooldownTimeSpinner.Value)
-
-                % Skip remaining power sweep if gain is below threshold
-                i = idxPowerSweep(end)+1;
+        % Exceed Occupied Bandwidth: Skip remaining power sweep when above threshold
+        if app.OccupiedBandwidthSafetyState && app.StimulusDropDown.Value == "Modulated" % Only if safety option is active
+            if outputOBW/1e6 > app.ChannelBandwidthValueField.Value + app.OccupiedBandwidthSpinner.Value
+                safetyFlag = true;
             end
         end
 
         % Cooldown Time: Wait between power sweeps for each parameter combination
-        if i == idxPowerSweep(end)
-            if i == totalMeasurements
-                break;
-            end
+        if i == idxPowerSweep(end) | safetyFlag
             % Turn off signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
 
@@ -364,9 +334,20 @@ try
             enablePSUChannels(app, app.FilledPSUChannels, false);
             statePSU = false;
 
+            if safetyFlag
+                % Skip remaining power sweep if gain is below threshold
+                i = idxPowerSweep(end)+1;
+                safetyFlag = false; % Flag to stop remaining power sweep
+            end
 
             % Plot at current sweep  
             combinedData = resultsTable;
+            
+            % Remove zero rows that may be left empty during safety checks
+            combinedData(all(resultsTable.("Frequency (MHz)") == 0, 2), :) = [];
+        
+            % Save table as a variable in the app
+            app.PAMeasurementsTable = combinedData;
 
             % Remove spaces and parenthesis from the variable names.
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
@@ -374,22 +355,40 @@ try
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
 
-            % Process data
-            processPAData(app, combinedData);
-            
-            % Index the data for the current frequency and power supply values
-            app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
-            for ch = 1:length(app.PA_PSU_Channels)
-                app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
+            try
+                % Process data
+                processPAData(app, combinedData);
+                
+                % Index the data for the current frequency and power supply values
+                app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
+                for ch = 1:length(app.PA_PSU_Channels)
+                    app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
+                end    
+            catch
+                % Silent Catch
             end
 
             % Plot with updated dropdown values.
-            plotPASingleMeasurement(app);
-            plotPASweepMeasurement(app);
-            plotPADCMeasurement(app);
+            mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
+            if mode == "CW"
+                % Plot with updated dropdown values.
+                plotPASingleMeasurement(app);
+                plotPASweepMeasurement(app);
+                plotPADCMeasurement(app);
+            elseif mode == "Modulated"
+                plotPAModulatedMeasurement(app);
+                plotPADCMeasurement(app);
+            elseif mode == "Unknown"
+                app.displayError("Unknown PA data format which not contains the expected columns.")
+            end
 
             % Pause for cooldown in last power sweep row
             pause(app.CooldownTimeSpinner.Value)
+
+            if i == totalMeasurements
+                break;
+            end
+
         end
 
         i = i+1;

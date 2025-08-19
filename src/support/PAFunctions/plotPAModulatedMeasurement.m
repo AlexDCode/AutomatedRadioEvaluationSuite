@@ -1,13 +1,36 @@
 function plotPAModulatedMeasurement(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
-    % This function plots.....
+    % This function plots results of modulated power amplifier (PA) measurements at a selected frequency and supply
+    % voltages. The function generates multiple plots in the app interface to visualize gain, efficiency, output 
+    % spectrum, occupied bandwidth, and adjacent channel power ratio (ACPR). Specifically:
+    %
+    %   - Average Gain and Efficiency Plot:
+    %       - Left Y axis: Average Gain (dB)
+    %       - Right Y axis: Average Drain Efficiency (DE) and Power Added Efficiency (PAE) (%)
+    %
+    %   - Output Spectrum Plot:
+    %       - Frequency offset (MHz) versus Power Spectral Density (dBm/Hz)
+    %       - Plots averaged power spectrum for each channel output power
+    %
+    %   - Occupied Bandwidth Plot:
+    %       - Channel Power (dBm) versus Input/Output Occupied Bandwidth (MHz)
+    %
+    %   - Channel Power and ACPR Plot:
+    %       - Channel Power (dBm) versus ACPR (dBc)
+    %       - Plots both input and output ACPR for all channels
     %
     % INPUT:
     %   app  - Application object containing PA measurement data, user-selected frequency, supply voltages, and plotting handles.
     %
     % OUTPUT:
     %   None
+    %
+    % NOTES:
+    %   - Clears existing axes before plotting.
+    %   - Filters measurement data based on selected frequency and supply voltages.
+    %   - Uses local helper function `assignACPRVariables` to standardize ACPR table column names.
+    %   - Automatically adjusts legends and axis appearance using `improveAxesAppearance`.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     cla(app.AverageGainEfficiencyPlot, "reset");
@@ -77,7 +100,7 @@ function plotPAModulatedMeasurement(app)
         xlabel(ax, 'Frequency Offset (MHz)', 'FontWeight', 'bold');
         ylabel(ax, 'Power Spectral Density (dBm/Hz)', 'FontWeight', 'bold');
 
-        
+        h = gobjects(height(PATable), 1);           % Preallocate graphics object array
         for i = 1:height(PATable)
             PSD = string2table(PATable.RFOutputPowerSpectrumFrequencyAverageMaximumdBm(i));
             channelBW = PATable.OutputOccupiedBandwidthMHz(i)*1e6;
@@ -85,14 +108,15 @@ function plotPAModulatedMeasurement(app)
             PSD.Properties.VariableNames = {'FrequencyHz','AveragedBm','MaximumdBm'};
             keyName = string(round(PATable.RFOutputChannelPowerdBm(i), 2));
 
-            plot(ax, (PSD.FrequencyHz/1e6 - str2double(app.FrequencySingleDropDown.Value)), ...
+            h(i) = plot(ax, (PSD.FrequencyHz/1e6 - str2double(app.FrequencySingleDropDown.Value)), ...
                 PSD.AveragedBm - 10*log10(channelBW), 'DisplayName',keyName);
         end
         hold(ax, 'off');
-        lgd = legend(ax);
+        lgd = legend(ax,Location="bestoutside");
         lgd.Title.Visible = 'on';
         lgd.Title.String = 'Channel Power (dBm)';
         enableLegendToggle(lgd);
+        addLineAndLegendContextMenu(h, lgd);
         
         axis(ax, "tight");
         improveAxesAppearance(app, ax);

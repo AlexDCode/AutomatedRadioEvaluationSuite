@@ -137,9 +137,17 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
 
     %% Correct the input and output power for the seleted calibration method
     % Apply de-embedding calibration based on user selected calibration mode.
-    % TODO: This assumes a narrowband device by approximating the
-    % calibration from the center frequency around the signal bandwidth
-    [inCal, outCal] = deembedPA(app, frequency, inputRFPower);
+    if MeasuredInputRFPower.Frequency == MeasuredOutputRFPower.Frequency
+        % If both frequencies are the same, the interpolated calibration
+        % factors will use the same set of test frequencies
+        [inCal, outCal] = deembedPA(app, MeasuredOutputRFPower.Frequency, inputRFPower);
+    else
+        % Otherwise, each calibration factor will be obtained from the
+        % respective test frequencies
+        [inCal, ~] = deembedPA(app, MeasuredInputRFPower.Frequency, inputRFPower);
+        [~, outCal] = deembedPA(app, MeasuredOutputRFPower.Frequency, inputRFPower);
+    end
+
     
     % Subtract inCal to get actual PA input power.
     MeasuredInputRFPower.AveragePowerdBm = MeasuredInputRFPower.AveragePowerdBm - inCal;
@@ -198,23 +206,23 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
     %% Get ACPR
     % Set measurement noise bandwidth (channel bandwidth) to the max measured
     % occupied bandwidth
-    systemOBW = max(inputOBW, outputOBW);
+    channelBW = app.ChannelBandwidthValueField.Value*1e6;
     
     % Confgigure the signal analyzer ACP mode
     writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:ACP'));
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', systemOBW)); % Carrier bandwidth
+    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', channelBW)); % Carrier bandwidth
     writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:FREQuency:SPAN %d', app.SpanValueField.Value*1e6)); % Measurement span
     writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:ACPower:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value)); % Reference Level
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', systemOBW)); % Adjacent channel bandwidth
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + systemOBW)); % Adjacent channel offset
+    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', channelBW)); % Adjacent channel bandwidth
+    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + channelBW)); % Adjacent channel offset
         
     if ~isempty(app.InputSignalAnalyzer)
         writeline(app.InputSignalAnalyzer, sprintf(':INITiate:ACP'));
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', systemOBW)); % Carrier bandwidth
+        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', channelBW)); % Carrier bandwidth
         writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:FREQuency:SPAN %d', app.SpanValueField.Value*1e6)); % Measurement span
         writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:ACPower:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value)); % Reference Level
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', systemOBW)); % Adjacent channel bandwidth
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + systemOBW)); % Adjacent channel offset
+        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', channelBW)); % Adjacent channel bandwidth
+        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + channelBW)); % Adjacent channel offset
         
         % Capture data
         writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));

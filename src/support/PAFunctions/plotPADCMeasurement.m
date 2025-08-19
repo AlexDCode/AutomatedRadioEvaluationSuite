@@ -39,23 +39,40 @@ function plotPADCMeasurement(app)
     
     % Frequencies to iterate over.
     freqs = unique(app.PA_DataTable(idx, "FrequencyMHz"));
-
+    mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
 
     % 1) Plot Drain Current vs. Output Power
     hold(app.PASupplyCurrentPlot, 'on');
 
     idxPSU = (1:size(app.PA_DataTable, 1))';
-    for i = 1:length(app.PA_PSU_SelectedVoltages)
-        idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
-        plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, ...
-             app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCCurrentA', app.PA_PSU_Channels(i))), ...
-             'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+    if mode == "CW"
+        for i = 1:length(app.PA_PSU_SelectedVoltages)
+            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
+            plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, ...
+                 app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCCurrentA', app.PA_PSU_Channels(i))), ...
+                 'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+        end
+
+        plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainCurrentA, ...
+        'DisplayName', 'Total Drain'); 
+        plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGateCurrentA, ...
+        'DisplayName', 'Total Gate'); 
+    elseif mode == "Modulated"
+        for i = 1:length(app.PA_PSU_SelectedVoltages)
+            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
+            plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, ...
+                 app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCCurrentModulatedA', app.PA_PSU_Channels(i))), ...
+                 'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+        end
+        plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainCurrentModulatedA, ...
+            'DisplayName', 'Total Drain'); 
+        plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGateCurrentModulatedA, ...
+            'DisplayName', 'Total Gate'); 
+    elseif mode == "Unknown"
+        app.displayError("Unknown PA data format which not contains the expected columns.")
     end
 
-    plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainCurrentA, ...
-        'DisplayName', 'Total Drain'); 
-    plot(app.PASupplyCurrentPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGateCurrentA, ...
-        'DisplayName', 'Total Gate'); 
+
     lgd = legend(app.PASupplyCurrentPlot,'Location','best');
     enableLegendToggle(lgd);
 
@@ -69,17 +86,34 @@ function plotPADCMeasurement(app)
     % 2) Plot Supply Power vs. Output Power
     hold(app.PASupplyPowerPlot, 'on'); 
 
-    for i = 1:length(app.PA_PSU_SelectedVoltages)
-        idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
-        plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, ...
-             app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCPowerW', app.PA_PSU_Channels(i))), ...
-             'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+    if mode == "CW"
+        for i = 1:length(app.PA_PSU_SelectedVoltages)
+            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
+            plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, ...
+                 app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCPowerW', app.PA_PSU_Channels(i))), ...
+                 'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+        end
+    
+        plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainPowerW, ...
+            'DisplayName', 'Total Drain'); 
+        plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGatePowerW, ...
+            'DisplayName', 'Total Gate'); 
+    elseif mode == "Modulated"
+        for i = 1:length(app.PA_PSU_SelectedVoltages)
+            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(i))) == app.PA_PSU_SelectedVoltages(i);
+            plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, ...
+                 app.PA_DataTable(idx & idx_freq & idxPSU,:).(sprintf('Channel%dDCPowerModulatedW', app.PA_PSU_Channels(i))), ...
+                 'DisplayName',  sprintf('Channel %d', app.PA_PSU_Channels(i))); 
+        end
+    
+        plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainPowerModulatedW, ...
+            'DisplayName', 'Total Drain'); 
+        plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputChannelPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGatePowerModulatedW, ...
+            'DisplayName', 'Total Gate'); 
+    elseif mode == "Unknown"
+        app.displayError("Unknown PA data format which not contains the expected columns.")
     end
 
-    plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCDrainPowerW, ...
-        'DisplayName', 'Total Drain'); 
-    plot(app.PASupplyPowerPlot, app.PA_DataTable(idx & idx_freq & idxPSU,:).RFOutputPowerdBm, app.PA_DataTable(idx & idx_freq & idxPSU,:).TotalDCGatePowerW, ...
-        'DisplayName', 'Total Gate'); 
     lgd = legend(app.PASupplyPowerPlot,'Location','best');
     enableLegendToggle(lgd);
 
@@ -94,21 +128,42 @@ function plotPADCMeasurement(app)
     hold(app.PAPeakSupplyCurrentPlot, 'on');
 
     PeakSupply = array2table(zeros(height(freqs),1), "VariableNames",{'FrequencyMHz'});
-    for i = 1:height(freqs)
-        % Get temporary subtable for each frequency.
-        idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
-        PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
-        PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainCurrentA);
-        PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGateCurrentA);
-        for j = 1:length(app.PA_PSU_SelectedVoltages)
-            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
-            PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCCurrentA', app.PA_PSU_Channels(j))));
+    if mode == "CW"
+        for i = 1:height(freqs)
+            % Get temporary subtable for each frequency.
+            idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
+            PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
+            PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainCurrentA);
+            PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGateCurrentA);
+            for j = 1:length(app.PA_PSU_SelectedVoltages)
+                idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
+                PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCCurrentA', app.PA_PSU_Channels(j))));
+            end
         end
+    
+        for i = 2:width(PeakSupply)
+            plot(app.PAPeakSupplyCurrentPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
+        end
+    elseif mode == "Modulated"
+        for i = 1:height(freqs)
+            % Get temporary subtable for each frequency.
+            idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
+            PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
+            PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainCurrentModulatedA);
+            PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGateCurrentModulatedA);
+            for j = 1:length(app.PA_PSU_SelectedVoltages)
+                idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
+                PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCCurrentModulatedA', app.PA_PSU_Channels(j))));
+            end
+        end
+    
+        for i = 2:width(PeakSupply)
+            plot(app.PAPeakSupplyCurrentPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
+        end
+    elseif mode == "Unknown"
+        app.displayError("Unknown PA data format which not contains the expected columns.")
     end
 
-    for i = 2:width(PeakSupply)
-        plot(app.PAPeakSupplyCurrentPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
-    end
 
     % Plot Quiescent Current
 
@@ -174,20 +229,40 @@ function plotPADCMeasurement(app)
     hold(app.PAPeakSupplyPowerPlot, 'on'); 
 
     PeakSupply = array2table(zeros(height(freqs),1), "VariableNames",{'FrequencyMHz'});
-    for i = 1:height(freqs)
-        % Get temporary subtable for each frequency.
-        idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
-        PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
-        PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainPowerW);
-        PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGatePowerW);
-        for j = 1:length(app.PA_PSU_SelectedVoltages)
-            idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
-            PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCPowerW', app.PA_PSU_Channels(j))));
+    if mode == "CW"
+        for i = 1:height(freqs)
+            % Get temporary subtable for each frequency.
+            idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
+            PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
+            PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainPowerW);
+            PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGatePowerW);
+            for j = 1:length(app.PA_PSU_SelectedVoltages)
+                idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
+                PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCPowerW', app.PA_PSU_Channels(j))));
+            end
         end
-    end
-
-    for i = 2:width(PeakSupply)
-        plot(app.PAPeakSupplyPowerPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
+    
+        for i = 2:width(PeakSupply)
+            plot(app.PAPeakSupplyPowerPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
+        end
+    elseif mode == "Modulated"
+        for i = 1:height(freqs)
+            % Get temporary subtable for each frequency.
+            idx_freq = app.PA_DataTable.FrequencyMHz == freqs.FrequencyMHz(i);
+            PeakSupply.FrequencyMHz(i) = freqs.FrequencyMHz(i);
+            PeakSupply.(sprintf("Drain"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCDrainPowerModulatedW);
+            PeakSupply.(sprintf("Gate"))(i) = max(app.PA_DataTable(idx & idx_freq, :).TotalDCGatePowerModulatedW);
+            for j = 1:length(app.PA_PSU_SelectedVoltages)
+                idxPSU = app.PA_DataTable.(sprintf('Channel%dVoltagesV', app.PA_PSU_Channels(j))) == app.PA_PSU_SelectedVoltages(j);
+                PeakSupply.(sprintf('Channel %d', app.PA_PSU_Channels(j)))(i) = max(app.PA_DataTable(idxPSU & idx_freq,:).(sprintf('Channel%dDCPowerModulatedW', app.PA_PSU_Channels(j))));
+            end
+        end
+    
+        for i = 2:width(PeakSupply)
+            plot(app.PAPeakSupplyPowerPlot, PeakSupply.FrequencyMHz, PeakSupply(:,i).Variables, 'DisplayName', string(PeakSupply(:,i).Properties.VariableNames));
+        end
+    elseif mode == "Unknown"
+        app.displayError("Unknown PA data format which not contains the expected columns.")
     end
 
     % Labels
