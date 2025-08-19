@@ -29,6 +29,13 @@ function combinedData = processPAData(app, combinedData)
 
 
     if ~isempty(combinedData)  
+        % Remove spaces and special characters from the variable names.
+        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
+        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
+        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
+        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
+        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '[{};]', '');
+
         app.PA_DataTable = combinedData;
 
         % Find PSU channel numbers.

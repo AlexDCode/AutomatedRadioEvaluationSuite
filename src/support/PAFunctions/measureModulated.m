@@ -25,7 +25,7 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
     %   DCGatePower        - The DC power delivered to the gate (W).
     %
     % TODO:
-    %   - The calibration assumes a narrowband device where the losses of
+    %   - The calibration for channel power measurements assumes a narrowband device where the losses of
     %   the signal bandwidth can be approximated to the center frequency
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -236,6 +236,10 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
     % Wait until the output signal analyzer is ready.
     writeline(app.OutputSignalAnalyzer, '*WAI');
     waitForInstrument(app, app.OutputSignalAnalyzer); 
+    
+    % Get the calibration factors at the center frequency and assume a
+    % small bandwidth
+    [inCal, outCal] = deembedPA(app, frequency, inputRFPower);
 
     writeline(app.OutputSignalAnalyzer, sprintf(':READ:ACP?')); % Read ACPR data
     data = readbinblock(app.OutputSignalAnalyzer, 'double');

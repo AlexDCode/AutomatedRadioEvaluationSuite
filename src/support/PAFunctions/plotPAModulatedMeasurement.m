@@ -113,13 +113,23 @@ function plotPAModulatedMeasurement(app)
         end
         hold(ax, 'off');
         lgd = legend(ax,Location="bestoutside");
+        enableLegendToggle(lgd);
         lgd.Title.Visible = 'on';
         lgd.Title.String = 'Channel Power (dBm)';
         enableLegendToggle(lgd);
         addLineAndLegendContextMenu(h, lgd);
-        
         axis(ax, "tight");
         improveAxesAppearance(app, ax);
+
+        % Check if legend height > axes height
+        axPos = get(ax, 'Position');
+        lgd.Units = 'pixels';
+        lgdPos = get(lgd, 'Position');
+        if lgdPos(4) > axPos(4)
+            lgd.NumColumns = 2;
+            lgd.Location = 'eastoutside';
+        end
+        lgd.Location = 'eastoutside';
 
         %% Occupied Bandwidth
         ax = app.OccupiedBandwidthPlot;
@@ -139,9 +149,6 @@ function plotPAModulatedMeasurement(app)
         hold(ax, 'off');
         lgd = legend(ax);
         lgd.Title.Visible = 'on';
-        lgd.Title.String = 'Channel Power (dBm)';
-        enableLegendToggle(lgd);
-        
         axis(ax, "tight");
         improveAxesAppearance(app, ax,'LineThickness', 2);
 

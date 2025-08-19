@@ -349,12 +349,13 @@ try
             % Save table as a variable in the app
             app.PAMeasurementsTable = combinedData;
 
-            % Remove spaces and parenthesis from the variable names.
+            % Remove spaces and special characters from the variable names.
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
-
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '[{};]', '');
+            
             try
                 % Process data
                 processPAData(app, combinedData);
@@ -364,22 +365,22 @@ try
                 for ch = 1:length(app.PA_PSU_Channels)
                     app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
                 end    
-            catch
-                % Silent Catch
-            end
 
-            % Plot with updated dropdown values.
-            mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
-            if mode == "CW"
                 % Plot with updated dropdown values.
-                plotPASingleMeasurement(app);
-                plotPASweepMeasurement(app);
-                plotPADCMeasurement(app);
-            elseif mode == "Modulated"
-                plotPAModulatedMeasurement(app);
-                plotPADCMeasurement(app);
-            elseif mode == "Unknown"
-                app.displayError("Unknown PA data format which not contains the expected columns.")
+                mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
+                if mode == "CW"
+                    % Plot with updated dropdown values.
+                    plotPASingleMeasurement(app);
+                    plotPASweepMeasurement(app);
+                    plotPADCMeasurement(app);
+                elseif mode == "Modulated"
+                    plotPAModulatedMeasurement(app);
+                    plotPADCMeasurement(app);
+                elseif mode == "Unknown"
+                    app.displayError("Unknown PA data format which not contains the expected columns.")
+                end
+            catch
+                % Silent catch
             end
 
             % Pause for cooldown in last power sweep row
@@ -388,7 +389,6 @@ try
             if i == totalMeasurements
                 break;
             end
-
         end
 
         i = i+1;
@@ -426,8 +426,8 @@ try
     app.PAMeasurementsTable = resultsTable;
 
     % Save the complete measurement data.
-    if height(resultsTable) > 0
-        fullFilename = saveData(resultsTable);
+    if height(app.PAMeasurementsTable) > 0
+        fullFilename = saveData(app.PAMeasurementsTable);
         loadData(app, 'PA', fullFilename);
     end
 catch ME
