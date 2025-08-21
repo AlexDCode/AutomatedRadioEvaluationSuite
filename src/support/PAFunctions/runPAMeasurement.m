@@ -355,7 +355,7 @@ try
                 processPAData(app, combinedData);
                 
                 % Index the data for the current frequency and power supply values
-                app.FrequencySingleDropDown.Value = string(combinedData.FrequencyMHz(i));
+                app.FrequencySingleDropDown.Value = string(frequency/1e6);
                 for ch = 1:length(app.PA_PSU_Channels)
                     app.PA_PSU_SelectedVoltages(ch) = resultsTable.(sprintf('Channel %d Voltages (V)', ch))(i);
                 end    
