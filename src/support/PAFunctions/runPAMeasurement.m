@@ -325,7 +325,7 @@ try
             end
         end
 
-        % Cooldown Time: Wait between power sweeps for each parameter combination
+        % Power sweep completion and cooldown
         if i == idxPowerSweep(end) | safetyFlag
             % Turn off signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
@@ -334,29 +334,23 @@ try
             enablePSUChannels(app, app.FilledPSUChannels, false);
             statePSU = false;
 
-            if safetyFlag
-                % Skip remaining power sweep if gain is below threshold
-                i = idxPowerSweep(end)+1;
-                safetyFlag = false; % Flag to stop remaining power sweep
-            end
-
             % Plot at current sweep  
             combinedData = resultsTable;
             
-            % Remove zero rows that may be left empty during safety checks
-            combinedData(all(resultsTable.("Frequency (MHz)") == 0, 2), :) = [];
-        
-            % Save table as a variable in the app
-            app.PAMeasurementsTable = combinedData;
-
-            % Remove spaces and special characters from the variable names.
-            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
-            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
-            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
-            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
-            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '[{};]', '');
-            
             try
+                % Remove zero rows that may be left empty during safety checks
+                combinedData(all(resultsTable.("Frequency (MHz)") == 0, 2), :) = [];
+            
+                % Save table as a variable in the app
+                app.PAMeasurementsTable = combinedData;
+    
+                % Remove spaces and special characters from the variable names.
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ' ', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '(', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, ')', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '%', '');
+                combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '[{};]', '');
+                
                 % Process data
                 processPAData(app, combinedData);
                 
@@ -379,12 +373,19 @@ try
                 elseif mode == "Unknown"
                     app.displayError("Unknown PA data format which not contains the expected columns.")
                 end
-            catch
+            catch ME
                 % Silent catch
+                disp(ME)
             end
 
             % Pause for cooldown in last power sweep row
             pause(app.CooldownTimeSpinner.Value)
+
+            if safetyFlag
+                % Skip remaining power sweep if gain is below threshold
+                i = idxPowerSweep(end);
+                safetyFlag = false; % Flag to stop remaining power sweep
+            end
 
             if i == totalMeasurements
                 break;
