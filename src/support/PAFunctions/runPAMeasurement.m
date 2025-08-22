@@ -100,12 +100,21 @@ try
         writeline(app.SignalGenerator, sprintf(':OUTPut:MODulation:STATe %d', 1)); % Enable modulated output signal
     end
 
+    % Power sweep summary to count points per power sweep
+    groupVars = setdiff(parametersTable.Properties.VariableNames, 'RF Input Power', 'stable'); % Get all variables except input power
+    [G, sweeps] = findgroups(parametersTable(:, groupVars));  % group by all groupVars
+    counts = splitapply(@numel, parametersTable.("RF Input Power"), G); % Count the number of input power points per sweep
+    sweepSummary = [sweeps, table(counts, 'VariableNames', {'NumPowerPoints'})]; % Build summary table
+    numPowerSweeps = height(sweepSummary); % Get number of power sweeps
+    
+    nPowerSweep = 1; % Initialize sweep counter
+    cooldownAvgTime = app.CooldownTimeSpinner.Value; % Initialize average cooldown time 
+    delayPSUAvgTime = app.PSUDelaySpinner.Value; % Initialize PSU Delay time
 
     % Create a progress dialog to inform the user of the progress.
     d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
     measurementStartTime = datetime('now');
     tic; lastTime = toc; totalTime = 0;
-
     i = 1;
     statePSU = false; % Flag for PSU output enable
     safetyFlag = false; % Flag to stop remaining power sweep
@@ -113,13 +122,13 @@ try
         % Update timing info.
         now = toc;
         elapsedTime = now - lastTime;
-        totalTime = totalTime + elapsedTime;
         lastTime = now;
+        totalTime = totalTime + elapsedTime;
 
         % Calculate progress and time estimates.
-        progress = i / totalMeasurements;
-        avgTime = totalTime / i;
-        remainingTime = avgTime * (totalMeasurements - i);
+        progress = (i - 1) / totalMeasurements;
+        avgTime = (totalTime - (cooldownAvgTime + logical(1-i)*delayPSUAvgTime)*(nPowerSweep - 1))/i;
+        remainingTime = avgTime * (totalMeasurements - i + 1) + (cooldownAvgTime + logical(numPowerSweeps - nPowerSweep)*delayPSUAvgTime)*(numPowerSweeps - nPowerSweep + 1);
 
         % Update the progress dialog window.
         d.Value = progress;
@@ -193,6 +202,7 @@ try
         end
 
         if ~statePSU 
+            delayPSUinit = tic;
             if app.PSUMode ~= "No Supply"
                 % When the PSU is switched back on use the PSU delay, save
                 % quiescent current, and turn signal generator on 
@@ -201,6 +211,9 @@ try
                 enablePSUChannels(app, app.FilledPSUChannels, true);
                 statePSU = true;
                 
+                % Message for PSU delay
+                d.Message = sprintf('%s\n%s', d.Message, 'PSU Startup Delay');
+
                 % Longer delay to allow PA to settle.
                 pause(app.PSUDelaySpinner.Value);
     
@@ -219,9 +232,15 @@ try
                     resultsTable.(sprintf('Channel %d DC Quiescent Current (A)', ch))(i) = DCDrainQuiescentCurrent(1, ch);
                 end
             end
+            % Remove PSU delay message
+            lines = strsplit(d.Message, '\n');
+            d.Message = strjoin(lines(1:end-1), '\n');
+
             % Turn on signal generator.
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
             pause(app.PAMeasurementDelayValueField.Value);
+
+            delayPSUAvgTime = toc - delayPSUinit;
         end
 
         % Small delay.
@@ -315,6 +334,9 @@ try
         if app.MinimumGainSafetyState % Only if safety option is active
             if Gain < app.MinimumGainSpinner.Value || averageGain < app.MinimumGainSpinner.Value
                 safetyFlag = true;
+                
+                % Message gain flag triggered
+                d.Message = sprintf('%s\n%s', d.Message, 'Minimum gain safety flag triggered');
             end
         end
 
@@ -322,6 +344,9 @@ try
         if app.OccupiedBandwidthSafetyState && app.StimulusDropDown.Value == "Modulated" % Only if safety option is active
             if outputOBW/1e6 > app.ChannelBandwidthValueField.Value + app.OccupiedBandwidthSpinner.Value
                 safetyFlag = true;
+                
+                % Message for exceeded occupied bandwidth flag triggered
+                d.Message = sprintf('%s\n%s', d.Message, 'Excessive occupied bandwidth safety flag trigerred');
             end
         end
 
@@ -333,6 +358,8 @@ try
             % Disable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, false);
             statePSU = false;
+
+            cooldownTime = toc; 
 
             % Plot at current sweep  
             combinedData = resultsTable;
@@ -378,18 +405,31 @@ try
                 disp(ME)
             end
 
+            nPowerSweep = nPowerSweep + 1; % Increase power sweep index
+            
+            % Message for PSU delay
+            d.Message = sprintf('%s\n%s', d.Message, 'Cooldown time delay');
+
             % Pause for cooldown in last power sweep row
             pause(app.CooldownTimeSpinner.Value)
 
+            
+            lines = strsplit(d.Message, '\n');
             if safetyFlag
                 % Skip remaining power sweep if gain is below threshold
                 i = idxPowerSweep(end);
                 safetyFlag = false; % Flag to stop remaining power sweep
+                d.Message = strjoin(lines(1:end-2), '\n'); % Remove cooldown and safety messages
+            else
+                d.Message = strjoin(lines(1:end-1), '\n'); % Remove cooldown messages
             end
 
             if i == totalMeasurements
                 break;
             end
+
+            cooldownTime = now - cooldownTime;
+            cooldownAvgTime = (cooldownTime + cooldownAvgTime)/nPowerSweep;
         end
 
         i = i+1;
