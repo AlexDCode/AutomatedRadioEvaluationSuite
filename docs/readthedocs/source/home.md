@@ -1,30 +1,19 @@
-# Automated Radio Evaluation Suite
+# ARES
 
-[![Latest Release](https://img.shields.io/github/v/release/AlexDCode/AutomatedRadioEvaluationSuite?label=Latest%20Release)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases)
+![Latest Release](https://img.shields.io/github/v/release/AlexDCode/AutomatedRadioEvaluationSuite?label=Latest%20Release)
+[![View Automated Radio Evaluation Suite on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/181347-automated-radio-evaluation-suite)
+[![Documentation Status](https://readthedocs.org/projects/aresapp/badge/?version=latest)](https://aresapp.readthedocs.io/en/latest/?badge=latest)
 [![Star on GitHub](https://img.shields.io/github/stars/AlexDCode/AutomatedRadioEvaluationSuite?style=social)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/AlexDCode/AutomatedRadioEvaluationSuite?style=social)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/network/members)
 [![GitHub Issues](https://img.shields.io/github/issues/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/pulls)
-[![Contributors](https://img.shields.io/github/contributors/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/graphs/contributors)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
+![Contributors](https://img.shields.io/github/contributors/AlexDCode/AutomatedRadioEvaluationSuite)
+[![License](https://img.shields.io/github/license/AlexDCode/AutomatedRadioEvaluationSuite)](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/blob/main/LICENSE.txt)
 
 ---
 
-**ARES** is an open-source MATLAB-based platform for performing automated RF measurements on power amplifiers and antennas. It interfaces seamlessly with existing laboratory equipment via VISA (LAN, GPIB, USB), supporting streamlined data collection, visualization, and export, all within a graphical user interface. 
+The **Automated Radio Evaluation Suite (ARES)** is an open-source MATLAB-based platform for performing automated RF measurements on power amplifiers and antennas. It interfaces seamlessly with existing laboratory equipment via VISA (LAN, GPIB, USB), supporting streamlined data collection, visualization, and export, all within a comprehensive and user-friendly graphical user interface. Unlike commercial software, this app is open-source, customizable, and free. Download the [latest release](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and follow the [Getting Started](https://aresapp.readthedocs.io/latest/getting_started.html) guide to learn how to use it. Tutorials for [Instrument Database](https://aresapp.readthedocs.io/latest/tutorial_instr.html), [Antenna Measurement](https://aresapp.readthedocs.io/latest/tutorial_ant.html), and [PA Measurements](https://aresapp.readthedocs.io/latest/tutorial_PA.html) are available. All the documentation is hosted on [Read the Docs](https://aresapp.readthedocs.io/).
 
-ARES is free, fully customizable, and actively maintained. It provides a cost-effective alternative to commercial measurement software and allows full transparency and control over your test flow. [Download the latest release.](https://github.com/AlexDCode/AutomatedRadioEvaluationSuite/releases) and [get started with the setup guide.](https://aresapp.readthedocs.io/latest/getting_started.html)
-
-## Tutorials
-
----
-
-Explore the functionality of ARES through guided documentation:
-
-- [Instrument Database Tutorial](https://aresapp.readthedocs.io/latest/tutorial_instr.html)
-- [Antenna Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_ant.html)
-- [PA Measurement Tutorial](https://aresapp.readthedocs.io/latest/tutorial_PA.html) 
-
-Full documentation is hosted on **[Read the Docs](https://aresapp.readthedocs.io/)**.
 
 ## Key Features
 
@@ -33,19 +22,18 @@ Full documentation is hosted on **[Read the Docs](https://aresapp.readthedocs.io
 - VISA-based instrument control via **GPIB**, **LAN**, and **USB**
 - Support for multiple ETS-Lindgren, Keysight, and Rohde & Schwarz instruments
 - Built in deembedding support and DC power supply control
-- PA FoM measurements:
+- Measure RF power amplifier Figures of Merit (FoM) over a range of test parameters
   - Gain
   - Output Power
   - Drain Efficiency
   - Power Added Efficiency
-- Antenna gain measurements:
+- Measure and visualize 2D/3D antenna realized and absolute gain characteristics by:
   - Gain Comparison Method (i.e., Two-Antenna Method)
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
-  - Antenna return loss (magnitude & phase).
-  - 2D/3D radiation pattern visualization
+- Measure antenna return loss (magnitude and phase).
 - Save/load test measurements in standardized file formats for data analysis.
 - Plot test measurements within the app for quick visualization.
-- Export plots to **PDF**, **PNG**, **JPEG**, and **TikZ** for publication
+- Export plots to **PDF**, **PNG**, **JPEG**, and **TikZ** for publication (TikZ export is unsupported for polar plots).
 
 ```{admonition} Export Tip
 :class: note

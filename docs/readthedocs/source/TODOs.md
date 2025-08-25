@@ -5,7 +5,7 @@
 ## measureModulated.m
 `Path: src\support\PAFunctions\measureModulated.m`
 
-- TODO: The calibration assumes a narrowband device where the losses of the signal bandwidth can be approximated to the center frequency
+- TODO: The calibration for channel power measurements assumes a narrowband device where the losses of the signal bandwidth can be approximated to the center frequency
 
 ---
 

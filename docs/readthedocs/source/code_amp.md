@@ -196,7 +196,7 @@ This function measures the RF power spectrum, DC drain power, and DC gate power 
 - DCDrainPower       - The DC power delivered to the drain (W).
 - DCGatePower        - The DC power delivered to the gate (W).
 - TODO:
-- The calibration assumes a narrowband device where the losses of
+- The calibration for channel power measurements assumes a narrowband device where the losses of
 - the signal bandwidth can be approximated to the center frequency
 ```
 
@@ -240,7 +240,19 @@ This function plots DC performance metrics from a frequency sweep Power Amplifie
 
 **Description:**
 
-This function plots.....
+This function plots results of modulated power amplifier (PA) measurements at a selected frequency and supply voltages. The function generates multiple plots in the app interface to visualize gain, efficiency, output spectrum, occupied bandwidth, and adjacent channel power ratio (ACPR). Specifically:
+
+- Average Gain and Efficiency Plot:
+- Left Y axis: Average Gain (dB)
+- Right Y axis: Average Drain Efficiency (DE) and Power Added Efficiency (PAE) (%)
+- Output Spectrum Plot:
+- Frequency offset (MHz) versus Power Spectral Density (dBm/Hz)
+- Plots averaged power spectrum for each channel output power
+- Occupied Bandwidth Plot:
+- Channel Power (dBm) versus Input/Output Occupied Bandwidth (MHz)
+- Channel Power and ACPR Plot:
+- Channel Power (dBm) versus ACPR (dBc)
+- Plots both input and output ACPR for all channels
 
 ```{admonition} Input Parameters
 :class: tip
@@ -250,6 +262,11 @@ This function plots.....
 ```{admonition} Output Parameters
 :class: tip
 - None
+- NOTES:
+- Clears existing axes before plotting.
+- Filters measurement data based on selected frequency and supply voltages.
+- Uses local helper function `assignACPRVariables` to standardize ACPR table column names.
+- Automatically adjusts legends and axis appearance using `improveAxesAppearance`.
 ```
 
 ---
@@ -345,7 +362,7 @@ This function resets all power supply unit (PSU) channels to their default setti
 
 **Description:**
 
-This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes: *TODO:* Verify if gate PSU data is saved to results table in individual PSU channel columns
+This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes: TODO:
 
 - Generating test parameter combinations and initializing the output results table.
 - Configuring the signal analyzer and initializing the measurement loop.
@@ -358,6 +375,7 @@ This function performs a full RF Power Amplifier (PA) measurement sweep. On erro
   - Stores results in a structured table
 - Providing a progress UI dialog with estimated time updates.
 - Saving the results and loading them back into the application.
+- Verify if gate PSU data is saved to results table in individual PSU channel columns
 
 ```{admonition} Input Parameters
 :class: tip

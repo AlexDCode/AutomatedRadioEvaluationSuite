@@ -45,7 +45,29 @@ The function P2dB converts magnitudes (power) to dB.
 
 **Description:**
 
-Add context menu to both lines and corresponding legend items hLine: array of line handles hLegend: handle to legend
+This function adds a right-click (context) menu to one or more line objects **and their corresponding legend entries** in a MATLAB figure. The context menu provides interactive options to quickly manipulate the line or legend item.
+
+- Menu Items:
+- "Hide"   : Sets the line's 'Visible' property to 'off'.
+- "Show"   : Sets the line's 'Visible' property to 'on'.
+- "Delete" : Deletes the line object from the figure.
+- Context menu is automatically attached to both the line object and the corresponding legend entry (if present).
+
+```{admonition} Input Parameters
+:class: tip
+- hLine   - Handle to a line object or an array of line objects to which the context menu should be added.
+- hLegend - Handle to a legend object. If not provided or empty, the current legend is used.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+- NOTES:
+- Supports multiple line handles and automatically links each line to its corresponding legend item.
+- Uses `EntryContainer.Children` to access legend items (MATLAB R2017b+ syntax).
+- Throws an error if a valid line handle is not provided.
+- Finds the parent figure of each line to attach the context menu.
+```
 
 ---
 
@@ -54,7 +76,26 @@ Add context menu to both lines and corresponding legend items hLine: array of li
 
 **Description:**
 
-addLineContextMenu Adds a right-click context menu to a line object. hLine: handle to the line or array of line objects.
+This function adds a right-click (context) menu to one or more line objects in a MATLAB figure. The context menu provides quick interactive options to manipulate the line's visibility or delete it directly from the plot.
+
+- Menu Items:
+- "Hide"   : Sets the line's 'Visible' property to 'off'.
+- "Show"   : Sets the line's 'Visible' property to 'on'.
+- "Delete" : Deletes the line object from the figure.
+
+```{admonition} Input Parameters
+:class: tip
+- hLine - Handle to a line object or an array of line objects to which the context menu should be added.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+- NOTES:
+- Throws an error if no valid line handle is provided.
+- Automatically finds the parent figure of each line to attach the context menu.
+- Supports multiple line handles at once.
+```
 
 ---
 
@@ -120,7 +161,22 @@ The function dBm2mag converts dBm to Watts (W).
 
 **Description:**
 
-Define keyword groups
+Detects the type of Power Amplifier (PA) measurement based on the presence of specific variable names in a dataset. The function checks for Continuous Wave (CW) or Modulated measurement indicators and returns the corresponding measurement mode. If no matching variables are found, the mode is classified as "Unknown". Example usage:
+
+- mode = detectPAMeasurementType(app.PA_DataTable.Properties.VariableNames);
+
+```{admonition} Input Parameters
+:class: tip
+- varNames - Cell array of variable names to analyze.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- mode - String indicating the detected measurement type:
+- "CW"        - Continuous Wave measurement
+- "Modulated" - Modulated signal measurement
+- "Unknown"   - No matching pattern detected
+```
 
 ---
 
@@ -266,7 +322,28 @@ Modular function to handle Antenna Reference Data
 
 **Description:**
 
-Modular function to handle PA Data
+Processes Power Amplifier (PA) measurement data by storing it in the app, extracting PSU channel information, updating voltage selections, and refreshing relevant UI elements. Based on the detected measurement type (CW, Modulated, or Unknown), the function automatically triggers the appropriate plotting routines or displays an error message if the data format is unrecognized. Example usage:
+
+- combinedData = processPAData(app, combinedData)
+
+```{admonition} Input Parameters
+:class: tip
+- app          - Handle to the app instance containing UI components and data tables.
+- combinedData - Table containing PA measurement data. If empty, no processing is performed.
+```
+
+```{admonition} Output Parameters
+:class: tip
+- combinedData - Same as input, returned for consistency.
+- Notes:
+- Updates app.PA_DataTable with the provided data.
+- Extracts PSU channel numbers and corresponding voltage values from variable names.
+- Initializes and updates dropdown selections in the UI.
+- Determines PA measurement mode using detectPAMeasurementType and calls the appropriate plotting functions:
+- * "CW"        → plotPASingleMeasurement, plotPASweepMeasurement, plotPADCMeasurement
+- * "Modulated" → plotPAModulatedMeasurement, plotPADCMeasurement
+- * "Unknown"   → Displays error message in UI.
+```
 
 ---
 

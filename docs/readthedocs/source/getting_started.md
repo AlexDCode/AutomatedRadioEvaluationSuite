@@ -12,6 +12,11 @@ To run the Automated Radio Evaluation Suite (ARES), ensure the following softwar
 - [MATLAB Antenna Toolbox](https://www.mathworks.com/products/antenna.html) (for 3D radiation pattern visualization)
 - [Keysight Connection Expert](https://www.keysight.com/us/en/lib/software-detail/computer-software/io-libraries-suite-downloads-2175637.html) (for VISA drivers; Install the pre-requisite first, then the main installer)
 
+```{admonition} Note
+:class: tip
+The app can only run experiments in Windows OS. Linux or Mac OS can be used for visualizing results only.
+```
+
 ## Download and Install
 
 ---
