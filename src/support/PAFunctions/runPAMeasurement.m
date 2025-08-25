@@ -109,7 +109,7 @@ try
     
     nPowerSweep = 1; % Initialize sweep counter
     cooldownAvgTime = app.CooldownTimeSpinner.Value; % Initialize average cooldown time 
-    delayPSUAvgTime = app.PSUDelaySpinner.Value; % Initialize PSU Delay time
+    delayAvgPSU = app.PSUDelaySpinner.Value; % Initialize PSU Delay time
 
     % Create a progress dialog to inform the user of the progress.
     d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
@@ -127,8 +127,8 @@ try
 
         % Calculate progress and time estimates.
         progress = (i - 1) / totalMeasurements;
-        avgTime = (totalTime - (cooldownAvgTime + logical(1-i)*delayPSUAvgTime)*(nPowerSweep - 1))/i;
-        remainingTime = avgTime * (totalMeasurements - i + 1) + (cooldownAvgTime + logical(numPowerSweeps - nPowerSweep)*delayPSUAvgTime)*(numPowerSweeps - nPowerSweep + 1);
+        avgTime = (totalTime - (cooldownAvgTime + logical(1-i)*delayAvgPSU)*(nPowerSweep - 1))/i;
+        remainingTime = avgTime * (totalMeasurements - i + 1) + (cooldownAvgTime + logical(numPowerSweeps - nPowerSweep)*delayAvgPSU)*(numPowerSweeps - nPowerSweep + 1);
 
         % Update the progress dialog window.
         d.Value = progress;
@@ -202,7 +202,7 @@ try
         end
 
         if ~statePSU 
-            delayPSUinit = tic;
+            delayPSU = toc;
             if app.PSUMode ~= "No Supply"
                 % When the PSU is switched back on use the PSU delay, save
                 % quiescent current, and turn signal generator on 
@@ -240,7 +240,8 @@ try
             writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
             pause(app.PAMeasurementDelayValueField.Value);
 
-            delayPSUAvgTime = toc - delayPSUinit;
+            delayPSU = toc - delayPSU; 
+            delayAvgPSU = delayAvgPSU + (delayPSU - delayAvgPSU)/nPowerSweep; % Running average
         end
 
         % Small delay.
