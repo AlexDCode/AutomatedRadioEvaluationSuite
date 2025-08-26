@@ -10,7 +10,7 @@
 project = 'ARES'
 copyright = '2025, Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
 author = 'Alex D. Santiago-Vargas, José Abraham Bolaños Vargas'
-release = '1.0'
+release = '1.1'
 ARES_logo = './../../../src/assets/ARES Icon.png'
 ARES_favicon = './../../../src/assets/ARES Icon.png'
 
