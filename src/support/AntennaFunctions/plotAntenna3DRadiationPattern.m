@@ -31,8 +31,8 @@ function plotAntenna3DRadiationPattern(app)
         end
 
         % Specified frequency plotting index.
-        if ~isempty(app.PlotFrequencyMHzDropDown.Value)
-            idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.PlotFrequencyMHzDropDown.Value));
+        if ~isempty(app.FrequencyMHzDropDown.Value)
+            idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
         else 
             return;
         end
@@ -40,9 +40,9 @@ function plotAntenna3DRadiationPattern(app)
         % Extract theta, phi, and gain values for specified frequency.
         thetaValues = app.Antenna_Data.Thetadeg(idx_freq);
         phiValues   = app.Antenna_Data.Phideg(idx_freq);
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+        if app.GainTypeDropDown.Value == "Realized Gain"
             gainValues  = app.Antenna_Data.GaindBi(idx_freq);
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
             gainValues  = app.Antenna_Data.AbsoluteGaindBi(idx_freq);
         end
 
@@ -86,9 +86,9 @@ function plotAntenna3DRadiationPattern(app)
         createAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
         cb = colorbar('peer', ax);
         axis(ax, 'tight');
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+        if app.GainTypeDropDown.Value == "Realized Gain"
             ylabel(cb, 'Realized Gain (dBi)');
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
             ylabel(cb, 'Absolute Gain (dBi)');
         end
 

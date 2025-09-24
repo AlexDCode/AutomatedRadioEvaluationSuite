@@ -17,7 +17,7 @@ function plotAntenna2DRadiationPattern(app)
     %   None
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  try
+    try
         % Clear current plots.
         cla(app.GainvsFrequency2DPattern);
         cla(app.ReturnLoss2DPattern);
@@ -25,19 +25,19 @@ function plotAntenna2DRadiationPattern(app)
         cla(app.RadiationPlot2DPattern);
     
         % Specified angle and frequency plotting index.
-        idx_theta = (app.Antenna_Data.Thetadeg==str2double(app.PlotThetaDropDown.Value));
-        idx_phi = (app.Antenna_Data.Phideg==str2double(app.PlotPhiDropDown.Value));
-        idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.PlotFrequencyMHzDropDown.Value));
+        idx_theta = (app.Antenna_Data.Thetadeg==str2double(app.ThetaDropDown.Value));
+        idx_phi = (app.Antenna_Data.Phideg==str2double(app.PhiDropDown.Value));
+        idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
         idx_angle = idx_theta & idx_phi; 
      
         % 1) Antenna Gain vs. Frequency, at specified angle
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+        if app.GainTypeDropDown.Value == "Realized Gain"
             plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).GaindBi);
-            title(app.GainvsFrequency2DPattern, sprintf('Realized Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+            title(app.GainvsFrequency2DPattern, sprintf('Realized Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
             ylabel(app.GainvsFrequency2DPattern, 'Realized Gain (dBi)');
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
             plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).AbsoluteGaindBi);
-            title(app.GainvsFrequency2DPattern, sprintf('Absolute Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+            title(app.GainvsFrequency2DPattern, sprintf('Absolute Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
             ylabel(app.GainvsFrequency2DPattern, 'Absolute Gain (dBi)');
         end
         xlabel(app.GainvsFrequency2DPattern, 'Frequency (MHz)');
@@ -45,7 +45,7 @@ function plotAntenna2DRadiationPattern(app)
 
         % 2) Return Loss (dB) Plot
         plot(app.ReturnLoss2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).ReturnLossdB);
-        title(app.ReturnLoss2DPattern, sprintf('Return Loss at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PlotPhiDropDown.Value,app.PlotThetaDropDown.Value));
+        title(app.ReturnLoss2DPattern, sprintf('Return Loss at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
         xlabel(app.ReturnLoss2DPattern, 'Frequency (MHz)');
         ylabel(app.ReturnLoss2DPattern, 'RL (dB)');
         axis(app.ReturnLoss2DPattern, 'tight');
@@ -53,17 +53,17 @@ function plotAntenna2DRadiationPattern(app)
         % Prepare the polar data correctly.
         % For phi cut: theta varies, phi is fixed
         phiCutAngles = app.Antenna_Data(idx_phi & idx_freq,:).Thetadeg;
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+        if app.GainTypeDropDown.Value == "Realized Gain"
             phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).GaindBi;
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
             phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).AbsoluteGaindBi;
         end
         
         % For theta cut: phi varies, theta is fixed
         thetaCutAngles = app.Antenna_Data(idx_theta & idx_freq,:).Phideg;
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
+        if app.GainTypeDropDown.Value == "Realized Gain"
             thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).GaindBi;
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
             thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).AbsoluteGaindBi;
         end
 
@@ -115,11 +115,11 @@ function plotAntenna2DRadiationPattern(app)
         hold(app.GainvsAngle2DPattern,'on');
         h_theta = plot(app.GainvsAngle2DPattern, thetaCutAngles, thetaCutGain);
         hold(app.GainvsAngle2DPattern,'off');
-        if app.PlotGainTypeDropDown.Value == "Realized Gain"
-            title(app.GainvsAngle2DPattern, sprintf('Realized Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+        if app.GainTypeDropDown.Value == "Realized Gain"
+            title(app.GainvsAngle2DPattern, sprintf('Realized Gain vs. Angle at %s MHz', app.FrequencyMHzDropDown.Value));
             ylabel(app.GainvsAngle2DPattern, 'Realized Gain (dBi)');
-        elseif app.PlotGainTypeDropDown.Value == "Absolute Gain"
-            title(app.GainvsAngle2DPattern, sprintf('Absolute Gain vs. Angle at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+        elseif app.GainTypeDropDown.Value == "Absolute Gain"
+            title(app.GainvsAngle2DPattern, sprintf('Absolute Gain vs. Angle at %s MHz', app.FrequencyMHzDropDown.Value));
             ylabel(app.GainvsAngle2DPattern, 'Absolute Gain (dBi)');
         end
         xlabel(app.GainvsAngle2DPattern, 'Angle (degrees)');
@@ -132,7 +132,7 @@ function plotAntenna2DRadiationPattern(app)
         hold(app.RadiationPlot2DPattern,'on');
         h_theta = polarplot(app.RadiationPlot2DPattern, deg2rad(thetaCutAnglesPolar), thetaCutGainPolar);
         hold(app.RadiationPlot2DPattern,'off');
-        title(app.RadiationPlot2DPattern, sprintf('Radiation Pattern at %s MHz', app.PlotFrequencyMHzDropDown.Value));
+        title(app.RadiationPlot2DPattern, sprintf('Radiation Pattern at %s MHz', app.FrequencyMHzDropDown.Value));
         axis(app.RadiationPlot2DPattern, 'tight');
         lgd = legend(app.RadiationPlot2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
         enableLegendToggle(lgd);
