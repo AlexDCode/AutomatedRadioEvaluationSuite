@@ -57,3 +57,34 @@ function setLinearSlider(speedPreset, targetPosition)
 end
 
 
+%% Commands
+% Show errors: error = str2double(writeread(LinearSlider, 'AXIS1:ERR?'))
+%    Error Codes:
+%    1 – Controller board Flash memory malfunction
+%    2 – Axis not moving
+%    3 – Motor not stopping
+%    4 – Motor moving on wrong direction
+%    5 – Hardware Limit hit
+%    6 – Polarization limit violation
+%    7 – Lost communication
+%    9 – Encoder failure
+%    10 – Trigger failure
+%    11 – Motor overheat
+%    12 – Relay failure,
+%    13 – Position out of bounds
+%    14 – Trying to move a locked axis
+%    32 – Motor driver fault
+%    100-399 – Command syntax error
+%    400-499 – Home procedure failure
+%    500-599 – Trigger command malformed
+%    1000 – Firmware upgrade failure
+% Home: writeline(LinearSlider, 'AXIS1:HOME')
+% Zero: writeline(LinearSlider, 'AXIS1:ZERO')
+%% Reset
+% Restart and move back from the front limit
+% writeline(LinearSlider, 'AXIS1:CR'); % Turn CR mode on to disable soft limits
+% writeline(LinearSlider, 'AXIS1:CC'); % Move backwards
+% writeline(LinearSlider, 'AXIS1:ST'); % STOP 
+% writeline(LinearSlider, 'AXIS1:NCR'); % Turn NCR mode on to enable soft limits
+% writeline(LinearSlider, 'AXIS1:HOME')
+% writeread(LinearSlider, 'AXIS1:*OPC?')
