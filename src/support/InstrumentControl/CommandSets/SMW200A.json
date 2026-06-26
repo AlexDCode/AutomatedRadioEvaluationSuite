@@ -1,0 +1,9 @@
+[
+  { "name": "set_power",    "fmt": ":SOURce1:POWer:LEVel:IMMediate:AMPLitude %g", "type": "write" },
+  { "name": "set_freq_cw",  "fmt": ":SOURce1:FREQuency:CW %d",                    "type": "write" },
+  { "name": "output_state", "fmt": ":OUTPut1:STATe %d",                           "type": "write" },
+  { "name": "mod_state",    "fmt": ":OUTPut:MODulation:STATe %d",                 "type": "write" },
+  { "name": "arb_mod_type", "fmt": ":SOURce1:RADio:DMODulation:ARB:MODulation:TYPE %s", "type": "write" },
+  { "name": "arb_srate",    "fmt": ":SOURce:RADio:DMODulation:ARB:SRATe %d MSPS", "type": "write" },
+  { "name": "arb_state",    "fmt": ":SOURce1:RADio:DMODulation:ARB:STATe %d",     "type": "write" }
+]

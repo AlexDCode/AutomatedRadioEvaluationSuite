@@ -1,0 +1,13 @@
+[
+  { "name": "sweep_single",     "fmt": "TRIG:SOUR BUS;:TRIG:SING",    "type": "write" },
+  { "name": "sweep_continuous", "fmt": "TRIG:SOUR INT;:INIT:CONT ON", "type": "write" },
+  { "name": "sweep_hold",       "fmt": "INIT:CONT OFF",               "type": "write" },
+  { "name": "set_format",       "fmt": "FORM:DATA REAL",              "type": "write" },
+  { "name": "set_byte_order",   "fmt": "FORM:BORD SWAP",              "type": "write" },
+  { "name": "format?",          "fmt": "FORM:DATA?",                  "type": "query" },
+  { "name": "select_trace",     "fmt": "CALC1:PAR%d:SEL",             "type": "write" },
+  { "name": "trace_fdata",      "fmt": "CALC1:DATA:FDAT?",            "type": "query", "read": "binblock:double" },
+  { "name": "trace_sdata",      "fmt": "CALC1:DATA:SDAT?",            "type": "query", "read": "binblock:double" },
+  { "name": "freq_axis",        "fmt": "SENS1:FREQ:DATA?",            "type": "query", "read": "binblock:double" },
+  { "name": "trace_count?",     "fmt": "CALC1:PAR:COUN?",             "type": "query" }
+]

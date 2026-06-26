@@ -17,70 +17,12 @@ function [sParamdB, sParamPhase, freqValues] = measureSParameters(VNA, smoothing
     %   freqValues          - A vector containing the frequency sweep values (in Hz) corresponding to the S-parameters.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    % Clear buffer and status.
-    flush(VNA);
-    writeline(VNA, '*CLS');
-
-    % Define S-parameter labels.
-    measLabels = {'S11', 'S21', 'S22'};
-    numMeasurements = length(measLabels);
-
-    % Initialize output arrays.
-    sParamdB = cell(1, numMeasurements);
-    sParamPhase = cell(1, numMeasurements);
-
-    % Perform a single continuos sweep and wait for the VNA to finish.
-    writeline(VNA, 'SENS1:SWE:MODE SING');
-    writeline(VNA, '*WAI');
-
-    traceIndex = 1;
-        
-    if smoothingPoints ~= 1
-        % Read smoothed data (magnitude + phase)
-        for i = 1:numMeasurements
-            % Magnitude
-            writeline(VNA, sprintf('CALC1:PAR:MNUM %d', traceIndex));
-            writeline(VNA, 'CALC1:DATA? FDATA');
-            sParamdB{i} = readbinblock(VNA, 'double');
-            flush(VNA);
-    
-            % Phase
-            traceIndex = traceIndex + 1;
-            writeline(VNA, sprintf('CALC:PAR:MNUM %d', traceIndex));
-            writeline(VNA, 'CALC1:DATA? FDATA');
-            sParamPhase{i} = readbinblock(VNA, 'double');
-            flush(VNA);
-
-            % Next magnitude/phase pair.
-            traceIndex = traceIndex + 1;
-        end
-    else
-        % Read raw data (magnitude + phase)
-        for i = 1:numMeasurements
-            % Magnitude
-            writeline(VNA, sprintf('CALC:PAR:MNUM %d', traceIndex)); 
-            writeline(VNA, 'CALC1:DATA? SDATA');
-            data = readbinblock(VNA, 'double');
-            complexData = data(1:2:end) + 1i * data(2:2:end);
-            sParamdB{i} = 20 * log10(abs(complexData));
-            flush(VNA);
-
-            % Phase
-            traceIndex = traceIndex + 1;  % Move to next trace number
-            writeline(VNA, sprintf('CALC:PAR:MNUM %d', traceIndex));
-            writeline(VNA, 'CALC1:DATA? SDATA');
-            data = readbinblock(VNA, 'double');
-            complexData = data(1:2:end) + 1i * data(2:2:end);
-            sParamPhase{i} = rad2deg(angle(complexData));
-            flush(VNA);
-
-            % Next magnitude/phase pair.
-            traceIndex = traceIndex + 1;
-        end
-    end
-
-    % Get sweep frequency values
-    writeline(VNA, ':SENSe:X:VALues?');
-    freqValues = readbinblock(VNA, 'double');
-    flush(VNA);
+    % This function has been migrated to the object-oriented framework. The
+    % S-parameter acquisition logic now lives in VNAInstCtrl.measureSParameters
+    % (support/InstrumentControl). This thin wrapper preserves the original
+    % signature so existing callers keep working: it adapts whatever VNA
+    % handle it is given (raw visadev or a VNAInstCtrl) into a driver and
+    % delegates. New code should call vna.measureSParameters(...) directly.
+    vna = aresInstrument(VNA, "VNA");
+    [sParamdB, sParamPhase, freqValues] = vna.measureSParameters(smoothingPoints);
 end

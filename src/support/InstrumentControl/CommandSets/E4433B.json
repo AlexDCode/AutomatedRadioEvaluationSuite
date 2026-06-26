@@ -1,0 +1,6 @@
+[
+  { "name": "set_power",    "fmt": ":SOURce1:POWer:LEVel:IMMediate:AMPLitude %g", "type": "write" },
+  { "name": "set_freq_cw",  "fmt": ":SOURce1:FREQuency:CW %d",                    "type": "write" },
+  { "name": "output_state", "fmt": ":OUTPut1:STATe %d",                           "type": "write" },
+  { "name": "mod_state",    "fmt": ":OUTPut:MODulation:STATe %d",                 "type": "write" }
+]

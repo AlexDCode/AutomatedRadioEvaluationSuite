@@ -1,0 +1,13 @@
+[
+  { "name": "init_cont",       "fmt": ":INITiate:CONTinuous %d",     "type": "write" },
+  { "name": "init_imm",        "fmt": ":INITiate:IMMediate",         "type": "write" },
+  { "name": "center_freq?",    "fmt": ":FREQ:RF:CENT?",              "type": "query" },
+  { "name": "span?",           "fmt": ":FREQ:SPAN?",                 "type": "query" },
+  { "name": "sweep_points?",   "fmt": ":SWE:POIN?",                  "type": "query" },
+  { "name": "set_center_freq", "fmt": ":SENSe:FREQuency:CENTer %g",  "type": "write" },
+  { "name": "set_span",        "fmt": ":SENSe:FREQuency:SPAN %g",    "type": "write" },
+  { "name": "trace?",          "fmt": ":TRACe:DATA? TRACe1",         "type": "query", "read": "binblock:double" },
+  { "name": "acp_span",        "fmt": ":SENSe:ACPower:FREQuency:SPAN %d",                "type": "write" },
+  { "name": "acp_offset",      "fmt": ":SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d",   "type": "write" },
+  { "name": "obw_span",        "fmt": ":SENSe:OBWidth:FREQuency:SPAN %g",                "type": "write" }
+]

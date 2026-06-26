@@ -52,9 +52,17 @@ function runAntennaMeasurement(app)
     resultsTable = createAntennaResultsTable(totalMeasurements);
 
     try
+        % Object-oriented instrument drivers. aresInstrument() returns the
+        % right driver whether app.VNA / app.EMCenter are still raw visadev
+        % handles or already migrated driver objects, so this works before
+        % and after the ARES.mlapp connection layer is migrated.
+        vna = aresInstrument(app.VNA, "VNA");
+        pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
+        pos.PollDelaySec = app.AntennaMeasurementDelayValueField.Value;
+        pos.TimeoutSec   = 600;   % generous: a full-range rotation is slow
+
         % Set speed of the turntable and tower.
-        writeline(app.EMCenter, sprintf('1A:SPEED %d', tableSpeed));
-        writeline(app.EMCenter, sprintf('1B:SPEED %d', towerSpeed));
+        pos.setSpeeds(tableSpeed, towerSpeed);
 
         % Create a progress dialog to inform the user of the progress.
         d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
@@ -87,26 +95,14 @@ function runAntennaMeasurement(app)
             adjustedTheta = mod(parametersTable.("Theta (deg)")(i), 360); 
             adjustedPhi = parametersTable.("Phi (deg)")(i);
             
-            % Move the turntable and tower to specified position.
-            writeline(app.EMCenter, sprintf('1A:SK %d', adjustedTheta));
-            writeline(app.EMCenter, sprintf('1B:SK %d', adjustedPhi));
-            moving = 0;
-
-            while ~moving
-                drawnow;
-                pause(app.AntennaMeasurementDelayValueField.Value);
-
-                % Check if the user requested the test measurement to stop
-                if d.CancelRequested  
-                    writeline(app.EMCenter, '1A:ST');
-                    writeline(app.EMCenter, '1B:ST');
-                    break;
-                end
-
-                statusA = str2double(writeread(app.EMCenter,"1A:*OPC?"));
-                statusB = str2double(writeread(app.EMCenter,"1B:*OPC?"));
-                moving = (statusA == 1) & (statusB == 1);
-            end
+            % Move the turntable and tower to specified position, then block
+            % until both axes finish. waitUntilStill polls *OPC? on both axes,
+            % keeps the dialog responsive (OnPoll = drawnow), and stops both
+            % axes if the user clicks Stop (CancelFcn). It honors the same
+            % per-poll delay as before via pos.PollDelaySec.
+            pos.moveTo(adjustedTheta, adjustedPhi);
+            pos.waitUntilStill('CancelFcn', @() d.CancelRequested, ...
+                               'OnPoll',    @() drawnow);
 
             % Exit the outer loop as well if stop was requested
             if d.CancelRequested
@@ -149,7 +145,7 @@ function runAntennaMeasurement(app)
             pause(app.AntennaMeasurementDelayValueField.Value);
 
             % Get S-Parameters and Frequencies from VNA
-            [SParameters_dB, SParameters_Phase, VNAFrequencies] = measureSParameters(app.VNA, smoothingPoints);
+            [SParameters_dB, SParameters_Phase, VNAFrequencies] = vna.measureSParameters(smoothingPoints);
 
             % Calculate gain.
             if isempty(app.ReferenceGainFile)
@@ -182,8 +178,7 @@ function runAntennaMeasurement(app)
         end
 
         % Return turntable and tower to starting position.
-        writeline(app.EMCenter, sprintf('1A:SK %d', 0));
-        writeline(app.EMCenter, sprintf('1B:SK %d', 0));
+        pos.moveTo(0, 0);
 
         % If the measurement was not canceled.
         if ~d.CancelRequested
@@ -213,8 +208,8 @@ function runAntennaMeasurement(app)
         % Close the progress dialog.
         close(d);
 
-        % Return the VNA windows to continuos mode.
-        writeline(app.VNA, 'SENS1:SWE:MODE CONT');
+        % Return the VNA windows to continuous mode.
+        vna.setContinuous(true);
 
         % Clear the reference data if running two-antenna method.
         if isempty(app.ReferenceGainFileField.Value)

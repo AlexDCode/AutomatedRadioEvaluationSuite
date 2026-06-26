@@ -19,7 +19,20 @@ function absoluteGain = calculateAbsoluteAntennaGain(realizedGain, returnLossdB)
     % Convert gain to magnitude
     realizedGainMagnitude = dB2P(realizedGain);
 
-    % Calculate the absolute gain
-    absoluteGainMagnitude = realizedGainMagnitude ./ (1 - returnLoss.^2);
+    % Impedance-mismatch de-embedding (realized -> absolute gain) is only
+    % defined for a reflection magnitude below unity. On an uncalibrated or
+    % unterminated port |Gamma| can sit at or above 1, making (1 - |Gamma|^2)
+    % zero or negative; P2dB would then take 10*log10 of a non-positive value
+    % and return Inf or COMPLEX gains. Those complex values propagate into the
+    % saved results and later make plot/polarplot warn "Imaginary parts of
+    % complex X and/or Y arguments ignored". Guard the non-physical points to
+    % NaN so the result stays real (they render as gaps, flagging where a
+    % proper match/calibration is needed). For valid data (|Gamma| < 1) this is
+    % identical to the original calculation.
+    mismatchFactor = 1 - returnLoss.^2;
+    mismatchFactor(mismatchFactor <= 0) = NaN;
+
+    % Calculate the absolute gain.
+    absoluteGainMagnitude = realizedGainMagnitude ./ mismatchFactor;
     absoluteGain = P2dB(absoluteGainMagnitude);
 end

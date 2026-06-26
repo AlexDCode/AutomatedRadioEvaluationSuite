@@ -1,0 +1,9 @@
+[
+  { "name": "apply",         "fmt": ":APPLy CH%d,%g,%g",                "type": "write" },
+  { "name": "set_volt",      "fmt": ":SOURce:VOLTage %g,(@%d)",         "type": "write" },
+  { "name": "set_curr",      "fmt": ":SOURce:CURRent %g,(@%d)",         "type": "write" },
+  { "name": "output_state",  "fmt": ":OUTPut:STATe %d,(@%s)",           "type": "write" },
+  { "name": "output_state?", "fmt": ":OUTPut:STATe? (@%d)",             "type": "query" },
+  { "name": "meas_volt?",    "fmt": ":MEASure:SCALar:VOLTage:DC? CH%d", "type": "query" },
+  { "name": "meas_curr?",    "fmt": ":MEASure:SCALar:CURRent:DC? CH%d", "type": "query" }
+]
