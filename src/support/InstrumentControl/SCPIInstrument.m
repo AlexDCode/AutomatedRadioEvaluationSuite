@@ -70,6 +70,11 @@ classdef SCPIInstrument < handle
         TimeoutSec  double  = 5
         Termination string  = "LF"
         CommandMap              % containers.Map: name -> struct(fmt,type,read)
+
+        % Cap on how many entries reportErrors() pulls from the error queue.
+        % A queue that never empties (a wedged instrument, or one that
+        % answers SYST:ERR? with something unparseable) must not spin here.
+        MaxErrorDrain double = 20
     end
 
     methods
@@ -406,11 +411,88 @@ classdef SCPIInstrument < handle
             %   [code, msg] = obj.checkError()
             %
             % Returns code 0 / msg "No error" when the queue is clean.
+            % Reads ONE entry; the queue is FIFO and may hold several. Use
+            % reportErrors() to drain and report the whole queue.
             raw = obj.scpi('err?');
             code = sscanf(char(raw), '%d', 1);
             if isempty(code), code = NaN; end
             q = regexp(char(raw), '"([^"]*)"', 'tokens', 'once');
             if isempty(q), msg = string(raw); else, msg = string(q{1}); end
+        end
+
+        function clearErrors(obj)
+            % CLEARERRORS  Empty the error queue before a block of commands
+            % you intend to check, so reportErrors() cannot blame this block
+            % for something that happened earlier in the session.
+            obj.scpi('cls');
+        end
+
+        function [ok, summary] = reportErrors(obj, context)
+            % REPORTERRORS  Drain the error queue and warn about anything in it.
+            %
+            %   [ok, summary] = inst.reportErrors("analyzer bring-up")
+            %
+            % WHY THIS EXISTS:
+            % SCPI instruments do not object out loud. A command they cannot
+            % parse is dropped and a note is filed in an internal queue that
+            % nobody reads unless asked. Every ARES measurement therefore had
+            % the same failure mode: send a command the instrument rejects,
+            % receive no indication, and complete the sweep with a setting
+            % that was never applied. That is how a re-dialected instrument
+            % produces a full results table of quietly wrong numbers.
+            %
+            % Call clearErrors() before a configuration block and this after
+            % it. One warning is raised listing every queued entry, naming the
+            % instrument and the supplied context.
+            %
+            % INPUT:
+            %   context - short description of what was being configured,
+            %             used in the warning text (default "").
+            %
+            % OUTPUT:
+            %   ok      - true if the queue was empty (or could not be read)
+            %   summary - "" when clean, otherwise the joined error list
+            %
+            % NOT FATAL BY DESIGN: this warns rather than throws. An
+            % instrument with a pre-existing queue entry must not start
+            % failing runs that work today. Callers that want to escalate can
+            % test `ok` and decide.
+            if nargin < 2, context = ""; end
+            ok = true;
+            summary = "";
+
+            entries = strings(0, 1);
+            for k = 1:obj.MaxErrorDrain
+                try
+                    [code, msg] = obj.checkError();
+                catch
+                    % No usable error queue (unsupported, or the query timed
+                    % out). Report clean rather than inventing a failure —
+                    % this must never be the thing that breaks a working rig.
+                    return;
+                end
+                if isnan(code) || code == 0
+                    break;
+                end
+                entries(end+1, 1) = sprintf("%d, %s", code, msg); %#ok<AGROW>
+            end
+
+            if isempty(entries)
+                return;
+            end
+
+            ok = false;
+            summary = strjoin(entries, "; ");
+            if strlength(string(context)) > 0
+                where = sprintf(" during %s", context);
+            else
+                where = "";
+            end
+            warning("SCPIInstrument:CommandRejected", ...
+                ['%s instrument (%s) rejected %d command(s)%s: %s\n' ...
+                 'The affected settings were NOT applied. If this is a newly ' ...
+                 'added instrument, check its CommandSets/<Model>.json dialect.'], ...
+                obj.InstType, obj.Address, numel(entries), where, summary);
         end
     end
 

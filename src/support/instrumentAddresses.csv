@@ -6,7 +6,9 @@ Hewlett-Packard E4433B,GPIB0::19::INSTR,Generator,SignalGeneratorInstCtrl
 Keysight Technologies E36233A,TCPIP0::192.168.2.16::5025::SOCKET,PSU,PSUInstCtrl
 Keysight Technologies N5232B,TCPIP0::192.168.1.161::inst0::INSTR,VNA,VNAInstCtrl
 Keysight Technologies N9000B,TCPIP0::192.168.1.173::inst0::INSTR,Analyzer,SignalAnalyzerInstCtrl
-Rohde & Schwarz SMW200A,TCPIP0::192.168.3.52::hislip0::INSTR,Generator,SignalGeneratorInstCtrl
+Rohde & Schwarz SMW200A,TCPIP0::192.168.3.53::hislip0::INSTR,Generator,SignalGeneratorInstCtrl
 Copper Mountain CMT808U,TCPIP0::127.0.0.1::5025::SOCKET,VNA,VNAInstCtrl
-,,,
-,,,
+Keysight Technologies E36234A,TCPIP0::192.168.3.173::5025::SOCKET,PSU,PSUInstCtrl
+Keysight Technologies N9000B,TCPIP0::192.168.3.70::inst0::INSTR,Analyzer,SignalAnalyzerInstCtrl
+Keysight Technologies M9411A,TCPIP0::localhost::hislip3::INSTR,Generator,SignalGeneratorInstCtrl
+Keysight Technologies M9411A,TCPIP0::localhost::hislip3::INSTR,Analyzer,SignalAnalyzerInstCtrl

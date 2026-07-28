@@ -130,6 +130,98 @@ classdef SignalAnalyzerInstCtrl < SCPIInstrument
             obj.scpi('cls');
         end
 
+        %% Sweep, display, and trace setup
+        function setSweepPoints(obj, n)
+            % SETSWEEPPOINTS  Set the number of sweep points.
+            obj.scpi('set_sweep_points', n);
+        end
+
+        function setReferenceLevel(obj, dBm, view)
+            % SETREFERENCELEVEL  Set the Y-scale reference level (dBm).
+            %
+            %   view - "" (default, Swept SA window), "obw", or "acp" to
+            %          target that measurement's own display window.
+            if nargin < 3, view = ""; end
+            switch lower(string(view))
+                case "obw", obj.scpi('obw_ref_level', dBm);
+                case "acp", obj.scpi('acp_ref_level', dBm);
+                otherwise,  obj.scpi('set_ref_level', dBm);
+            end
+        end
+
+        function setTraceFormat(obj, fmt, bits)
+            % SETTRACEFORMAT  Set the trace transfer format, e.g. ("REAL", 64).
+            if nargin < 2, fmt  = 'REAL'; end
+            if nargin < 3, bits = 64;     end
+            obj.scpi('trace_format', char(string(fmt)), bits);
+        end
+
+        function setByteOrder(obj, order)
+            % SETBYTEORDER  Set binary byte order, e.g. "SWAPped".
+            if nargin < 2, order = 'SWAPped'; end
+            obj.scpi('byte_order', char(string(order)));
+        end
+
+        function configureAveraging(obj, on, count)
+            % CONFIGUREAVERAGING  Enable/disable trace averaging and set the
+            % averaging count.
+            obj.scpi('average_state', double(logical(on)));
+            if nargin >= 3 && ~isempty(count)
+                obj.scpi('average_count', count);
+            end
+        end
+
+        function setTraceMode(obj, traceNum, mode)
+            % SETTRACEMODE  Set a trace's mode, e.g. (2, "MAXHold").
+            obj.scpi('trace_mode', traceNum, char(string(mode)));
+        end
+
+        function d = readTraceNamed(obj, traceName)
+            % READTRACENAMED  Fetch a named trace as a double vector.
+            %
+            %   d = sa.readTraceNamed("TRACe2")
+            d = obj.scpi('trace_named?', char(string(traceName)));
+        end
+
+        %% Measurement selection and result reads
+        function selectSweptSA(obj)
+            % SELECTSWEPTSA  Select the Swept SA measurement.
+            obj.scpi('init_sanalyzer');
+        end
+
+        function selectOBW(obj)
+            % SELECTOBW  Select the Occupied Bandwidth measurement.
+            obj.scpi('init_obw');
+        end
+
+        function d = readOBW(obj)
+            % READOBW  Read the Occupied Bandwidth result block. Element 1 is
+            % the occupied bandwidth in Hz.
+            d = obj.scpi('read_obw?');
+        end
+
+        function selectACP(obj)
+            % SELECTACP  Select the Adjacent Channel Power measurement.
+            obj.scpi('init_acp');
+        end
+
+        function d = readACP(obj)
+            % READACP  Read the ACP result block. Element 1 is channel power
+            % (dBm); elements 2-3 are lower/upper adjacent power (dBc).
+            d = obj.scpi('read_acp?');
+        end
+
+        function configureACP(obj, channelBWHz, spanHz, refLeveldBm, offsetHz)
+            % CONFIGUREACP  Set up the ACP measurement in the order ARES uses:
+            % carrier bandwidth, span, reference level, adjacent-channel
+            % bandwidth, then adjacent-channel offset.
+            obj.scpi('mcp_carrier_bw', channelBWHz);
+            obj.scpi('acp_span',       spanHz);
+            obj.scpi('acp_ref_level',  refLeveldBm);
+            obj.scpi('acp_offset_bw',  channelBWHz);
+            obj.scpi('acp_offset',     offsetHz);
+        end
+
         %% Modulated-measurement configuration (from measureModulated.m)
         function setACPSpan(obj, spanHz)
             % SETACPSPAN  Set the adjacent-channel-power measurement span (Hz).
@@ -163,6 +255,33 @@ classdef SignalAnalyzerInstCtrl < SCPIInstrument
             obj.registerCommand('acp_span',        ':SENSe:ACPower:FREQuency:SPAN %d', 'write');
             obj.registerCommand('acp_offset',      ':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', 'write');
             obj.registerCommand('obw_span',        ':SENSe:OBWidth:FREQuency:SPAN %g', 'write');
+
+            % Sweep / display / trace setup (absorbed from runPAMeasurement.m).
+            obj.registerCommand('set_sweep_points', ':SENSe:SWEep:POINts %d',   'write');
+            obj.registerCommand('trace_format',     ':FORMat:TRACe:DATA %s,%d', 'write');
+            obj.registerCommand('byte_order',       ':FORMat:BORDer %s',        'write');
+            obj.registerCommand('average_state',    ':SENSe:AVERage:STATe %d',  'write');
+            obj.registerCommand('average_count',    ':SENSe:AVERage:COUNt %d',  'write');
+            obj.registerCommand('trace_mode',       ':TRACe%d:MODE %s',         'write');
+            obj.registerCommand('trace_named?',     ':TRACe:DATA? %s', 'query', 'binblock:double');
+
+            % Reference level. The legacy code sent this with %d in
+            % measureModulated.m and %g in runPAMeasurement.m for the same
+            % setting; %d renders a fractional dBm as "1.050000e+01". %g is
+            % used throughout here — identical bytes for the integer reference
+            % levels ARES normally uses, correct for the fractional ones.
+            obj.registerCommand('set_ref_level',   ':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', 'write');
+            obj.registerCommand('obw_ref_level',   ':DISPlay:OBWidth:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %g', 'write');
+            obj.registerCommand('acp_ref_level',   ':DISPlay:ACPower:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %g', 'write');
+
+            % Measurement selection + result reads (from measureModulated.m).
+            obj.registerCommand('init_sanalyzer',  ':INITiate:SANalyzer', 'write');
+            obj.registerCommand('init_obw',        ':INITiate:OBWidth',   'write');
+            obj.registerCommand('read_obw?',       ':READ:OBWidth?', 'query', 'binblock:double');
+            obj.registerCommand('init_acp',        ':INITiate:ACP',       'write');
+            obj.registerCommand('read_acp?',       ':READ:ACP?',     'query', 'binblock:double');
+            obj.registerCommand('acp_offset_bw',   ':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', 'write');
+            obj.registerCommand('mcp_carrier_bw',  ':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d',      'write');
         end
     end
 end

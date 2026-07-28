@@ -59,7 +59,7 @@ function enablePSUChannels(app, channels, state)
                     % Both channels need to be enabled.
                     channelList = '@1,2'; 
                 end
-                writeline(app.PowerSupplyA, sprintf(':OUTPut:STATe %d,(%s)', state, channelList));
+                app.PowerSupplyA.setOutputState(PSUInstCtrl.channelNumber(channelList), state);
             end
         
             % Enable channels on PSU B
@@ -71,8 +71,23 @@ function enablePSUChannels(app, channels, state)
                     % Both channels need to be enabled.
                     channelList = '@1,2';
                 end
-                writeline(app.PowerSupplyB, sprintf(':OUTPut:STATe %d,(%s)', state, channelList));
+                app.PowerSupplyB.setOutputState(PSUInstCtrl.channelNumber(channelList), state);
             end
         end
     end
+
+    % A rejected output-state command means the DUT's bias is not in the state
+    % the sweep believes it is — either unbiased when it should be on, or
+    % still energised when the operator thinks it was shut down. Check once
+    % per supply, after the gate/drain sequencing above has finished.
+    if ~isempty(psuAChannels)
+        app.PowerSupplyA.reportErrors(sprintf("PSU A output %s", stateName_(state)));
+    end
+    if ~isempty(psuBChannels)
+        app.PowerSupplyB.reportErrors(sprintf("PSU B output %s", stateName_(state)));
+    end
+end
+
+function name = stateName_(state)
+    if state == 1, name = "enable"; else, name = "disable"; end
 end

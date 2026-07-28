@@ -45,24 +45,17 @@ function runPAMeasurement(app)
 
 try
     % Configure the signal analyzer settings.
+    % Driver methods, not raw SCPI: every command issued below is a registered
+    % entry in the analyzer's command set, so CommandSets/<Model>.json can
+    % re-dialect it for a non-Keysight analyzer without editing this function.
+    % The two analyzers share one bring-up helper so they cannot drift apart.
+    % setupClean tracks whether every instrument accepted its configuration.
+    % A rejected command is not fatal on its own, but the operator must be
+    % told before a long sweep produces a table of quietly wrong numbers.
+    setupClean = true;
+
     if ~isempty(app.OutputSignalAnalyzer)
-        writeline(app.OutputSignalAnalyzer, sprintf('*RST'));
-        writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
-        writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
-        writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));
-        writeline(app.OutputSignalAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
-        writeline(app.OutputSignalAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
-        if app.StimulusDropDown.Value == "Modulated"
-            % Set span for Occupied Bandwidth measurement
-            writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:OBWidth:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
-
-            % Turn trace averaging on for trace 1
-            writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:AVERage:STATe %d', 1));
-            writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:AVERage:COUNt %d', 100)); % Samples to average
-
-            % Add max hold trace
-            writeline(app.OutputSignalAnalyzer, sprintf(':TRACe2:MODE %s', 'MAXHold'));
-        end
+        setupClean = configureAnalyzer_(app.OutputSignalAnalyzer, app) && setupClean;
     end
     if ~isempty(app.InputSignalAnalyzer)
         if app.CalibrationModeDropDown.Value ~= "In-Situ Couplers"
@@ -70,34 +63,35 @@ try
                 exitFlag = 1;
         end
 
-        writeline(app.InputSignalAnalyzer, sprintf('*RST'));
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:SWEep:POINts %d', app.SweepPointsValueField.Value));
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
-        writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %g', app.ReferenceLevelValueField.Value));
-        writeline(app.InputSignalAnalyzer, sprintf(':FORMat:TRACe:DATA %s,%d', 'REAL', 64));
-        writeline(app.InputSignalAnalyzer, sprintf(':FORMat:BORDer %s', 'SWAPped'));
-        if app.StimulusDropDown.Value == "Modulated"
-            % Set span for Occupied Bandwidth measurement
-            writeline(app.InputSignalAnalyzer, sprintf(':SENSe:OBWidth:FREQuency:SPAN %g', app.SpanValueField.Value * 1E6));
-
-            % Turn trace averaging on for trace 1
-            writeline(app.InputSignalAnalyzer, sprintf(':SENSe:AVERage:STATe %d', 1));
-            writeline(app.InputSignalAnalyzer, sprintf(':SENSe:AVERage:COUNt %d', 100)); % Samples to average
-
-            % Add max hold trace
-            writeline(app.InputSignalAnalyzer, sprintf(':TRACe2:MODE %s', 'MAXHold'));
-        end
+        setupClean = configureAnalyzer_(app.InputSignalAnalyzer, app) && setupClean;
     end
 
     % Set modulation in the signal generator.
+    % Driver methods, not raw SCPI: the ARB bring-up is the most
+    % model-specific sequence in the whole sweep. The SMW200A synthesises the
+    % signal from a modulation type + symbol rate; the Keysight VXT has no
+    % :DMODulation subsystem at all and instead plays a stored waveform file.
+    % Routing through the driver lets CommandSets/<Model>.json decide.
+    app.SignalGenerator.clearErrors();
     if app.StimulusDropDown.Value == "CW"
-        writeline(app.SignalGenerator, sprintf(':OUTPut:MODulation:STATe %d', 0)); % Enable modulated output signal
+        app.SignalGenerator.setModulationState(false);
     elseif app.StimulusDropDown.Value == "Modulated"
-        writeline(app.SignalGenerator, sprintf(':SOURce1:RADio:DMODulation:ARB:MODulation:TYPE %s', app.ModulationTypeDropDown.Value)); % Set modulation type
-        writeline(app.SignalGenerator, sprintf(':SOURce:RADio:DMODulation:ARB:SRATe %d MSPS', app.SymbolRateValueField.Value)); % Set modulation type
-        writeline(app.SignalGenerator, sprintf(':SOURce1:RADio:DMODulation:ARB:STATe %d', 1)); % Turn digital modulation on
-        waitForInstrument(app, app.SignalGenerator);
-        writeline(app.SignalGenerator, sprintf(':OUTPut:MODulation:STATe %d', 1)); % Enable modulated output signal
+        app.SignalGenerator.configureDigitalModulation( ...
+            app.ModulationTypeDropDown.Value, app.SymbolRateValueField.Value);
+    end
+    setupClean = app.SignalGenerator.reportErrors("signal generator setup") && setupClean;
+
+    % Tell the operator BEFORE the sweep starts. A rejected setup command
+    % does not stop the run — the instrument may still produce usable data —
+    % but silently proceeding is how a bad dialect turns into a bad dataset.
+    if ~setupClean
+        uialert(app.UIFigure, ...
+            ["One or more instruments rejected part of their setup, so those " + ...
+             "settings were not applied. See the MATLAB console for the " + ...
+             "specific commands."; ""; ...
+             "If you just added this instrument, check its " + ...
+             "CommandSets/<Model>.json dialect before trusting the results."], ...
+            'Instrument Setup Warning', 'Icon', 'warning');
     end
 
     % Power sweep summary to count points per power sweep
@@ -143,8 +137,7 @@ try
             % If the user stops the PA test measurement, then for
             % safety reasons the instruments will be turned off.
             enablePSUChannels(app, app.FilledPSUChannels, false);
-            writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
-            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+            app.SignalGenerator.safeShutdown();
 
             % Check if any data results have been recorded in the
             % measurement.
@@ -183,14 +176,14 @@ try
         frequency = parametersTable.Frequency(i);
 
         % Set target frequency in the signal generator.
-        writeline(app.SignalGenerator, sprintf(':SOURce1:FREQuency:CW %d', frequency));
+        app.SignalGenerator.setFrequencyCW(frequency);
 
         % Set center frequency in the signal analyzer.
         if ~isempty(app.OutputSignalAnalyzer)
-            writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
+            app.OutputSignalAnalyzer.setCenterFrequency(frequency);
         end
         if ~isempty(app.InputSignalAnalyzer)
-            writeline(app.InputSignalAnalyzer, sprintf(':SENSe:FREQuency:CENTer %g', frequency));
+            app.InputSignalAnalyzer.setCenterFrequency(frequency);
         end
 
         % Set all active channel voltages and currents.
@@ -237,7 +230,7 @@ try
             d.Message = strjoin(lines(1:end-1), '\n');
 
             % Turn on signal generator.
-            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 1));
+            app.SignalGenerator.setOutputState(true);
             pause(app.PAMeasurementDelayValueField.Value);
 
             delayPSU = toc - delayPSU; 
@@ -354,7 +347,7 @@ try
         % Power sweep completion and cooldown
         if i == idxPowerSweep(end) | safetyFlag
             % Turn off signal generator.
-            writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+            app.SignalGenerator.setOutputState(false);
 
             % Disable all channels.
             enablePSUChannels(app, app.FilledPSUChannels, false);
@@ -437,8 +430,7 @@ try
     end
 
     % Turn off the signal generator.
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
-    writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
+    app.SignalGenerator.safeShutdown();
 
     % Disable the channels.
     enablePSUChannels(app, app.FilledPSUChannels, false);
@@ -455,10 +447,10 @@ try
 
     % Set signal analyzer to continous trigger
     if ~isempty(app.OutputSignalAnalyzer)
-        writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
+        app.OutputSignalAnalyzer.setContinuous(true);
     end
     if ~isempty(app.InputSignalAnalyzer)
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 1));
+        app.InputSignalAnalyzer.setContinuous(true);
     end
 
     % Remove zero rows that may be left empty during safety checks
@@ -475,9 +467,51 @@ try
 catch ME
     % If an error occurs during the PA test measurement, then
     % for safety reasons the instruments will be turned off.
-    writeline(app.SignalGenerator, sprintf(':OUTPut1:STATe %d', 0));
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %d', -135));
+    try
+        app.SignalGenerator.safeShutdown();
+    catch
+        % A dead generator link must not stop the PSU from being turned off,
+        % nor swallow the original error before it reaches the user. RF still
+        % on is bad; RF on AND the DC rails still up is worse.
+    end
     enablePSUChannels(app, app.FilledPSUChannels, false);
     app.displayError(ME);
 end
+end
+
+function ok = configureAnalyzer_(sa, app)
+    %CONFIGUREANALYZER_  Bring one signal analyzer up for a PA sweep.
+    %
+    % Shared by the output and input analyzers, which must be configured
+    % identically — they were previously two copies of the same eleven lines,
+    % which is how they drift.
+    %
+    % Emits exactly the SCPI the legacy inline block did, in the same order,
+    % but through the driver's command registry so a re-dialected analyzer
+    % (CommandSets/<Model>.json) picks up its own forms.
+    %
+    % OUTPUT:
+    %   ok - false if the analyzer rejected any command here. The whole point
+    %        of checking at this boundary: this is where a newly added
+    %        instrument's dialect gets exercised for the first time, and an
+    %        unreported rejection means the sweep runs with a setting that was
+    %        never applied.
+    sa.clearErrors();
+    sa.scpi('rst');
+    sa.setSweepPoints(app.SweepPointsValueField.Value);
+    sa.setSpan(app.SpanValueField.Value * 1E6);
+    sa.setReferenceLevel(app.ReferenceLevelValueField.Value);
+    sa.setTraceFormat('REAL', 64);
+    sa.setByteOrder('SWAPped');
+
+    if app.StimulusDropDown.Value == "Modulated"
+        % Span for the Occupied Bandwidth measurement.
+        sa.setOBWSpan(app.SpanValueField.Value * 1E6);
+
+        % Trace averaging on trace 1, plus a max-hold trace 2.
+        sa.configureAveraging(true, 100);
+        sa.setTraceMode(2, 'MAXHold');
+    end
+
+    ok = sa.reportErrors("signal analyzer setup");
 end

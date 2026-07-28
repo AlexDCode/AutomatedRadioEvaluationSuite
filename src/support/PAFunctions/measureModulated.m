@@ -34,100 +34,65 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
     
     %% Configure the Signal Generator
     % Set the power of the signal generator.
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %g', inputRFPower));
+    % Driver method, not raw SCPI: the power command differs per model
+    % (the VXT has no ":SOURce1" node), so it must come from the instrument's
+    % CommandSets/<Model>.json dialect.
+    app.SignalGenerator.setPower(inputRFPower);
     waitForInstrument(app, app.SignalGenerator);
 
     %% Get the occupied bandwidth and channel power
+    % Driver methods, not raw SCPI: every analyzer command in this function is
+    % a registered entry in the command set, so CommandSets/<Model>.json can
+    % re-dialect it without editing the measurement.
     if ~isempty(app.OutputSignalAnalyzer)
-        writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:OBWidth'));
-        writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:OBWidth:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value));
-
-        % Wait until the input signal analyzer is ready.
-        writeline(app.OutputSignalAnalyzer, '*WAI');
-        waitForInstrument(app, app.OutputSignalAnalyzer);
-
-        writeline(app.OutputSignalAnalyzer, sprintf(':READ:OBWidth?'));
-        data = readbinblock(app.OutputSignalAnalyzer, 'double'); % Read binary data
-
-        outputOBW = data(1);
+        outputOBW = measureOBW_(app, app.OutputSignalAnalyzer);
     end
     if ~isempty(app.InputSignalAnalyzer)
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:OBWidth'))
-        writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:OBWidth:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value));
-
-        % Wait until the input signal analyzer is ready.
-        writeline(app.InputSignalAnalyzer, '*WAI');
-        waitForInstrument(app, app.InputSignalAnalyzer); 
-        
-        writeline(app.InputSignalAnalyzer, sprintf(':READ:OBWidth?'));
-        data = readbinblock(app.InputSignalAnalyzer, 'double');
-        inputOBW = data(1);
+        inputOBW = measureOBW_(app, app.InputSignalAnalyzer);
     else
         inputOBW = NaN;
     end
 
     %% Get the output RF Power Spectrum
-    writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:SANalyzer'));
-    writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value));
-    writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-    writeline(app.OutputSignalAnalyzer, ':INITiate:IMMediate');
+    startSpectrum_(app.OutputSignalAnalyzer, app.ReferenceLevelValueField.Value);
 
     % Trigger input RF Power Spectrum simultaneously
     if strcmp(calMode, 'In-Situ Couplers') & ~isempty(app.InputSignalAnalyzer)
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:SANalyzer'));
-        writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value));
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-        writeline(app.InputSignalAnalyzer, ':INITiate:IMMediate');
+        startSpectrum_(app.InputSignalAnalyzer, app.ReferenceLevelValueField.Value);
     end
 
     % Wait until the output signal analyzer is ready.
-    writeline(app.OutputSignalAnalyzer, '*WAI');
-    waitForInstrument(app, app.OutputSignalAnalyzer); 
+    app.OutputSignalAnalyzer.scpi('wai');
+    waitForInstrument(app, app.OutputSignalAnalyzer);
 
-    % Get center frequency, span, and sweep points to select measured frequency index 
-    fc = double(writeread(app.OutputSignalAnalyzer, sprintf(':FREQ:RF:CENT?')));
-    span = double(writeread(app.OutputSignalAnalyzer, sprintf(':FREQ:SPAN?')));
-    N = double(writeread(app.OutputSignalAnalyzer, sprintf(':SWE:POIN?')));
+    % Frequency axis, then the average (trace 1) and max-hold (trace 2) traces.
+    freqs    = app.OutputSignalAnalyzer.getFrequencyAxis();
+    avgPower = app.OutputSignalAnalyzer.readTraceNamed('TRACe1');
+    maxPower = app.OutputSignalAnalyzer.readTraceNamed('TRACe2');
 
-    % Generate frequency axis based on center frequency, span, and number of points.
-    freqs = linspace(fc - span/2, fc + span/2, N)';
-    
-    % Fetch the trace data.
-    writeline(app.OutputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe1'));
-    avgPower = readbinblock(app.OutputSignalAnalyzer, 'double');
-    writeline(app.OutputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe2'));
-    maxPower = readbinblock(app.OutputSignalAnalyzer, 'double');
-    
     % Create output power vs. frequency table
     MeasuredOutputRFPower = array2table([freqs, avgPower', maxPower'], 'VariableNames', {'Frequency','AveragePowerdBm', 'MaxPowerdBm'});
 
     % Clear the status register of the output signal analyzer.
-    writeline(app.OutputSignalAnalyzer, '*CLS');
+    app.OutputSignalAnalyzer.scpi('cls');
 
     %% Get the input RF power
     if strcmp(calMode, 'In-Situ Couplers')
         % Wait until the input signal analyzer is ready.
-        writeline(app.InputSignalAnalyzer, '*WAI');
-        waitForInstrument(app, app.InputSignalAnalyzer); 
+        app.InputSignalAnalyzer.scpi('wai');
+        waitForInstrument(app, app.InputSignalAnalyzer);
 
         % Fetch the trace data.
-        writeline(app.InputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe1'));
-        avgPower = readbinblock(app.InputSignalAnalyzer, 'double');
-        writeline(app.InputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe2'));
-        maxPower = readbinblock(app.InputSignalAnalyzer, 'double');
-        
-        % Get center frequency, span, and sweep points to select measured frequency index 
-        fc = double(writeread(app.InputSignalAnalyzer, sprintf(':FREQ:RF:CENT?')));
-        span = double(writeread(app.InputSignalAnalyzer, sprintf(':FREQ:SPAN?')));
-        N = double(writeread(app.InputSignalAnalyzer, sprintf(':SWE:POIN?')));
+        avgPower = app.InputSignalAnalyzer.readTraceNamed('TRACe1');
+        maxPower = app.InputSignalAnalyzer.readTraceNamed('TRACe2');
 
-        % Generate frequency axis based on center frequency, span, and number of points.
-        freqs = linspace(fc - span/2, fc + span/2, N)';
+        % Frequency axis from this analyzer's own centre/span/points.
+        freqs = app.InputSignalAnalyzer.getFrequencyAxis();
 
         MeasuredInputRFPower = array2table([freqs, avgPower', maxPower'], 'VariableNames', {'Frequency','AveragePowerdBm', 'MaxPowerdBm'});
 
         % Clear the status register of the input signal analyzer.
-        writeline(app.InputSignalAnalyzer, '*CLS');
+        app.InputSignalAnalyzer.scpi('cls');
     else
         % Use the signal generator configured power
         avgPower = inputRFPower.*ones(length(freqs),1)';
@@ -184,10 +149,12 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
             psu = app.PowerSupplyB;
         end
 
-        % Read Voltage from PSU.
-        DCVoltage = str2double(writeread(psu, sprintf(':MEASure:SCALar:VOLTage:DC? %s', deviceChannel)));
-        % Read Current from PSU
-        DCCurrent = str2double(writeread(psu, sprintf(':MEASure:SCALar:CURRent:DC? %s', deviceChannel)));
+        % Read Voltage and Current from the PSU through the driver, so the
+        % measurement forms come from CommandSets/<Model>.json rather than
+        % being hardcoded to the E36233A.
+        ch = PSUInstCtrl.channelNumber(deviceChannel);
+        DCVoltage = psu.measureVoltage(ch);
+        DCCurrent = psu.measureCurrent(ch);
         % Calculate DC Power.
         channelPower = DCVoltage * DCCurrent;
 
@@ -209,54 +176,85 @@ function [inputSpectrum, outputSpectrum, inputOBW, outputOBW, inputChannelPower,
     channelBW = app.ChannelBandwidthValueField.Value*1e6;
     
     % Confgigure the signal analyzer ACP mode
-    writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:ACP'));
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', channelBW)); % Carrier bandwidth
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:FREQuency:SPAN %d', app.SpanValueField.Value*1e6)); % Measurement span
-    writeline(app.OutputSignalAnalyzer, sprintf(':DISPlay:ACPower:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value)); % Reference Level
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', channelBW)); % Adjacent channel bandwidth
-    writeline(app.OutputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + channelBW)); % Adjacent channel offset
-        
+    configureACP_(app, app.OutputSignalAnalyzer, channelBW);
+
     if ~isempty(app.InputSignalAnalyzer)
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:ACP'));
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:MCPower:CARRier:LIST:BANDwidth:INTegration %d', channelBW)); % Carrier bandwidth
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:FREQuency:SPAN %d', app.SpanValueField.Value*1e6)); % Measurement span
-        writeline(app.InputSignalAnalyzer, sprintf(':DISPlay:ACPower:VIEW:WINDow:TRACe:Y:SCALe:RLEVel %d', app.ReferenceLevelValueField.Value)); % Reference Level
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:BANDwidth:INTegration %d', channelBW)); % Adjacent channel bandwidth
-        writeline(app.InputSignalAnalyzer, sprintf(':SENSe:ACPower:OFFSet:OUTer:LIST:FREQuency %d', app.ChannelOffsetValueField.Value*1e6 + channelBW)); % Adjacent channel offset
-        
+        configureACP_(app, app.InputSignalAnalyzer, channelBW);
+
         % Capture data
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-        writeline(app.InputSignalAnalyzer, ':INITiate:IMMediate');
+        app.InputSignalAnalyzer.setContinuous(false);
+        app.InputSignalAnalyzer.scpi('init_imm');
     end
 
     % Capture data
-    writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-    writeline(app.OutputSignalAnalyzer, ':INITiate:IMMediate');
-    
+    app.OutputSignalAnalyzer.setContinuous(false);
+    app.OutputSignalAnalyzer.scpi('init_imm');
+
     % Wait until the output signal analyzer is ready.
-    writeline(app.OutputSignalAnalyzer, '*WAI');
-    waitForInstrument(app, app.OutputSignalAnalyzer); 
-    
+    app.OutputSignalAnalyzer.scpi('wai');
+    waitForInstrument(app, app.OutputSignalAnalyzer);
+
     % Get the calibration factors at the center frequency and assume a
     % small bandwidth
     [inCal, outCal] = deembedPA(app, frequency, inputRFPower);
 
-    writeline(app.OutputSignalAnalyzer, sprintf(':READ:ACP?')); % Read ACPR data
-    data = readbinblock(app.OutputSignalAnalyzer, 'double');
+    data = app.OutputSignalAnalyzer.readACP();
     outputChannelPower = data(1) + outCal; % [dBm] Channel Power
     outputACPR = data(2:3);       % [dBc] Lower and Upper Adjacent Channel Power
 
     if ~isempty(app.InputSignalAnalyzer)
         % Wait until the output signal analyzer is ready.
-        writeline(app.InputSignalAnalyzer, '*WAI');
-        waitForInstrument(app, app.InputSignalAnalyzer); 
+        app.InputSignalAnalyzer.scpi('wai');
+        waitForInstrument(app, app.InputSignalAnalyzer);
 
-        writeline(app.InputSignalAnalyzer, sprintf(':READ:ACP?')); % Read ACPR data
-        data = readbinblock(app.InputSignalAnalyzer, 'double');
+        data = app.InputSignalAnalyzer.readACP();
         inputChannelPower = data(1) - inCal; % [dBm] Channel Power
         inputACPR = data(2:3);       % [dBc] Lower and Upper Adjacent Channel Power
     else
         inputChannelPower = inputRFPower;
         inputACPR = NaN;
     end
+end
+
+function obw = measureOBW_(app, sa)
+    %MEASUREOBW_  Select and read the Occupied Bandwidth measurement on one
+    % analyzer. Same command order the two inline copies used.
+    sa.selectOBW();
+    sa.setReferenceLevel(app.ReferenceLevelValueField.Value, "obw");
+
+    % Wait until the analyzer is ready.
+    sa.scpi('wai');
+    waitForInstrument(app, sa);
+
+    data = sa.readOBW();
+    obw  = data(1);
+end
+
+function startSpectrum_(sa, refLeveldBm)
+    %STARTSPECTRUM_  Select Swept SA, set the reference level, and trigger a
+    % single acquisition without blocking — the caller waits, so the output
+    % and input analyzers can be triggered back to back.
+    sa.selectSweptSA();
+    sa.setReferenceLevel(refLeveldBm);
+    sa.setContinuous(false);
+    sa.scpi('init_imm');
+end
+
+function configureACP_(app, sa, channelBWHz)
+    %CONFIGUREACP_  Select the ACP measurement and configure it, in the order
+    % ARES uses: carrier bandwidth, span, reference level, adjacent-channel
+    % bandwidth, adjacent-channel offset.
+    %
+    % The error check matters here specifically: these six commands are sent
+    % nowhere else, so the analyzer bring-up check in runPAMeasurement cannot
+    % catch a dialect problem in them. An unnoticed rejection here means every
+    % ACPR number in the run is measured with the wrong channel bandwidth or
+    % offset. It costs two extra commands per point on a healthy instrument.
+    sa.clearErrors();
+    sa.selectACP();
+    sa.configureACP(channelBWHz, ...
+        app.SpanValueField.Value * 1e6, ...
+        app.ReferenceLevelValueField.Value, ...
+        app.ChannelOffsetValueField.Value * 1e6 + channelBWHz);
+    sa.reportErrors("ACP setup");
 end

@@ -145,6 +145,32 @@ classdef PSUInstCtrl < SCPIInstrument
         end
     end
 
+    methods (Static)
+        function n = channelNumber(channel)
+            % CHANNELNUMBER  Normalise a channel designator to an index.
+            %
+            %   PSUInstCtrl.channelNumber('CH2')    -> 2
+            %   PSUInstCtrl.channelNumber('@1,2')   -> [1 2]
+            %   PSUInstCtrl.channelNumber(1)        -> 1
+            %
+            % ARES carries PSU channels around as the strings the E36233A
+            % uses in its own SCPI ('CH1') and in its channel lists ('@1,2'),
+            % while the driver API takes indices. This is the one place that
+            % conversion lives.
+            if isnumeric(channel)
+                n = double(channel);
+                return;
+            end
+            s = strtrim(string(channel));
+            tok = regexp(s, '\d+', 'match');
+            if isempty(tok)
+                error("PSUInstCtrl:BadChannel", ...
+                    "Cannot read a channel number from '%s'.", s);
+            end
+            n = str2double(tok);
+        end
+    end
+
     methods (Static, Access = private)
         function v = normalizeState_(state)
             if islogical(state) || isnumeric(state)

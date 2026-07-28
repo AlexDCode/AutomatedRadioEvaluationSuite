@@ -28,10 +28,14 @@ function setPSUChannels(app, deviceChannel, voltage, current)
             PSU = app.PowerSupplyB;
     end
 
-    % Convert voltage and current to strings if needed.
-    voltageStr = num2str(voltage);
-    currentStr = num2str(current);
-    
+    % Accept numeric or string inputs (the app passes both). Coerce to double
+    % before handing off to the driver, which formats the value itself —
+    % passing a char through would format its character codes, not its value.
+    if ~isnumeric(voltage), voltage = str2double(string(voltage)); end
+    if ~isnumeric(current), current = str2double(string(current)); end
+
     % Apply voltage and current values to the PSU channel.
-    writeline(PSU, sprintf(':APPLy %s,%s,%s', physicalChannel, voltageStr, currentStr));
+    % Driver method, not raw SCPI: the :APPLy form is E36233A-specific, so it
+    % belongs in CommandSets/<Model>.json rather than hardcoded here.
+    PSU.apply(PSUInstCtrl.channelNumber(physicalChannel), voltage, current);
 end

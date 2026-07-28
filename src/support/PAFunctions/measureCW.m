@@ -21,73 +21,33 @@ function [InputRFPower, OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPow
     
     %% Configure the Signal Generator
     % Set the power of the signal generator.
-    writeline(app.SignalGenerator, sprintf(':SOURce1:POWer:LEVel:IMMediate:AMPLitude %g', inputRFPower));
+    % Driver method, not raw SCPI: the power command differs per model
+    % (the VXT has no ":SOURce1" node), so it must come from the instrument's
+    % CommandSets/<Model>.json dialect.
+    app.SignalGenerator.setPower(inputRFPower);
     waitForInstrument(app, app.SignalGenerator);
 
     %% Get the input RF power
     if strcmp(calMode, 'In-Situ Couplers')
-        % Measure the input power with in-situ coupler
-        % Initiate the measurement process in the input signal analyzer.
-        writeline(app.InputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-        writeline(app.InputSignalAnalyzer, ':INITiate:IMMediate');
-    
-        % Wait until the input signal analyzer is ready.
-        writeline(app.InputSignalAnalyzer, '*WAI');
-        waitForInstrument(app, app.InputSignalAnalyzer); 
-    
-        % Get center frequency, span, and sweep points to select measured frequency index 
-        fc = double(writeread(app.InputSignalAnalyzer, sprintf(':FREQ:RF:CENT?')));
-        span = double(writeread(app.InputSignalAnalyzer, sprintf(':FREQ:SPAN?')));
-        N = double(writeread(app.InputSignalAnalyzer, sprintf(':SWE:POIN?')));
-    
-        % Generate frequency axis based on center frequency, span, and number of points.
-        freqs = linspace(fc - span/2, fc + span/2, N)';
-        
-        % Fetch the trace data.
-        writeline(app.InputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe1'));
-        trace_data = readbinblock(app.InputSignalAnalyzer, 'double');
-    
-        data = array2table([freqs, trace_data'], 'VariableNames', {'Freq','Pout'});
-        
-        % Extract output power at the specified frequency.
-        MeasuredInputRFPower = data(data.Freq==frequency, :).Pout;
-        
-        % Clear the status register of the input signal analyzer.
-        writeline(app.InputSignalAnalyzer, '*CLS');
-
+        % Measure the input power with in-situ coupler.
+        % measurePowerAt performs the same sequence this function used to
+        % inline (INIT:CONT 0, INIT:IMM, *WAI, OPC poll, centre/span/points,
+        % trace fetch, *CLS) and emits the same SCPI, but through the command
+        % registry so the analyzer's dialect governs it.
+        %
+        % NOTE: it selects the trace bin NEAREST the requested frequency and
+        % warns if that is more than one bin away. The inline version used an
+        % exact floating-point == match, which silently returned empty
+        % whenever the test frequency did not land precisely on the bin grid.
+        MeasuredInputRFPower = app.InputSignalAnalyzer.measurePowerAt(frequency);
     else
         % Use the signal generator configured power
         MeasuredInputRFPower = inputRFPower;
     end
 
     %% Get the output RF power
-    % Initiate the measurement process in the output signal analyzer.
-    writeline(app.OutputSignalAnalyzer, sprintf(':INITiate:CONTinuous %d', 0));
-    writeline(app.OutputSignalAnalyzer, ':INITiate:IMMediate');
-
-    % Wait until the output signal analyzer is ready.
-    writeline(app.OutputSignalAnalyzer, '*WAI');
-    waitForInstrument(app, app.OutputSignalAnalyzer); 
-
-    % Get center frequency, span, and sweep points to select measured frequency index 
-    fc = double(writeread(app.OutputSignalAnalyzer, sprintf(':FREQ:RF:CENT?')));
-    span = double(writeread(app.OutputSignalAnalyzer, sprintf(':FREQ:SPAN?')));
-    N = double(writeread(app.OutputSignalAnalyzer, sprintf(':SWE:POIN?')));
-
-    % Generate frequency axis based on center frequency, span, and number of points.
-    freqs = linspace(fc - span/2, fc + span/2, N)';
-    
-    % Fetch the trace data.
-    writeline(app.OutputSignalAnalyzer, sprintf(':TRACe:DATA? %s', 'TRACe1'));
-    trace_data = readbinblock(app.OutputSignalAnalyzer, 'double');
-
-    data = array2table([freqs, trace_data'], 'VariableNames', {'Freq','Pout'});
-    
-    % Extract output power at the specified frequency.
-    MeasuredOutputRFPower = data(data.Freq==frequency, :).Pout;
-
-    % Clear the status register of the output signal analyzer.
-    writeline(app.OutputSignalAnalyzer, '*CLS');
+    % Same single-shot acquisition + nearest-bin read as the input path above.
+    MeasuredOutputRFPower = app.OutputSignalAnalyzer.measurePowerAt(frequency);
 
     %% Correct the input and output power for the seleted calibration method
     % Apply de-embedding calibration based on user selected calibration mode.
@@ -124,10 +84,12 @@ function [InputRFPower, OutputRFPower, DCDrainCurrent, DCGateCurrent, DCDrainPow
             psu = app.PowerSupplyB;
         end
 
-        % Read Voltage from PSU.
-        DCVoltage = str2double(writeread(psu, sprintf(':MEASure:SCALar:VOLTage:DC? %s', deviceChannel)));
-        % Read Current from PSU
-        DCCurrent = str2double(writeread(psu, sprintf(':MEASure:SCALar:CURRent:DC? %s', deviceChannel)));
+        % Read Voltage and Current from the PSU through the driver, so the
+        % measurement forms come from CommandSets/<Model>.json rather than
+        % being hardcoded to the E36233A.
+        ch = PSUInstCtrl.channelNumber(deviceChannel);
+        DCVoltage = psu.measureVoltage(ch);
+        DCCurrent = psu.measureCurrent(ch);
         % Calculate DC Power.
         channelPower = DCVoltage * DCCurrent;
 
