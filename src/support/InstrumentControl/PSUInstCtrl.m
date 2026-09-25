@@ -6,22 +6,21 @@ classdef PSUInstCtrl < SCPIInstrument
     % Driver for the DC power supplies used in ARES power-amplifier
     % measurements (Keysight E36233A, dual-channel).
     %
-    % DIALECT CORRECTION vs. THE PROTOTYPE:
-    % The prototype emitted "VOLT <V>,(@ch)" / "MEAS:VOLT? (@ch)". ARES's
-    % E36233A path — validated on hardware — uses the :APPLy and
-    % :MEAS:SCAL:* forms (see legacy setPSUChannels.m / measureCW.m /
-    % enablePSUChannels.m). This class registers the hardware-validated
-    % forms as its defaults; other supplies can re-dialect via
+    % DIALECT:
+    % The registered defaults are the :APPLy and :MEAS:SCAL:* forms, which
+    % are the ones validated against the E36233A on hardware. Supplies that
+    % expect a different syntax, such as the "VOLT <V>,(@ch)" and
+    % "MEAS:VOLT? (@ch)" forms, can be re-dialected through
     % CommandSets/<Model>.json without touching this class.
     %
-    % SAFETY (bias sequencing):
+    % SAFETY:
     % PA devices are sequenced gate-before-drain on enable and
     % drain-before-gate on disable (so the FET is never drained without its
     % gate bias). That ordering logic lives in the measurement layer
     % (enablePSUChannels), which knows the gate/drain role of each logical
     % channel; this driver deliberately exposes only per-supply primitives.
     %
-    % TYPICAL USAGE:
+    % USAGE:
     %   psu = PSUInstCtrl("Keysight", "E36233A", addr);
     %   psu.connect();
     %   psu.apply(1, 28.0, 2.0);          % CH1: 28 V, 2 A limit

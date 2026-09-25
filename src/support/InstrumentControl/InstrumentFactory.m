@@ -4,9 +4,8 @@ classdef InstrumentFactory
     %
     % DESCRIPTION:
     % Data-driven construction of instrument controllers from the ARES
-    % instrument database (instrumentAddresses.csv). Realizes the paper's
-    % §VIII.A design: "adding support for new hardware becomes primarily a
-    % data-entry task."
+    % instrument database (instrumentAddresses.csv), so that supporting new
+    % hardware is primarily a data-entry task.
     %
     % CSV SCHEMA:
     %   Description, Address, Type[, Class]
@@ -22,12 +21,14 @@ classdef InstrumentFactory
     %   Class       - controller class to instantiate. If absent/empty it is
     %                 derived from Type via classForType().
     %
-    % Adding a new instrument to ARES is then:
-    %   1. one row in instrumentAddresses.csv
-    %   2. (only if its SCPI dialect differs) one JSON file in CommandSets/
-    % No MATLAB code changes.
+    % Adding a new instrument then takes no MATLAB code changes:
     %
-    % TYPICAL USAGE (App startup):
+    %   1. one row in instrumentAddresses.csv
+    %   2. one JSON file in CommandSets/, only if its SCPI dialect differs
+    %
+    % USAGE:
+    % At app startup:
+    %
     %   tbl = InstrumentFactory.readDatabase("instrumentAddresses.csv");
     %   vna = InstrumentFactory.createFromRow(tbl(contains(tbl.Description,"N5232B"),:));
     %   vna.connect();

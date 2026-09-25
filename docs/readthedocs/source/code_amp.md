@@ -34,9 +34,15 @@ This function calculates peak RF performance metrics from power amplifier (PA) m
 
 This function calculates the RF Gain, Drain Efficiency (DE), and Power Added Efficiency (PAE) based on the specified input and output RF power and the DC power supplied to the drain.
 
+```{admonition} Input Parameters
+:class: tip
+- inputRFPower    - Input RF power to the amplifier (in dBm).
+- outputRFPower   - Output RF power from the amplifier (in dBm).
+- DCDrainPower    - DC power supplied to the drain (in W).
+```
+
 ```{admonition} Output Parameters
 :class: tip
-- DCDrainPower    - DC power supplied to the drain (in W).
 - Gain            - RF Gain (dB).
 - DE              - Drain Efficiency (%).
 - PAE             - Power Added Efficiency (%).
@@ -165,11 +171,14 @@ This function measures the RF power, DC drain power, and DC gate power based on 
 ```{admonition} Input Parameters
 :class: tip
 - app            - The application object containing instrument configurations.
+- inputRFPower   - The input RF power to the signal generator (dBm).
 - frequency      - The test frequency for measurement.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
+- InputRFPower   - The corrected input RF power sent or mesured in-situ at the test frequency (dBm)
+- OutputRFPower  - The corrected output RF power measured at the test frequency (dBm).
 - DCDrainPower   - The DC power delivered to the drain (W).
 - DCGatePower    - The DC power delivered to the gate (W).
 ```
@@ -186,18 +195,24 @@ This function measures the RF power spectrum, DC drain power, and DC gate power 
 ```{admonition} Input Parameters
 :class: tip
 - app            - The application object containing instrument configurations.
+- inputRFPower   - The input RF power to the signal generator (dBm).
 - frequency      - The test frequency for measurement.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
+- inputSpectrum      - The corrected average and maximum input RF power sent or mesured in-situ at the test frequency (dBm)
+- outputSpectrum     - The corrected average and maximum output RF power measured at the test frequency (dBm).
+- inputOBW           - The input occupied bandwidth (Hz)
+- outputOBW          - The output occupied bandwidth (Hz)
+- inputChannelPower  - The input channel RMS power (dBm)
+- outputChannelPower - The output channel RMS power (dBm)
+- inputACPR          - The input adjacent channel power ratios [lower, upper] (dBc)
+- outputACPR         - The output adjacent channel power ratios [lower, upper] (dBc)
 - DCDrainCurrent     - The DC current delivered to the drain from each PSU (A)
 - DCGateCurrent      - The DC current delivered to the gate from each PSU (A)
 - DCDrainPower       - The DC power delivered to the drain (W).
 - DCGatePower        - The DC power delivered to the gate (W).
-- TODO:
-- The calibration for channel power measurements assumes a narrowband device where the losses of
-- the signal bandwidth can be approximated to the center frequency
 ```
 
 ---
@@ -262,12 +277,14 @@ This function plots results of modulated power amplifier (PA) measurements at a 
 ```{admonition} Output Parameters
 :class: tip
 - None
-- NOTES:
+```
+
+**Notes**
+
 - Clears existing axes before plotting.
 - Filters measurement data based on selected frequency and supply voltages.
 - Uses local helper function `assignACPRVariables` to standardize ACPR table column names.
 - Automatically adjusts legends and axis appearance using `improveAxesAppearance`.
-```
 
 ---
 
@@ -362,7 +379,7 @@ This function resets all power supply unit (PSU) channels to their default setti
 
 **Description:**
 
-This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes: TODO:
+This function performs a full RF Power Amplifier (PA) measurement sweep. On error, the instruments are safely turned off, and the error message is displayed in the app and logged to the user path. The function process includes:
 
 - Generating test parameter combinations and initializing the output results table.
 - Configuring the signal analyzer and initializing the measurement loop.
@@ -375,7 +392,6 @@ This function performs a full RF Power Amplifier (PA) measurement sweep. On erro
   - Stores results in a structured table
 - Providing a progress UI dialog with estimated time updates.
 - Saving the results and loading them back into the application.
-- Verify if gate PSU data is saved to results table in individual PSU channel columns
 
 ```{admonition} Input Parameters
 :class: tip

@@ -8,10 +8,11 @@ classdef TcpTransport < ITransport
     % VISA — in ARES that is the ETS-Lindgren EMCenter linear slider
     % (192.168.0.100:1206, "TCPIP::...::1206::SOCKET" in the instrument CSV).
     %
-    % Folding the slider onto the same transport interface as the VISA
-    % instruments means the EmCenterSlider driver gains, for free:
+    % Sharing the transport interface with the VISA instruments gives the
+    % EmCenterSlider driver:
+    %
     %   - simulation support (back it with a SimTransport instead)
-    %   - the corrected close/cleanup semantics (no leaked sockets)
+    %   - the same close and cleanup semantics, with no leaked sockets
     %   - uniform error behavior with every other instrument
     %
     % USAGE:

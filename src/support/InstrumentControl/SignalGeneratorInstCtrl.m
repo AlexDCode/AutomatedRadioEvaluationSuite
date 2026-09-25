@@ -4,22 +4,20 @@ classdef SignalGeneratorInstCtrl < SCPIInstrument
     %
     % DESCRIPTION:
     % Driver for the RF signal generators used in ARES power-amplifier
-    % measurements (Rohde & Schwarz SMW200A; HP/Agilent E4433B for legacy
-    % GPIB setups). Concrete controller that was missing from the prototype
-    % framework.
+    % measurements (Rohde & Schwarz SMW200A, and HP/Agilent E4433B for GPIB
+    % setups).
     %
-    % Absorbs the generator SCPI currently embedded in
-    % support/PAFunctions/measureCW.m, measureModulated.m, and
-    % runPAMeasurement.m: CW power/frequency, RF output enable, and the
-    % digital-modulation (ARB) bring-up sequence.
+    % It owns the generator SCPI used by the PA measurement path: CW power
+    % and frequency, RF output enable, and the digital-modulation (ARB)
+    % bring-up sequence.
     %
     % SAFETY:
-    % safeShutdown() reproduces the ARES safe-state idiom (power to -135 dBm
-    % AND RF output off) used before/after every PA sweep and in every error
-    % path. Keeping it as one named method means no error handler can forget
-    % half of the sequence.
+    % safeShutdown() applies the safe state used before and after every PA
+    % sweep and in every error path: power to -135 dBm and RF output off.
+    % Keeping it as one named method means no error handler can forget half
+    % of the sequence.
     %
-    % TYPICAL USAGE:
+    % USAGE:
     %   sg = SignalGeneratorInstCtrl("Rohde & Schwarz", "SMW200A", addr);
     %   sg.connect();
     %   sg.setFrequencyCW(3.5e9);

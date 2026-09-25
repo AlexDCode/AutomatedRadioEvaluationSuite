@@ -7,21 +7,20 @@ function inst = aresInstrument(handle, role)
     % whether the app currently stores it as a RAW handle (visadev/tcpclient)
     % or already as a framework driver object.
     %
-    % This is the linchpin of the incremental migration. A measurement
-    % function can do:
+    % A measurement function can write:
     %
     %     vna = aresInstrument(app.VNA, "VNA");
     %     [sdB, sPh, f] = vna.measureSParameters(smoothing);
     %
-    % and it works:
-    %   - BEFORE ARES.mlapp is migrated: app.VNA is a raw visadev, so this
-    %     wraps it in a non-owning HandleTransport (the app keeps owning the
-    %     connection) and returns a VNAInstCtrl.
-    %   - AFTER ARES.mlapp is migrated: app.VNA is already a VNAInstCtrl, so
-    %     this returns it unchanged (idempotent).
+    % and it works either way:
     %
-    % Either way the app keeps working and nothing double-opens or
-    % double-closes the underlying connection.
+    %   - If app.VNA is a raw visadev, this wraps it in a non-owning
+    %     HandleTransport, leaving the app owning the connection, and
+    %     returns a VNAInstCtrl.
+    %   - If app.VNA is already a VNAInstCtrl, this returns it unchanged,
+    %     so the call is idempotent.
+    %
+    % Nothing double-opens or double-closes the underlying connection.
     %
     % INPUT:
     %   handle - a raw visadev/tcpclient OR an existing framework driver

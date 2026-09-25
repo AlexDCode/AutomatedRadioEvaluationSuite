@@ -7,20 +7,14 @@ function inst = aresConnectInstrument(instrumentName, resource)
     % instrument, given the app's instrument property name and its VISA/socket
     % resource string.
     %
-    % This is the drop-in replacement for the legacy two lines in the ARES.mlapp
-    % connect callback:
-    %
-    %     app.(instrumentName) = visadev(instrumentResource);
-    %     app.(instrumentName).ByteOrder = 'little-endian';
-    %
-    % which become, after migration, simply:
+    % It is the single call the app's connect callback needs:
     %
     %     app.(instrumentName) = aresConnectInstrument(instrumentName, instrumentResource);
     %
-    % Every subsequent legacy call in the app and support functions
-    % (writeline/writeread/readbinblock/flush on app.(name)) keeps working
-    % because the returned drivers expose those as methods; new code can use
-    % the high-level driver methods instead.
+    % Calls written against the raw handle API (writeline, writeread,
+    % readbinblock and flush on app.(name)) keep working, because the
+    % returned drivers expose those as methods. New code can use the
+    % high-level driver methods instead.
     %
     % INPUT:
     %   instrumentName - app property name: "VNA", "SignalGenerator",

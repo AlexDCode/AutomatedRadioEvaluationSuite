@@ -6,15 +6,13 @@ classdef SignalAnalyzerInstCtrl < SCPIInstrument
     % Driver for the signal/spectrum analyzers used in ARES power-amplifier
     % measurements (Keysight N9000B CXA). ARES uses one as the output
     % analyzer and, in "In-Situ Couplers" calibration mode, a second as the
-    % input analyzer. Concrete controller that was missing from the
-    % prototype framework.
+    % input analyzer.
     %
-    % Absorbs the analyzer SCPI from support/PAFunctions/measureCW.m,
-    % measureModulated.m, and runPAMeasurement.m: single-shot acquisition,
-    % frequency-axis reconstruction from center/span/points, and
-    % binary-block trace fetches.
+    % It owns the analyzer SCPI used by the PA measurement path: single-shot
+    % acquisition, frequency-axis reconstruction from center, span and
+    % points, and binary-block trace fetches.
     %
-    % TYPICAL USAGE:
+    % USAGE:
     %   sa = SignalAnalyzerInstCtrl("Keysight", "N9000B", addr);
     %   sa.connect();
     %   sa.setCenterFrequency(3.5e9);

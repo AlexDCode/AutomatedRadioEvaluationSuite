@@ -4,27 +4,25 @@ classdef VNAInstCtrl < SCPIInstrument
     %
     % DESCRIPTION:
     % Driver for the vector network analyzers used in ARES antenna
-    % measurements (Keysight N5232B PNA-L, Agilent E5072A ENA). This is the
-    % concrete VNA controller that was missing from the prototype framework
-    % (only the TemplateInstCtrl placeholder existed).
+    % measurements (Keysight N5232B PNA-L, Agilent E5072A ENA).
     %
-    % It absorbs all VNA SCPI from the legacy
-    % support/AntennaFunctions/measureSParameters.m, including the
-    % binary-block trace transfers that the prototype base class could not
-    % perform.
+    % It owns all VNA SCPI used by the antenna measurement path, including
+    % the binary-block trace transfers that carry the S-parameter data.
     %
     % DIALECT:
-    % Default registered commands use the Keysight PNA/ENA syntax that ARES
-    % currently runs on hardware. A different VNA model can re-dialect any
-    % of them by dropping CommandSets/<Model>.json next to the framework —
-    % no edits to this class (see SCPIInstrument header, feature 3).
+    % The registered defaults use the Keysight PNA/ENA syntax that ARES runs
+    % on hardware. A different VNA model can re-dialect any of them by
+    % dropping CommandSets/<Model>.json next to the framework, with no edits
+    % to this class.
     %
-    % ASSUMED TRACE LAYOUT (matches the legacy ARES VNA state file):
+    % TRACE LAYOUT:
+    % The default layout expected on the instrument:
+    %
     %   trace 1: S11 mag   trace 2: S11 phase
     %   trace 3: S21 mag   trace 4: S21 phase
     %   trace 5: S22 mag   trace 6: S22 phase
     %
-    % TYPICAL USAGE:
+    % USAGE:
     %   vna = VNAInstCtrl("Keysight", "N5232B", "TCPIP0::...::inst0::INSTR");
     %   vna.connect();
     %   [sdB, sPhase, freqs] = vna.measureSParameters(smoothingPoints);

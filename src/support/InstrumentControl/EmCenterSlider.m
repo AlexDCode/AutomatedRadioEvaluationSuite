@@ -8,25 +8,19 @@ classdef EmCenterSlider < handle
     % so the slider is connected once at app startup and reused for every
     % move — no reconnect churn per call.
     %
-    % This is the paper's prototype folded onto the shared ITransport
-    % seam and merged with the hardened standalone slider work already in
-    % ARES (support/AntennaFunctions/setLinearSlider.m / homeLinearSlider.m):
-    %
-    %   - TRANSPORT-BACKED. I/O goes through TcpTransport, so the slider is
+    % BEHAVIOR:
+    %   - Transport-backed. I/O goes through TcpTransport, so the slider is
     %     simulatable by injecting a SimTransport ("Transport" name-value).
-    %     Functionality on real hardware is unchanged: same commands, same
-    %     line protocol, same socket.
-    %   - MOVE TIMEOUT. Blocking moves abort with AXIS:STOP and a clear
-    %     error after TimeoutSec (default 120 s — full-rail at slowest
-    %     preset takes ~90 s). The prototype could poll forever.
-    %   - FAULT CHECKING. home() checks AXIS:ERR? before and after the
-    %     procedure; getError() translates fault codes to readable text.
-    %   - HOME WAITS CORRECTLY. The wait loop polls *OPC? and sends nothing
-    %     else (the legacy script's mid-home AXIS:ZERO corrupted state).
-    %   - POSITION TOLERANCE. "Already at target" uses a 0.5 cm tolerance,
-    %     not exact float equality.
-    %   - FIXED CLEANUP. Disconnect releases the socket via the transport
-    %     (the prototype's `clear obj.Client` was a no-op leak).
+    %   - Move timeout. Blocking moves abort with AXIS:STOP and a clear error
+    %     after TimeoutSec, default 120 s, since a full-rail move at the
+    %     slowest preset takes about 90 s.
+    %   - Fault checking. home() checks AXIS:ERR? before and after the
+    %     procedure, and getError() translates fault codes to readable text.
+    %   - Homing. The wait loop polls *OPC? and sends nothing else, because
+    %     sending AXIS:ZERO mid-home corrupts the position reference.
+    %   - Position tolerance. "Already at target" uses a 0.5 cm tolerance
+    %     rather than exact float equality.
+    %   - Cleanup. disconnect() releases the socket through the transport.
     %
     % COORDINATE FRAMES:
     %   Device:   centimeters along the rail, as reported by AXIS:CP?.
@@ -35,7 +29,7 @@ classdef EmCenterSlider < handle
     %   Offset_m defaults to 0.8062 m (Purdue chamber geometry, formerly
     %   hard-coded in ARES.mlapp).
     %
-    % TYPICAL USAGE:
+    % USAGE:
     %   s = EmCenterSlider("192.168.0.100", 1206, 1);
     %   s.setSpeedPreset(4);
     %   s.moveTo(120);                      % device cm, blocks until done

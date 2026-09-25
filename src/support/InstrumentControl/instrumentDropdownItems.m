@@ -20,7 +20,9 @@ function items = instrumentDropdownItems(dataTable, type)
     % OUTPUT:
     %   items - cellstr, e.g. {'NA: None'; 'Keysight Technologies N5232B: TCPIP0::...'}
     %
-    % USAGE (in the app's loadInstrumentAddressestoApp):
+    % USAGE:
+    % In the app's loadInstrumentAddressestoApp:
+    %
     %   app.VNADropDown.Items = instrumentDropdownItems(dataTable, "VNA");
 
     if nargin < 2, type = ""; end

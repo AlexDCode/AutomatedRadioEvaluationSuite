@@ -7,16 +7,17 @@ classdef HandleTransport < ITransport
     % (a visadev or tcpclient) that is owned by someone else — typically the
     % ARES app, which stores raw handles in app.VNA, app.EMCenter, etc.
     %
-    % This is the bridge that lets the migration happen incrementally without
-    % touching ARES.mlapp first: a measurement function can wrap app.VNA in a
-    % driver (via aresInstrument) and call high-level OO methods, while the
-    % app keeps owning and closing the underlying handle exactly as before.
+    % It lets a measurement function wrap a handle the app already holds (via
+    % aresInstrument) and call high-level driver methods on it, while the app
+    % keeps owning and closing the underlying handle exactly as before.
     %
-    % KEY PROPERTY: it does NOT own the handle. open() and close() are no-ops
-    % so wrapping/unwrapping never opens or closes the app's connection. Only
-    % the app (or whatever created the handle) is responsible for its life.
+    % NOTES:
+    % This transport does not own the handle. open() and close() are no-ops,
+    % so wrapping or unwrapping never opens or closes the app's connection.
+    % Whatever created the handle stays responsible for its lifetime.
     %
-    % USAGE (normally via aresInstrument, not directly):
+    % USAGE:
+    % Normally reached through aresInstrument rather than constructed here:
     %   t   = HandleTransport(app.VNA);     % app.VNA is a live visadev
     %   vna = VNAInstCtrl("auto","auto","wrapped","Transport",t);
     %   vna.connect();                      % open() is a no-op; just *IDN?

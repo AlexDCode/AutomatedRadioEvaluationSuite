@@ -3,18 +3,15 @@ classdef SimTransport < ITransport
     % SimTransport
     %
     % DESCRIPTION:
-    % ITransport implementation with NO hardware behind it. Realizes the
-    % paper's goal of "simulated instruments, bypassing VISA drivers when
-    % virtually testing and debugging new features."
+    % ITransport implementation with no hardware behind it, used to test and
+    % debug measurement code without a bench.
     %
-    % Unlike the prototype's `Simulate` flag (which returned a fixed
-    % "SIM-RESPONSE" for everything), this transport is behavioral enough to
-    % run real ARES code paths headless:
+    % Responses are behavioral rather than fixed, so real ARES code paths run
+    % to completion headless:
     %
-    %   1. Every command written is appended to CommandLog. This enables the
-    %      regression strategy from paper §VII.B: run a measurement against
-    %      SimTransport and diff the generated SCPI sequence against a
-    %      known-good log captured from real hardware.
+    %   1. Every command written is appended to CommandLog. A measurement can
+    %      be run against SimTransport and the generated SCPI sequence diffed
+    %      against a known-good log captured from real hardware.
     %
     %   2. Responses are resolved in priority order:
     %        a. ResponseMap  - exact-match table you preload for the device

@@ -7,19 +7,19 @@ classdef (Abstract) ITransport < handle
     % seam that separates "what command to send" (driver classes) from "how
     % bytes move" (VISA, raw TCP, or simulation).
     %
-    % Why this exists (paper goal: "bypassing VISA drivers when virtually
-    % testing"): by programming every driver against this interface instead
-    % of against visadev/tcpclient directly, any instrument can be backed by:
+    % Every driver is written against this interface rather than against
+    % visadev or tcpclient directly, so any instrument can be backed by:
     %
     %   VisaTransport - real hardware over VISA (GPIB / LAN / USB)
     %   TcpTransport  - real hardware over a raw TCP socket (EMCenter slider)
-    %   SimTransport  - no hardware at all; scripted/synthetic responses
+    %   SimTransport  - no hardware at all; scripted or synthetic responses
     %
-    % Swapping a transport requires zero changes to driver or measurement
-    % code. Simulation stops being an `if obj.Simulate` special case inside
-    % every method and becomes just another transport implementation.
+    % Swapping a transport requires no changes to driver or measurement code,
+    % which makes simulation another transport rather than a special case
+    % inside every method.
     %
-    % CONTRACT (all concrete transports must implement):
+    % CONTRACT:
+    % Every concrete transport must implement:
     %   open()                  - establish the link (idempotent)
     %   close()                 - release the link and the underlying handle
     %   writeLine(cmd)          - send one terminated ASCII command
@@ -30,7 +30,9 @@ classdef (Abstract) ITransport < handle
     %   flush()                 - discard any unread input
     %   tf = isOpen()           - true if the link is currently usable
     %
-    % PROVIDED (concrete convenience methods built on the contract):
+    % PROVIDED METHODS:
+    % Built on the contract above, available to every transport:
+    %
     %   s = writeRead(cmd)      - writeLine followed by readLine
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

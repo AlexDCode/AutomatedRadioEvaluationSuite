@@ -62,12 +62,14 @@ This function adds a right-click (context) menu to one or more line objects **an
 ```{admonition} Output Parameters
 :class: tip
 - None
-- NOTES:
+```
+
+**Notes**
+
 - Supports multiple line handles and automatically links each line to its corresponding legend item.
 - Uses `EntryContainer.Children` to access legend items (MATLAB R2017b+ syntax).
 - Throws an error if a valid line handle is not provided.
 - Finds the parent figure of each line to attach the context menu.
-```
 
 ---
 
@@ -91,11 +93,13 @@ This function adds a right-click (context) menu to one or more line objects in a
 ```{admonition} Output Parameters
 :class: tip
 - None
-- NOTES:
+```
+
+**Notes**
+
 - Throws an error if no valid line handle is provided.
 - Automatically finds the parent figure of each line to attach the context menu.
 - Supports multiple line handles at once.
-```
 
 ---
 
@@ -195,16 +199,22 @@ This function enables interactive toggling of plot visibility through the figure
 ```{admonition} Output Parameters
 :class: tip
 - None
-- USAGE:
-- figure;
-- plot(x, y1, 'LineWidth', 2); hold on;
-- plot(x, y2, 'LineWidth', 2);
-- lgd = legend('Trace 1', 'Trace 2');
-- enableLegendToggle(lgd);
-- NOTES:
+```
+
+**Usage**
+
+```matlab
+figure;
+plot(x, y1, 'LineWidth', 2); hold on;
+plot(x, y2, 'LineWidth', 2);
+lgd = legend('Trace 1', 'Trace 2');
+enableLegendToggle(lgd);
+```
+
+**Notes**
+
 - Requires MATLAB R2016a or newer (support for `ItemHitFcn`).
 - Works with lines, patches, and most common plot objects.
-```
 
 ---
 
@@ -213,7 +223,7 @@ This function enables interactive toggling of plot visibility through the figure
 
 **Description:**
 
-Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows. Example usage:
+Extracts documentation from .m files within a given folder and writes it to a Markdown file. Designed to support ReadTheDocs/Sphinx workflows. Example usage: A section heading is a whole comment line of capitals, with an optional parenthetical, ending in a colon: "INPUT:", "TYPICAL USAGE:", "CONTRACT (all concrete transports must implement):". Requiring the colon to end the line is what keeps SCPI such as FORM:DATA or SYST:ERR? from being read as a heading. DESCRIPTION, INPUT and OUTPUT are rendered as the description paragraph and the two parameter admonitions. Any other heading becomes its own labelled block, so a class that documents a CONTRACT or a SAFETY note keeps that structure instead of having it flattened into the description. USAGE and EXAMPLE blocks are rendered as MATLAB code fences. TODO sections are skipped here because extractTODOs gives them their own page.
 
 - extractDocs('./src/support/AntennaFunctions/', './docs/readthedocs/source/code_antenna.md', 'Antenna Functions')
 - extractDocs('./src/support/PAFunctions/', './docs/readthedocs/source/code_amp.md', 'Power Amplifier Functions')
@@ -252,8 +262,7 @@ Extracts TODO comments from .m files within a given folder and writes it to a Ma
 
 ```{admonition} Output Parameters
 :class: tip
-- None
-- extractTODOs.m: IGNORE
+- None extractTODOs.m: IGNORE
 ```
 
 ---
@@ -268,8 +277,7 @@ This function improves the appearance of UIAxes in MATLAB App Designer. It suppo
 ```{admonition} Input Parameters
 :class: tip
 - axesObj        - Handle to the UIAxes object.
-- 'YYAxis'       - Logical (true/false), if the plot uses yyaxis.
-- 'LineThickness'- Scalar > 0, sets line thickness for plotted lines.
+- 'YYAxis'       - Logical (true/false), if the plot uses yyaxis. 'LineThickness'- Scalar > 0, sets line thickness for plotted lines.
 ```
 
 ```{admonition} Output Parameters
@@ -334,15 +342,11 @@ Processes Power Amplifier (PA) measurement data by storing it in the app, extrac
 
 ```{admonition} Output Parameters
 :class: tip
-- combinedData - Same as input, returned for consistency.
-- Notes:
+- combinedData - Same as input, returned for consistency. Notes:
 - Updates app.PA_DataTable with the provided data.
 - Extracts PSU channel numbers and corresponding voltage values from variable names.
 - Initializes and updates dropdown selections in the UI.
-- Determines PA measurement mode using detectPAMeasurementType and calls the appropriate plotting functions:
-- * "CW"        → plotPASingleMeasurement, plotPASweepMeasurement, plotPADCMeasurement
-- * "Modulated" → plotPAModulatedMeasurement, plotPADCMeasurement
-- * "Unknown"   → Displays error message in UI.
+- Determines PA measurement mode using detectPAMeasurementType and calls the appropriate plotting functions: * "CW"        → plotPASingleMeasurement, plotPASweepMeasurement, plotPADCMeasurement * "Modulated" → plotPAModulatedMeasurement, plotPADCMeasurement * "Unknown"   → Displays error message in UI.
 ```
 
 ---
@@ -395,28 +399,30 @@ This function reconstructs a MATLAB table from a string formatted by the `tableT
 
 ```{admonition} Input Parameters
 :class: tip
-- str - A character array or string scalar representing table data in the format:
-- {col11;col12;...;col1M}{col21;col22;...;col2M}...{colN1;colN2;...;colNM}
-- where N is the number of rows and M is the number of columns.
+- str - A character array or string scalar representing table data in the format: {col11;col12;...;col1M}{col21;col22;...;col2M}...{colN1;colN2;...;colNM} where N is the number of rows and M is the number of columns.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- T   - A MATLAB table reconstructed from the input string. Column names are automatically assigned as
-- 'Col1', 'Col2', ..., 'ColM'. Data types are automatically detected and converted to numeric if all
-- values are numeric; otherwise, data is returned as text.
-- EXAMPLE:
-- s = '{1;3;A}{2;4;B}';
-- T = string2table(s);
-- T =
-- Col1    Col2    Col3
-- 1       3       'A'
-- 2       4       'B'
-- NOTES:
+- T   - A MATLAB table reconstructed from the input string. Column names are automatically assigned as 'Col1', 'Col2', ..., 'ColM'. Data types are automatically detected and converted to numeric if all values are numeric; otherwise, data is returned as text.
+```
+
+**Example**
+
+```matlab
+s = '{1;3;A}{2;4;B}';
+T = string2table(s);
+T =
+  Col1    Col2    Col3
+   1       3       'A'
+   2       4       'B'
+```
+
+**Notes**
+
 - The function does not preserve original variable names (can be extended if needed).
 - Handles arbitrary table sizes.
 - Optimized for performance using regular expressions and vectorized operations.
-```
 
 ---
 
@@ -429,24 +435,27 @@ This function converts a MATLAB table of any size (N-by-M) into a single formatt
 
 ```{admonition} Input Parameters
 :class: tip
-- T  - MATLAB table of size N-by-M containing numeric, string, or mixed data types. There is no restriction
-- on the number of rows (N) or columns (M).
+- T  - MATLAB table of size N-by-M containing numeric, string, or mixed data types. There is no restriction on the number of rows (N) or columns (M).
 ```
 
 ```{admonition} Output Parameters
 :class: tip
-- str - A single string representing the entire table. Each row of the table is formatted as:
-- {col1;col2;col3;...;colM}, and all rows are concatenated together as:
-- {row1}{row2}{row3}...{rowN}
-- EXAMPLE:
-- T = table([1;2], [3;4], {'A';'B'}, 'VariableNames', {'X','Y','Z'});
-- s = tableToString(T);
-- s = '{1;3;A}{2;4;B}'
-- NOTES:
+- str - A single string representing the entire table. Each row of the table is formatted as: {col1;col2;col3;...;colM}, and all rows are concatenated together as: {row1}{row2}{row3}...{rowN}
+```
+
+**Example**
+
+```matlab
+T = table([1;2], [3;4], {'A';'B'}, 'VariableNames', {'X','Y','Z'});
+s = tableToString(T);
+s = '{1;3;A}{2;4;B}'
+```
+
+**Notes**
+
 - Handles arbitrary table sizes.
 - Preserves original data as strings.
-- Optimized for speed using columnwise and vectorized operations.
-```
+- Optimized for speed using column-wise and vectorized operations.
 
 ---
 

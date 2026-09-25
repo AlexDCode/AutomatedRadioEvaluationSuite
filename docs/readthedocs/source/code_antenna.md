@@ -115,22 +115,18 @@ Homes the EMCenter linear slider. Bench/operator convenience wrapper: opens its 
 ```{admonition} Output Parameters
 :class: tip
 - None
-- ERRORS:
+```
+
+**Errors**
+
 - Throws an error (does NOT silently ignore) if:
 - The device reports a fault code before homing  (EmCenterSlider:PreHomeFault)
 - Homing does not complete within the timeout    (EmCenterSlider:HomeTimeout)
 - The device reports a fault code after homing   (EmCenterSlider:PostHomeFault)
-- RECOVERY (slider stuck at a hardware limit):
-- If the slider has tripped a hardware limit and HOME fails, run the following
-- sequence manually before calling this function again:
-- s = EmCenterSlider();            % 192.168.0.100:1206, axis 1
-- s.writeline('AXIS1:CR');         % disable soft limits
-- s.writeline('AXIS1:CC');         % jog backwards (away from limit)
-- s.writeline('AXIS1:ST');         % stop when clear of limit
-- s.writeline('AXIS1:NCR');        % re-enable soft limits
-- delete(s);
-- Then call homeLinearSlider() normally.
-```
+
+**Recovery (slider stuck at a hardware limit)**
+
+- If the slider has tripped a hardware limit and HOME fails, run the following sequence manually before calling this function again: s = EmCenterSlider();            % 192.168.0.100:1206, axis 1 s.writeline('AXIS1:CR');         % disable soft limits s.writeline('AXIS1:CC');         % jog backwards (away from limit) s.writeline('AXIS1:ST');         % stop when clear of limit s.writeline('AXIS1:NCR');        % re-enable soft limits delete(s); Then call homeLinearSlider() normally.
 
 ---
 
@@ -305,12 +301,14 @@ Moves the EMCenter linear slider to a target position at the requested speed pre
 ```{admonition} Output Parameters
 :class: tip
 - None
-- ERRORS:
+```
+
+**Errors**
+
 - Throws an error (does NOT silently ignore) if:
 - speedPreset is outside [1, 8]
 - targetPosition is outside the mechanical limits  (EmCenterSlider:TargetOutOfRange)
 - Motion does not complete within the timeout      (EmCenterSlider:MoveTimeout)
-```
 
 ---
 

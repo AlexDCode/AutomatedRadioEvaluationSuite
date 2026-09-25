@@ -12,19 +12,13 @@ classdef AntennaPositioner < handle
     %   pos.moveTo(theta, phi);
     %   pos.waitUntilStill();
     %
-    % Adapted from paper's prototype with two integration changes:
-    %
-    %   1. CANCEL SUPPORT. waitUntilStill accepts a CancelFcn. ARES lets the
-    %      operator stop a sweep from the progress dialog
-    %      (d.CancelRequested in runAntennaMeasurement.m); the wait loop
-    %      polls that function and stops both axes if it returns true.
-    %
-    %   2. SIMPLIFIED CONSTRUCTOR. An arguments block replaces the
-    %      positional/name-value juggling in the prototype.
-    %
-    % The underlying EMCenter object must expose scpi() — i.e. be a
-    % SCPIInstrument (or subclass). Because SCPIInstrument is
-    % transport-backed, this positioner is automatically simulatable.
+    % NOTES:
+    %   - waitUntilStill accepts a CancelFcn so an operator can stop a sweep
+    %     from the progress dialog. The wait loop polls that function and
+    %     stops both axes if it returns true.
+    %   - The underlying EMCenter object must expose scpi(), meaning it is a
+    %     SCPIInstrument or a subclass. Because SCPIInstrument is
+    %     transport-backed, this positioner is simulatable without changes.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties

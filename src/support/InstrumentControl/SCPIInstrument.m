@@ -3,40 +3,33 @@ classdef SCPIInstrument < handle
     % SCPIInstrument
     %
     % DESCRIPTION:
-    % Base class for all ARES SCPI instruments. Adapted from "Object-Oriented
-    % MATLAB Framework for Instrument Control Within the ARES Platform")
-    % with the changes required for integration into the production ARES App:
+    % Base class for all ARES SCPI instruments. It owns the command registry,
+    % the transport, and the shared connect/query/error handling that every
+    % driver builds on.
     %
-    %   1. TRANSPORT SEAM. I/O goes through an ITransport (VisaTransport,
-    %      TcpTransport, or SimTransport) instead of a hardwired visadev.
-    %      Simulation is now "just another transport" rather than an
-    %      if-Simulate branch in every method.
+    % BEHAVIOR:
+    %   - Transport seam. I/O goes through an ITransport (VisaTransport,
+    %     TcpTransport, or SimTransport) instead of a hardwired visadev, so
+    %     simulation is another transport rather than an if-Simulate branch
+    %     in every method.
+    %   - Binary-block transfers. The command registry and the scpi()
+    %     dispatcher understand `read: "binblock:double"` specs, and
+    %     queryBinary() exposes raw binary reads. These are required for VNA
+    %     and signal-analyzer trace transfers.
+    %   - JSON command dialects. On construction the class auto-loads
+    %     CommandSets/<Model>.json, next to this file, if it exists. Adding
+    %     support for a new instrument model is therefore a data-entry task:
+    %     drop in a JSON file, with no class edits.
+    %   - Compatibility shims. writeline(obj,cmd), readline(obj),
+    %     writeread(obj,cmd), readbinblock(obj,type) and flush(obj) are
+    %     provided as methods. MATLAB dispatches function-call syntax to
+    %     methods, so a helper written as
+    %        writeline(app.VNA, 'SENS1:SWE:MODE SING')
+    %     keeps working when app.VNA becomes a driver object.
+    %   - Disconnect releases the connection through the transport, rather
+    %     than leaking it.
     %
-    %   2. BINARY-BLOCK TRANSFERS. The command registry and scpi() dispatcher
-    %      understand `read: "binblock:double"` specs, and queryBinary()
-    %      exposes raw binary reads. Required for VNA / signal-analyzer
-    %      trace transfers (legacy readbinblock usage) — without this no
-    %      VNA could be migrated.
-    %
-    %   3. JSON COMMAND DIALECTS. On construction, the class auto-loads
-    %      CommandSets/<Model>.json (next to this file) if it exists. Adding
-    %      support for a new instrument model is therefore a data-entry task:
-    %      drop a JSON file, no class edits ("drop-in support of new
-    %      instrument command sets without invasive code changes").
-    %
-    %   4. LEGACY COMPATIBILITY SHIMS. writeline(obj,cmd), readline(obj),
-    %      writeread(obj,cmd), readbinblock(obj,type), and flush(obj) are
-    %      provided as methods. MATLAB dispatches function-call syntax to
-    %      methods, so existing ARES helper functions like
-    %         writeline(app.VNA, 'SENS1:SWE:MODE SING')
-    %      keep working unchanged when app.VNA becomes a driver object.
-    %      This is the staged-migration mechanism from paper §VII: legacy
-    %      code paths remain available while workflows migrate one at a time.
-    %
-    %   5. FIXED DISCONNECT. The prototype's `clear obj.io` was a no-op that
-    %      leaked connections; release now happens in the transport.
-    %
-    % TYPICAL USAGE:
+    % USAGE:
     %   vna = VNAInstCtrl("Keysight", "N5232B", "TCPIP0::...::inst0::INSTR");
     %   vna.connect();
     %   [sdB, sPh, f] = vna.measureSParameters(1);

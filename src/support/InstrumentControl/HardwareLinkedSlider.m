@@ -8,14 +8,17 @@ classdef HardwareLinkedSlider < matlab.ui.control.Slider
     % hardware to the same position, keeping the "UI -> hardware" binding in
     % one reusable class instead of per-callback glue in the App.
     %
-    % Hardened from the prototype (which was marked WIP):
-    %   - A hardware failure during the move (fault, timeout, out-of-range)
-    %     no longer kills the App: the error is caught, the control reverts
-    %     to its previous value, and the failure is reported via uialert.
-    %   - The control is disabled while a blocking move is in flight so the
+    % BEHAVIOR:
+    %   - A hardware failure during the move, whether a fault, a timeout or
+    %     an out-of-range target, does not kill the app. The error is caught,
+    %     the control reverts to its previous value, and the failure is
+    %     reported through uialert.
+    %   - The control is disabled while a blocking move is in flight, so the
     %     user cannot queue conflicting motion commands.
     %
-    % USAGE (App startup):
+    % USAGE:
+    % At app startup:
+    %
     %   app.SliderHW = EmCenterSlider("192.168.0.100", 1206, 1);
     %   [ll, ul] = app.SliderHW.getLimits();
     %   app.DistanceSlider = HardwareLinkedSlider( ...

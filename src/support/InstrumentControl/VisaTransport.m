@@ -10,13 +10,11 @@ classdef VisaTransport < ITransport
     % This class owns the visadev handle exclusively. Driver classes never
     % see it, which is what makes drivers transport-agnostic and simulatable.
     %
-    % NOTE ON CLEANUP:
-    % The original prototype framework called `clear obj.Device` to release
-    % the handle. That is a silent no-op in MATLAB (it clears a *variable*
-    % named "obj.Device", which doesn't exist) and the property kept the
-    % connection alive — the same stale-connection leak ARES suffered from
-    % in the legacy slider scripts. The correct release is to drop the last
-    % reference by assigning [] (done in close()).
+    % NOTES:
+    % Releasing the handle requires dropping the last reference by assigning
+    % [], which close() does. Calling `clear obj.Device` instead is a silent
+    % no-op: it clears a variable of that name rather than the property, and
+    % the connection stays alive as a stale socket.
     %
     % USAGE:
     %   t = VisaTransport("TCPIP0::192.168.1.161::inst0::INSTR");

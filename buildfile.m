@@ -16,6 +16,11 @@ end
 %% -------------------------------------------------------------------
 % Local function executed by Auto-Docs task
 function autodocsTask(~)
+    % Put this repo ahead of anything else on the path. Without it, an ARES
+    % release installed as a MATLAB Add-On shadows src/, and the first few
+    % extractDocs calls silently run the installed copy instead of this one.
+    addpath(genpath('./src'));
+
     % Autodocument the code description
     extractDocs('./src/support/AntennaFunctions/', ...
                 './docs/readthedocs/source/code_antenna.md', ...

@@ -8,22 +8,23 @@ classdef AntennaMeasurementConfig < handle
     % object so measurement code consumes a config instead of UI handles,
     % and validation rules live (and are testable) in one place.
     %
-    % Extended from the prototype with serialization — the paper's
-    % reproducibility goal ("settings can be saved alongside
-    % measurement data and later reloaded to repeat or modify experiments"):
+    % A config serializes to JSON, so settings can be saved alongside the
+    % measurement data and reloaded later to repeat or modify an experiment.
     %
-    %   cfg.saveToJSON("run42_config.json")        % alongside the results
-    %   cfg = AntennaMeasurementConfig.loadFromJSON("run42_config.json")
-    %
-    % UNITS / CONVENTIONS:
+    % CONVENTIONS:
     %   - Frequencies in consistent units across start/end (ARES uses MHz)
     %   - Angles in degrees; Theta = turntable, Phi = tower
     %   - Modes are "Sweep" or "Single"
     %
-    % TYPICAL USAGE (App callback):
+    % USAGE:
+    % From an app callback:
+    %
     %   cfg = AntennaMeasurementConfig.fromApp(app);
     %   if ~cfg.validate(app.UIFigure), return; end
     %   runAntennaMeasurementOO(app, cfg, ...);
+    %
+    %   cfg.saveToJSON("run42_config.json");       % alongside the results
+    %   cfg = AntennaMeasurementConfig.loadFromJSON("run42_config.json");
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     properties

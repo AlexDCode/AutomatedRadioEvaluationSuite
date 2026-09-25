@@ -28,3 +28,11 @@
 
 - TODO: Verify if gate PSU data is saved to results table in individual PSU channel columns
 
+---
+
+## extractDocs.m
+`Path: src\support\SupportFunctions\extractDocs.m`
+
+- MATLAB code fences TODO sections are skipped here because extractTODOs gives them their own page
+- extractTODOs gives these their own page skip them here
+
