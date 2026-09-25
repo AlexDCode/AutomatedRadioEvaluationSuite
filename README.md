@@ -30,8 +30,10 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
 
 ## Features
 
-### General Capabiltiies
-- VISA-based instrument control via **GPIB**, **LAN**, and **USB** with support for multiple instrument manufacturers.
+### General Capabilities
+- VISA-based instrument control via **GPIB**, **LAN**, and **USB**, plus raw TCP sockets, with support for multiple instrument manufacturers.
+- Object-oriented instrument drivers with per-model command sets, so adding support for a new instrument is a configuration change rather than a code change.
+- Instrument address dropdowns are filtered by instrument type, so only instruments valid for a given slot are listed.
 - Save and recall measurement results in standardized file formats for data analysis.
 - Plot measurement results within the app for quick visualization.
 - Export plots to **PDF**, **PNG**, **JPEG**, and **TikZ** for publication (TikZ export is unsupported for polar plots).
@@ -54,18 +56,18 @@ The **Automated Radio Evaluation Suite (ARES)** enables automated RF measurement
   - Gain Comparison Method (i.e., Two-Antenna Method).
   - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement.
 - Measure antenna complex valued S-parameters (magnitude and phase).
+- Save and load antenna test parameters and app settings from a JSON configuration file.
 
 ## TODO
 
 - **Update Documentation Images**: Showing new UI and plotting options. Create script to automatically capture screenshots.
 - **PA Test Safety Features**: Add option to stop test if power supply is current limited (short circuit).
+- **PA Test Configuration**: Extend the JSON test configuration to the PA measurement tab. Saving and loading is complete on the antenna side; the PA side still needs its sweep parameters, PSU channel setup, and deembedding settings captured in the same format.
 - **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
 - **Known Limitation**: The linear slider range and offset are hard-coded in the app. The default values are for Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to the instrument database as properties.
 
 ### Being added for the upcoming update:
-- **Object Oriented Instruments**: Configure a class for each instrument to execute the commands instead of hardcoding. This should allow different classes to be configured for specific command sets or special cases on particular instruments.
-- **Instrument Type Filter**: Filter the instrument address dropdown by instrument type and only display the instruments pertaining relevant category and 'Others'.
-- **Test Configuration**: Save and load test parameters with custom configurations and unique app settings with a JSON file.
+- **N-Port Antenna Measurements**: Replace the hard-coded two-port measurement path with a configurable port map. Each analyzer port is assigned a direction (Transmitter or Receiver) and a role (AUT or Reference), and the measurement code derives which S-parameters to read from that assignment. This extends antenna testing from a single fixed transmit/receive pair to any number of ports, yielding per-path gain, insertion loss, radiation efficiency, and forward/reverse reciprocity in magnitude and phase for every transmitter-to-receiver path.
 
 
 ## Usage

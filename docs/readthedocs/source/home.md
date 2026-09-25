@@ -19,26 +19,55 @@ The **Automated Radio Evaluation Suite (ARES)** is an open-source MATLAB-based p
 
 ---
 
-- VISA-based instrument control via **GPIB**, **LAN**, and **USB**
-- Support for multiple ETS-Lindgren, Keysight, and Rohde & Schwarz instruments
-- Built in deembedding support and DC power supply control
-- Measure RF power amplifier Figures of Merit (FoM) over a range of test parameters
+### General Capabilities
+- VISA-based instrument control via **GPIB**, **LAN**, and **USB**, plus raw TCP sockets, with support for multiple instrument manufacturers.
+- Object-oriented instrument drivers with per-model command sets, so adding support for a new instrument is a configuration change rather than a code change.
+- Instrument address dropdowns are filtered by instrument type, so only instruments valid for a given slot are listed.
+- Save and recall measurement results in standardized file formats for data analysis.
+- Plot measurement results within the app for quick visualization.
+- Export plots to **PDF**, **PNG**, **JPEG**, and **TikZ** for publication (TikZ export is unsupported for polar plots).
+
+### Power Amplifier Measurement Capabilities
+- Measure RF power amplifier Figures of Merit (FoM) over one or multiple frequencies
   - Gain
   - Output Power
   - Drain Efficiency
-  - Power Added Efficiency
+  - Power Added Efficiency (PAE)
+- CW and modulated drive signals
+- Built in deembedding and calibration support with the following modes:
+  - Fixed: Static loss entered manually corresponding to the input and output.
+  - Small-signal: S-parameter measurement for the loss of the input and output network over frequency.
+  - Large-signal: Amplifier measurement including compression characteristics over different frequencies and power levels.
+  - In-Situ: Direct measurement of input and output power through directional couplers and passive deembedding of measurement network losses.
+
+### Antenna Measurements
 - Measure and visualize 2D/3D antenna realized and absolute gain characteristics by:
-  - Gain Comparison Method (i.e., Two-Antenna Method)
-  - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement
-- Measure antenna return loss (magnitude and phase).
-- Save/load test measurements in standardized file formats for data analysis.
-- Plot test measurements within the app for quick visualization.
-- Export plots to **PDF**, **PNG**, **JPEG**, and **TikZ** for publication (TikZ export is unsupported for polar plots).
+  - Gain Comparison Method (i.e., Two-Antenna Method).
+  - Gain Transfer Method (i.e., Comparison Antenna Method) using a reference measurement.
+- Measure antenna complex valued S-parameters (magnitude and phase).
+- Save and load antenna test parameters and app settings from a JSON configuration file.
 
 ```{admonition} Export Tip
 :class: note
 TikZ export is supported for Cartesian 2D plots. Polar and 3D plots support image formats only.
 ```
+
+## TODO
+
+---
+
+- **Update Documentation Images**: Showing new UI and plotting options. Create script to automatically capture screenshots.
+- **PA Test Safety Features**: Add option to stop test if power supply is current limited (short circuit).
+- **PA Test Configuration**: Extend the JSON test configuration to the PA measurement tab. Saving and loading is complete on the antenna side; the PA side still needs its sweep parameters, PSU channel setup, and deembedding settings captured in the same format.
+- **Over the Air Testing (OTA)**: Measure RF transceivers (PAs, Antennas, LNAs, etc.) with modulated signals and plot the results. Enable measurements with the presence of interferers.
+
+```{admonition} Known Limitation
+:class: warning
+The linear slider range and offset are hard-coded in the app. The default values are for Purdue's Anechoic Chamber setup (2m slider range and offset 0.8062m). You can modify the `LINEAR_SLIDER_RANGE` and `offsetSpacing` variables in ARES.MLAPP to fit a different setup. This could be added to the instrument database as properties.
+```
+
+### Being added for the upcoming update:
+- **N-Port Antenna Measurements**: Replace the hard-coded two-port measurement path with a configurable port map. Each analyzer port is assigned a direction (Transmitter or Receiver) and a role (AUT or Reference), and the measurement code derives which S-parameters to read from that assignment. This extends antenna testing from a single fixed transmit/receive pair to any number of ports, yielding per-path gain, insertion loss, radiation efficiency, and forward/reverse reciprocity in magnitude and phase for every transmitter-to-receiver path.
 
 ## Contributors
 
