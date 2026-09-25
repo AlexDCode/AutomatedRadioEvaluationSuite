@@ -585,7 +585,10 @@ classdef SCPIInstrument < handle
             %
             % State persists for the MATLAB session (until 'reset' or clear).
             %
-            % TODO:Add to the log which instrument the legacy code is com
+            % TODO: Add to the log which instrument each legacy call came
+            %       from. Counts are keyed by method alone, so a report
+            %       cannot say whether the remaining shim calls are on the
+            %       VNA, the PSU or the slider.
             persistent ENTRIES COUNTS VERBOSE
             if isempty(COUNTS)
                 ENTRIES = cell(0, 3);   % {datetime, method, command}

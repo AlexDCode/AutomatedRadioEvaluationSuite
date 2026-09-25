@@ -2,13 +2,14 @@
 
 ```{toctree}
 :maxdepth: 2
-:caption:Code Reference
+:caption: Code Reference
 
 code_overview.md
 app_overview.md
 instr_interface.md
+code_instr.md
 code_antenna.md
 code_amp.md
 code_support.md
-TODO.md
+TODOs.md
 ```

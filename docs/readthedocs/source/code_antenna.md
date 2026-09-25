@@ -100,6 +100,40 @@ This function initializes and preallocates a results table for storing antenna t
 
 ---
 
+## homeLinearSlider.m
+`Path: src\support\AntennaFunctions\homeLinearSlider.m`
+
+**Description:**
+
+Homes the EMCenter linear slider. Bench/operator convenience wrapper: opens its own connection, homes, and closes. This is now a thin wrapper over the EmCenterSlider driver. The pre-home fault check, the AXIS1:*OPC?-only wait loop, the timeout, the post-home fault check and the socket cleanup all live in EmCenterSlider.home(). Notably the driver preserves the fix this script originally introduced: the wait loop polls *OPC? and NOTHING else, because sending AXIS:ZERO mid-move (as the pre-2026 script did) corrupts the controller's position reference and makes HOME fail or hang.
+
+```{admonition} Input Parameters
+:class: tip
+- None
+```
+
+```{admonition} Output Parameters
+:class: tip
+- None
+- ERRORS:
+- Throws an error (does NOT silently ignore) if:
+- The device reports a fault code before homing  (EmCenterSlider:PreHomeFault)
+- Homing does not complete within the timeout    (EmCenterSlider:HomeTimeout)
+- The device reports a fault code after homing   (EmCenterSlider:PostHomeFault)
+- RECOVERY (slider stuck at a hardware limit):
+- If the slider has tripped a hardware limit and HOME fails, run the following
+- sequence manually before calling this function again:
+- s = EmCenterSlider();            % 192.168.0.100:1206, axis 1
+- s.writeline('AXIS1:CR');         % disable soft limits
+- s.writeline('AXIS1:CC');         % jog backwards (away from limit)
+- s.writeline('AXIS1:ST');         % stop when clear of limit
+- s.writeline('AXIS1:NCR');        % re-enable soft limits
+- delete(s);
+- Then call homeLinearSlider() normally.
+```
+
+---
+
 ## measureAntennaGain.m
 `Path: src\support\AntennaFunctions\measureAntennaGain.m`
 
@@ -224,6 +258,15 @@ Plots the reference antenna's gain and return loss versus frequency, serving as 
 
 ---
 
+## resetLinearSlider.m
+`Path: src\support\AntennaFunctions\resetLinearSlider.m`
+
+**Description:**
+
+TODO: Convert script into function and call from the app to reset the slider. Use the InstrumentFactory.
+
+---
+
 ## runAntennaMeasurement.m
 `Path: src\support\AntennaFunctions\runAntennaMeasurement.m`
 
@@ -251,17 +294,22 @@ This function executes a 2D antenna gain measurement sweep using a dual-axis pos
 
 **Description:**
 
-This function controls the movement of the EMCenter linear slider by setting its speed preset and moving it to a user-specified target position. Once the speed is set, the slider will move smoothly to the specified target position, ensuring precise control over the motion.
+Moves the EMCenter linear slider to a target position at the requested speed preset. Bench/operator convenience wrapper: opens its own connection, moves, and closes. This is now a thin wrapper over the EmCenterSlider driver. The bounds checking, already-at-target tolerance, DIR? poll loop, timeout-then-STOP behaviour and socket cleanup that used to be written out here all live in EmCenterSlider.moveTo(), so the bench script and the app's antenna measurements drive the hardware through exactly one implementation instead of two copies that can drift.
 
 ```{admonition} Input Parameters
 :class: tip
-- speedPreset    - An integer between 1 (slowest) and 8 (fastest) that sets the speed of the linear slider.
-- targetPosition - Target position in cm (0 - 200 cm) for the slider to move to.
+- speedPreset    - Integer between 1 (slowest) and 8 (fastest).
+- targetPosition - Target position in cm. Must be within the device's mechanical limits.
 ```
 
 ```{admonition} Output Parameters
 :class: tip
 - None
+- ERRORS:
+- Throws an error (does NOT silently ignore) if:
+- speedPreset is outside [1, 8]
+- targetPosition is outside the mechanical limits  (EmCenterSlider:TargetOutOfRange)
+- Motion does not complete within the timeout      (EmCenterSlider:MoveTimeout)
 ```
 
 ---

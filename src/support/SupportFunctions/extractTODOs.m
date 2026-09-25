@@ -91,9 +91,16 @@ function extractTODOs(folderPath, outFilename, headerStr, excludedFolders)
                     % Remove the leading '%' and any surrounding spaces
                     cleanLine = regexprep(line, '^\s*%\s*', '');
         
-                    % Skip lines containing excluded keywords (DESCRIPTION, INPUT, OUTPUT, NOTES, EXAMPLE)
-                    skipLine = any(contains(cleanLine, excludeKeywords));
-                    if skipLine
+                    % A section header (DESCRIPTION, INPUT, OUTPUT, NOTES,
+                    % EXAMPLE) ends the TODO block. Merely skipping the header
+                    % line lets the block run on and swallow the parameter
+                    % list that follows it.
+                    if any(contains(cleanLine, excludeKeywords))
+                        if ~isempty(blockLines)
+                            todoBlocks{end+1} = strjoin(blockLines, ' '); %#ok<AGROW>
+                            blockLines = {};
+                        end
+                        insideTodo = false;
                         continue;
                     end
         
