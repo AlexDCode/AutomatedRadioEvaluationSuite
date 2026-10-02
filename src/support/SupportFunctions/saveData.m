@@ -28,8 +28,22 @@ function fullFilename = saveData(combinedData, combinedNames)
         dataTable = array2table(combinedData, 'VariableNames', combinedNames);
     end
 
+    % n-port long/tidy results (Quantity/Value columns) are written in the
+    % compact TWO-HEADER-ROW wide layout (nportLongToWide): one row per
+    % (theta,phi,freq), each (S-parameter, quantity) a column. Everything else
+    % keeps the plain single-header writetable path. Pivot once here and reuse.
+    isNPort = istable(dataTable) && all(ismember({'Quantity', 'Value'}, dataTable.Properties.VariableNames));
+    if isNPort
+        wideCell = nportLongToWide(dataTable);
+        nRows = size(wideCell, 1);
+        nCols = size(wideCell, 2);
+    else
+        nRows = height(dataTable);
+        nCols = width(dataTable);
+    end
+
     % Check if data exceeds Excel limits.
-    passedExcelLimit = height(dataTable) >= EXCEL_MAX_ROWS || width(dataTable) > EXCEL_MAX_COLUMNS;
+    passedExcelLimit = nRows >= EXCEL_MAX_ROWS || nCols > EXCEL_MAX_COLUMNS;
 
     % Prompt user for save location.
     try
@@ -53,7 +67,11 @@ function fullFilename = saveData(combinedData, combinedNames)
 
         % Save backup
         backupFile = fullfile(ARESDirectory, 'measurement_backup.csv');
-        writetable(dataTable, backupFile);
+        if isNPort
+            writecell(wideCell, backupFile);
+        else
+            writetable(dataTable, backupFile);
+        end
         disp("Backup file saved at " + string(backupFile))
         error("Save dialog was canceled. Backup file saved at " + string(backupFile))
 
@@ -62,6 +80,10 @@ function fullFilename = saveData(combinedData, combinedNames)
 
     % Build full path and save the data.
     fullFilename = fullfile(path, filename);
-    writetable(dataTable, fullFilename);
+    if isNPort
+        writecell(wideCell, fullFilename);
+    else
+        writetable(dataTable, fullFilename);
+    end
     disp(['Data saved to: ', fullFilename]);
 end

@@ -40,3 +40,16 @@ function autodocsTask(~)
                  './docs/readthedocs/source/TODOs.md', ...
                  'TODO Items', {'matlab2tikz'});
 end
+
+%% -------------------------------------------------------------------
+% Local function executed by Screenshots task
+function screenshotsTask(~)
+    % Capture every UI tab into a staging folder under the docs assets, for
+    % refreshing the interface images in the documentation.
+    %
+    % Not a default task: exportapp captures a rendered on-screen window, so
+    % this needs an interactive desktop session and cannot run headless.
+    % Review the staged images and move the ones you want into assets/Ant,
+    % assets/PA or assets/Settings.
+    captureAppScreenshots('./docs/readthedocs/source/assets/auto');
+end

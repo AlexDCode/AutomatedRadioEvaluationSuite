@@ -23,20 +23,24 @@ function plotAntenna2DRadiationPattern(app)
         cla(app.ReturnLoss2DPattern);
         cla(app.GainvsAngle2DPattern);
         cla(app.RadiationPlot2DPattern);
-    
+
+        % n-port (long/tidy) data is pivoted to the legacy wide shape for the
+        % selected gain path; legacy wide data passes through unchanged.
+        data = antennaPlotData(app);
+
         % Specified angle and frequency plotting index.
-        idx_theta = (app.Antenna_Data.Thetadeg==str2double(app.ThetaDropDown.Value));
-        idx_phi = (app.Antenna_Data.Phideg==str2double(app.PhiDropDown.Value));
-        idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
+        idx_theta = (data.Thetadeg==str2double(app.ThetaDropDown.Value));
+        idx_phi = (data.Phideg==str2double(app.PhiDropDown.Value));
+        idx_freq = (data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
         idx_angle = idx_theta & idx_phi; 
      
         % 1) Antenna Gain vs. Frequency, at specified angle
         if app.GainTypeDropDown.Value == "Realized Gain"
-            plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).GaindBi);
+            plot(app.GainvsFrequency2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).GaindBi);
             title(app.GainvsFrequency2DPattern, sprintf('Realized Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
             ylabel(app.GainvsFrequency2DPattern, 'Realized Gain (dBi)');
         elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            plot(app.GainvsFrequency2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).AbsoluteGaindBi);
+            plot(app.GainvsFrequency2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).AbsoluteGaindBi);
             title(app.GainvsFrequency2DPattern, sprintf('Absolute Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
             ylabel(app.GainvsFrequency2DPattern, 'Absolute Gain (dBi)');
         end
@@ -44,7 +48,7 @@ function plotAntenna2DRadiationPattern(app)
         axis(app.GainvsFrequency2DPattern, 'tight');
 
         % 2) Return Loss (dB) Plot
-        plot(app.ReturnLoss2DPattern, app.Antenna_Data(idx_angle,:).FrequencyMHz, app.Antenna_Data(idx_angle,:).ReturnLossdB);
+        plot(app.ReturnLoss2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).ReturnLossdB);
         title(app.ReturnLoss2DPattern, sprintf('Return Loss at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
         xlabel(app.ReturnLoss2DPattern, 'Frequency (MHz)');
         ylabel(app.ReturnLoss2DPattern, 'RL (dB)');
@@ -52,19 +56,19 @@ function plotAntenna2DRadiationPattern(app)
 
         % Prepare the polar data correctly.
         % For phi cut: theta varies, phi is fixed
-        phiCutAngles = app.Antenna_Data(idx_phi & idx_freq,:).Thetadeg;
+        phiCutAngles = data(idx_phi & idx_freq,:).Thetadeg;
         if app.GainTypeDropDown.Value == "Realized Gain"
-            phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).GaindBi;
+            phiCutGain = data(idx_phi & idx_freq,:).GaindBi;
         elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            phiCutGain = app.Antenna_Data(idx_phi & idx_freq,:).AbsoluteGaindBi;
+            phiCutGain = data(idx_phi & idx_freq,:).AbsoluteGaindBi;
         end
         
         % For theta cut: phi varies, theta is fixed
-        thetaCutAngles = app.Antenna_Data(idx_theta & idx_freq,:).Phideg;
+        thetaCutAngles = data(idx_theta & idx_freq,:).Phideg;
         if app.GainTypeDropDown.Value == "Realized Gain"
-            thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).GaindBi;
+            thetaCutGain = data(idx_theta & idx_freq,:).GaindBi;
         elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            thetaCutGain = app.Antenna_Data(idx_theta & idx_freq,:).AbsoluteGaindBi;
+            thetaCutGain = data(idx_theta & idx_freq,:).AbsoluteGaindBi;
         end
 
         % Extra sorting for old data recorded prior to the new sorted

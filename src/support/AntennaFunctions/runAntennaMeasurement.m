@@ -17,6 +17,21 @@ function runAntennaMeasurement(app)
     %   None  (Results are saved to the user's machine and updated in the application UI).
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+    % n-port dispatch: a non-legacy port map routes to the general n-port
+    % measurement path; the legacy 2-port map (including the default when no
+    % port-map UI exists yet) falls through to the original code below, which
+    % stays bit-identical.
+    try
+        nportCfg = AntennaMeasurementConfig.fromApp(app);
+        nportMap = nportCfg.PortMapping;
+    catch
+        nportMap = PortMap.empty;
+    end
+    if ~isempty(nportMap) && ~nportMap.isLegacyTwoPort()
+        runNPortAntennaMeasurement(app, nportCfg);
+        return;
+    end
+
     % Initialize variables from the application.
     smoothingPoints = app.SmoothingPoints.Value;
     sweepPoints = app.VNASweepPoints.Value;

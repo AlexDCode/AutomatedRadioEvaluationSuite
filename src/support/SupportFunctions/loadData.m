@@ -30,16 +30,22 @@ function combinedData = loadData(app, RFcomponent, FileName)
 
     try
         % Suppress warning about variable names being modified.
-        w = warning('off','MATLAB:table:ModifiedAndSavedVarnames');    
+        w = warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 
-        % Load the table from the file.
-        combinedData = readtable(FileName,'Delimiter',',');
+        if isNPortWideFile(FileName)
+            % Compact two-header-row n-port format -> melt back to the long/tidy
+            % table the rest of ARES consumes (already compact-named).
+            combinedData = nportReadWide(FileName);
+        else
+            % Load the table from the file.
+            combinedData = readtable(FileName,'Delimiter',',');
+
+            % Remove underscores from the variable names.
+            combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '_', '');
+        end
 
         % Reset warning level.
-        warning(w);       
-
-        % Remove underscores from the variable names.
-        combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '_', '');
+        warning(w);
 
         % Proceed based on RFcomponent type.
         switch RFcomponent

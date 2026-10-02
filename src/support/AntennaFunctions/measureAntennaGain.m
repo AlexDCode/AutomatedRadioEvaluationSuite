@@ -24,20 +24,34 @@ function antennaGain = measureAntennaGain(TestFrequency, sParameter_dB, Spacing,
         ReferenceFrequency = [];
     end
 
-    % Speed of light (m/s). 
-    c = 3E8; 
+    % Speed of light (m/s).
+    c = 3E8;
+
+    % Guard the spacing: a non-positive / non-finite separation makes the FSPL
+    % term Inf/complex and silently poisons the gain. Return NaN instead so bad
+    % setup (spacing unset or zero) is visible rather than producing a huge
+    % bogus gain.
+    if ~isscalar(Spacing) || ~isfinite(Spacing) || Spacing <= 0
+        Spacing = NaN;
+    end
 
     % Wavelength (m).
-    lambda = c ./ TestFrequency; 
+    lambda = c ./ TestFrequency;
 
     % Free Space Path Loss (dB).
     FSPL_dB = 20 * log10(lambda / (4*pi*Spacing));
 
-    if ~isempty(ReferenceGain) && ~isempty(ReferenceFrequency)     
+    if ~isempty(ReferenceGain) && ~isempty(ReferenceFrequency)
         % Comparison Antenna Method: Use reference antenna data.
-        interpolatedRefGain = interp1(ReferenceFrequency, ReferenceGain, TestFrequency, 'spline');
+        % Use pchip (shape-preserving, no overshoot on a non-uniform reference
+        % grid) and DO NOT extrapolate: test frequencies outside the reference
+        % file's band return NaN, so a reference that does not cover the sweep
+        % yields NaN gain (obvious "no data") instead of a wild extrapolated
+        % value. (The old 'spline' extrapolated and could produce gains like
+        % -50000 dBi when the reference band did not span the sweep.)
+        interpolatedRefGain = interp1(ReferenceFrequency, ReferenceGain, TestFrequency, 'pchip', NaN);
         antennaGain = sParameter_dB - FSPL_dB - interpolatedRefGain;
-    else                  
+    else
         % Two-Antenna Method: Assume test antennas are identical.
         antennaGain = (sParameter_dB - FSPL_dB) / 2;
     end

@@ -50,6 +50,11 @@ classdef AntennaMeasurementConfig < handle
         TowerEndAngle   (1,1) double = NaN
         TowerSpeed      (1,1) double = NaN       % tower speed preset
         PhiMode         (1,1) string = "Sweep"   % "Sweep" | "Single"
+
+        % Port / role assignment for n-port (4-port) measurements. Empty on a
+        % config that predates the port map; fromApp() falls back to
+        % PortMap.legacyTwoPort() so the historical 2-port behavior is kept.
+        PortMapping     PortMap
     end
 
     methods
@@ -117,17 +122,28 @@ classdef AntennaMeasurementConfig < handle
             AntennaMeasurementConfig.setIfFinite_(app.TowerEndAngle,      obj.TowerEndAngle);
             AntennaMeasurementConfig.setIfFinite_(app.TowerSpeedSlider,   obj.TowerSpeed);
             app.PhiSingleSweepSwitch.Value   = char(obj.PhiMode);
+
+            % Restore the port / role table if both the map and the UI exist.
+            if ~isempty(obj.PortMapping) && isprop(app, "PortMapTable")
+                app.PortMapTable.Data = obj.PortMapping.toPortRows();
+            end
         end
 
         %% Serialization (reproducibility)
         function s = toStruct(obj)
             % TOSTRUCT  Plain struct of all settings (for saving/logging).
+            % The PortMapping object is handled separately (below) so it is
+            % serialized through PortMap.toStruct rather than as a raw handle.
             props = properties(obj);
             s = struct();
             for k = 1:numel(props)
+                if strcmp(props{k}, "PortMapping"), continue; end
                 v = obj.(props{k});
                 if isstring(v), v = char(v); end   % friendlier JSON
                 s.(props{k}) = v;
+            end
+            if ~isempty(obj.PortMapping)
+                s.PortMap = obj.PortMapping.toStruct();
             end
         end
 
@@ -175,6 +191,48 @@ classdef AntennaMeasurementConfig < handle
             obj.TowerEndAngle   = n(app.TowerEndAngle.Value);
             obj.TowerSpeed      = n(app.TowerSpeedSlider.Value);
             obj.PhiMode         = string(app.PhiSingleSweepSwitch.Value);
+
+            % Port map. Read the VNA-tab port table if that (advanced) UI
+            % exists and is populated; otherwise fall back to the legacy 2-port
+            % map so the app keeps working with the "More" panel collapsed.
+            if isprop(app, "PortMapTable") && ~isempty(app.PortMapTable.Data)
+                obj.PortMapping = PortMap.fromUITable(app.PortMapTable.Data);
+                AntennaMeasurementConfig.attachReferenceGain_(app, obj.PortMapping);
+            else
+                obj.PortMapping = PortMap.legacyTwoPort();
+            end
+        end
+
+        function attachReferenceGain_(app, pm)
+            % Merge the app's uploaded reference gain (a file + column stored
+            % outside the port table) onto the map's reference port(s). Source,
+            % in priority order:
+            %   1. a dedicated NPortReferenceGainFile field, if the UI has one;
+            %   2. otherwise ARES's existing reference upload -
+            %      app.ReferenceGainFilePath (the "Load Reference Gain File"
+            %      button), with the standard "Gain (dBi)" column.
+            % No-op if nothing is uploaded, or if the port table already carried
+            % a gain file. Single-reference design: one file applies to every
+            % reference port.
+            if isempty(pm) || isempty(pm.referencePorts()), return; end
+
+            file = "";
+            col  = "Gain (dBi)";
+            if isprop(app, "NPortReferenceGainFile")
+                file = string(app.NPortReferenceGainFile.Value);
+                if isprop(app, "NPortReferenceGainColumn")
+                    col = string(app.NPortReferenceGainColumn.Value);
+                end
+            elseif isprop(app, "ReferenceGainFilePath") && ~isempty(app.ReferenceGainFilePath)
+                file = string(app.ReferenceGainFilePath);
+            end
+            if isempty(file) || strlength(file) == 0, return; end
+
+            for rp = pm.referencePorts()
+                [existingFile, ~] = pm.gainSourceAtPort(rp);
+                if strlength(existingFile) > 0, continue; end   % table already set it
+                pm.setPort(rp, pm.directionAtPort(rp), "Reference", file, col);
+            end
         end
 
         function obj = fromStruct(s)
@@ -182,6 +240,7 @@ classdef AntennaMeasurementConfig < handle
             obj = AntennaMeasurementConfig();
             props = properties(obj);
             for k = 1:numel(props)
+                if strcmp(props{k}, "PortMapping"), continue; end
                 if isfield(s, props{k})
                     v = s.(props{k});
                     % jsonencode writes NaN as null, which decodes to [];
@@ -190,6 +249,9 @@ classdef AntennaMeasurementConfig < handle
                     if ischar(v), v = string(v); end
                     obj.(props{k}) = v;
                 end
+            end
+            if isfield(s, "PortMap") && ~isempty(s.PortMap)
+                obj.PortMapping = PortMap.fromStruct(s.PortMap);
             end
         end
 
@@ -317,6 +379,17 @@ classdef AntennaMeasurementConfig < handle
                     isValid = false;
                     title = "Invalid Tower Sweep Settings";
                     msg = "Tower end angle must be set in Sweep mode.";
+                    return;
+                end
+            end
+
+            % Port / role map (only when one has been assigned).
+            if ~isempty(obj.PortMapping)
+                [pmOk, pmTitle, pmMsg] = obj.PortMapping.check();
+                if ~pmOk
+                    isValid = false;
+                    title = pmTitle;
+                    msg = pmMsg;
                     return;
                 end
             end

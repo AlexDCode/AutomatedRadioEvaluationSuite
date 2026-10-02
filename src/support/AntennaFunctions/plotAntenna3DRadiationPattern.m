@@ -30,20 +30,24 @@ function plotAntenna3DRadiationPattern(app)
             delete(cb);
         end
 
+        % n-port (long/tidy) data is pivoted to the legacy wide shape for the
+        % selected gain path; legacy wide data passes through unchanged.
+        data = antennaPlotData(app);
+
         % Specified frequency plotting index.
         if ~isempty(app.FrequencyMHzDropDown.Value)
-            idx_freq = (app.Antenna_Data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
+            idx_freq = (data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
         else 
             return;
         end
 
         % Extract theta, phi, and gain values for specified frequency.
-        thetaValues = app.Antenna_Data.Thetadeg(idx_freq);
-        phiValues   = app.Antenna_Data.Phideg(idx_freq);
+        thetaValues = data.Thetadeg(idx_freq);
+        phiValues   = data.Phideg(idx_freq);
         if app.GainTypeDropDown.Value == "Realized Gain"
-            gainValues  = app.Antenna_Data.GaindBi(idx_freq);
+            gainValues  = data.GaindBi(idx_freq);
         elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            gainValues  = app.Antenna_Data.AbsoluteGaindBi(idx_freq);
+            gainValues  = data.AbsoluteGaindBi(idx_freq);
         end
 
         % Ensure wrapped angles are consistent.

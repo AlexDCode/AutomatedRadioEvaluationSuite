@@ -238,6 +238,62 @@ classdef VNAInstCtrl < SCPIInstrument
 
             paramNames = obj.parseCatalogNames_(nTraces);
         end
+
+        %% Named complex read (n-port gain / reciprocity / efficiency)
+        function [freqHz, S] = measureComplexByName(obj, names, varargin)
+            % MEASURECOMPLEXBYNAME  Read complex S-parameters for named traces.
+            %
+            % INPUT:
+            %   names - string array / cellstr of "Sij" labels, e.g.
+            %           ["S31" "S13" "S11"].
+            % NAME-VALUE:
+            %   'AutoCreate' (default false) - define any missing traces on the
+            %       VNA before reading. When false, a requested trace that is
+            %       not configured raises a clear error naming it. The
+            %       auto-create SCPI is Keysight-PNA dialect and NOT yet
+            %       hardware-verified; leave it off until validated on the bench.
+            %
+            % OUTPUT:
+            %   freqHz - sweep frequencies (Hz), column vector [npts x 1]
+            %   S      - containers.Map from "Sij" (char) to complex column
+            %            vector [npts x 1].
+            %
+            % Reads the underlying complex data (SDATA) so magnitude, phase,
+            % linear power, reciprocity and efficiency can all be derived. The
+            % requested traces must already be set up + CALIBRATED on the VNA
+            % (or created via AutoCreate); ARES never calibrates.
+            names = unique(upper(string(names)), "stable");
+            autoCreate = VNAInstCtrl.getFlag_(varargin, "AutoCreate", false);
+
+            obj.flush();
+            obj.scpi('cls');
+            obj.configureBinaryTransfer();
+
+            if autoCreate
+                obj.ensureTraces_(names);
+            end
+
+            obj.triggerSingleSweep();
+
+            paramToMnum = obj.catalogParamToMnum_();
+
+            S = containers.Map("KeyType", "char", "ValueType", "any");
+            for i = 1:numel(names)
+                nm = char(names(i));
+                if ~isKey(paramToMnum, nm)
+                    error("VNAInstCtrl:MissingTrace", ...
+                        "The VNA has no trace measuring %s. Configure it on the " + ...
+                        "instrument (or pass 'AutoCreate', true). Configured: %s", ...
+                        nm, strjoin(string(keys(paramToMnum)), ", "));
+                end
+                obj.selectTrace(paramToMnum(nm));
+                c = obj.readComplexTrace();
+                S(nm) = c(:);
+            end
+
+            freqHz = obj.getFrequencyAxis();
+            freqHz = freqHz(:);
+        end
     end
 
     methods (Access = private)
@@ -257,25 +313,86 @@ classdef VNAInstCtrl < SCPIInstrument
             % Multi-trace / 4-port support.
             obj.registerCommand('trace_count?',     'CALC1:PAR:COUN?',     'query');
             obj.registerCommand('trace_catalog?',   'CALC1:PAR:CAT:EXT?',  'query');
+            % Trace definition (used only by the opt-in AutoCreate path). PNA
+            % dialect; hardware-unverified — re-dialect via CommandSets JSON.
+            obj.registerCommand('define_trace', 'CALC1:PAR:DEF:EXT ''%s'',''%s''', 'write');
+            obj.registerCommand('feed_trace',   'DISP:WIND1:TRAC%d:FEED ''%s''',    'write');
         end
 
         function names = parseCatalogNames_(obj, n)
-            % Parse the S-parameter names from CALC1:PAR:CAT:EXT?, which
-            % returns "name1,Sxy,name2,Sxy,...". Returns an n-element string
-            % array of the Sxy labels; falls back to "Trace k" on any miss.
+            % Return an n-element string array of the S-parameter labels for
+            % traces 1..n (falls back to "Trace k" on any miss). Built from the
+            % dialect-aware param->index map so it works on both Keysight and
+            % Copper Mountain.
             names = "Trace " + string(1:n);
             try
-                raw = strtrim(obj.scpi('trace_catalog?'));
-                raw = erase(raw, '"');
-                parts = strtrim(split(raw, ","));
-                params = parts(2:2:end);          % every 2nd token is the Sxy
-                for k = 1:min(n, numel(params))
-                    if strlength(params(k)) > 0
-                        names(k) = params(k);
+                m  = obj.catalogParamToMnum_();
+                ks = keys(m);
+                for i = 1:numel(ks)
+                    idx = m(ks{i});
+                    if idx >= 1 && idx <= n
+                        names(idx) = string(ks{i});
                     end
                 end
             catch
                 % keep the generic fallback names
+            end
+        end
+
+        function m = catalogParamToMnum_(obj)
+            % Map each configured S-parameter label (upper-case "Sij") to its
+            % 1-based trace index. Two dialects, selected by which commands the
+            % loaded CommandSet provides:
+            %   - Copper Mountain: per-trace parameter query CALC1:PARk:DEF?
+            %     over the trace count (the 'trace_param?' command is present).
+            %   - Keysight PNA/ENA: one extended catalog string
+            %     "name,Sxy,name,Sxy,..." (CALC:PAR:CAT:EXT?).
+            % First occurrence wins if a parameter is on several traces.
+            m = containers.Map("KeyType", "char", "ValueType", "double");
+            if obj.hasCommand('trace_param?')
+                nTraces = round(str2double(obj.scpi('trace_count?')));
+                if ~isfinite(nTraces) || nTraces < 1, return; end
+                for k = 1:nTraces
+                    p = char(upper(strtrim(erase(string(obj.scpi('trace_param?', k)), '"'))));
+                    if strlength(p) > 0 && ~isKey(m, p), m(p) = k; end
+                end
+            else
+                raw = strtrim(erase(string(obj.scpi('trace_catalog?')), '"'));
+                if strlength(raw) == 0, return; end
+                parts  = strtrim(split(raw, ","));
+                params = parts(2:2:end);          % every 2nd token is the Sxy
+                for k = 1:numel(params)
+                    key = char(upper(params(k)));
+                    if strlength(key) > 0 && ~isKey(m, key), m(key) = k; end
+                end
+            end
+        end
+
+        function ensureTraces_(obj, names)
+            % Define any requested S-parameter not already configured and feed
+            % it to the display so it becomes readable. Keysight PNA dialect;
+            % hardware-unverified (see measureComplexByName 'AutoCreate').
+            existing = obj.catalogParamToMnum_();
+            n = double(existing.Count);
+            for i = 1:numel(names)
+                nm = char(upper(string(names(i))));
+                if isKey(existing, nm), continue; end
+                n = n + 1;
+                measName = "ARES_" + nm;
+                obj.scpi('define_trace', measName, nm);
+                obj.scpi('feed_trace', n, measName);
+                existing(nm) = n;
+            end
+        end
+    end
+
+    methods (Static, Access = private)
+        function v = getFlag_(args, name, default)
+            % Pull a name-value option out of a varargin cell array.
+            v = default;
+            idx = find(strcmpi(args, name), 1);
+            if ~isempty(idx) && numel(args) >= idx + 1
+                v = args{idx + 1};
             end
         end
     end
