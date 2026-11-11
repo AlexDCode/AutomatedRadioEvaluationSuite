@@ -27,6 +27,12 @@ classdef SimTransport < ITransport
     %   3. Binary-block queries (VNA/analyzer traces) are served by
     %      BinaryFcn if set, otherwise by zeros(1, DefaultTraceLength).
     %
+    %   4. By default a read answers the last command written, so replies can
+    %      never get out of step. Set QueueReplies = true to queue replies as
+    %      a real link does (oldest unread reply first). Use it for devices
+    %      that answer commands the code may forget to read, such as the
+    %      EMCenter's "OK" after every move.
+    %
     % USAGE:
     %   t = SimTransport("IdnString", "Keysight,N5232B,SIM,1.0");
     %   t.setResponse("AXIS1:LL?", "0");
@@ -51,11 +57,24 @@ classdef SimTransport < ITransport
 
         % If true, echo simulated traffic to the console (bring-up aid).
         Verbose (1,1) logical = false
+
+        % If true, replies queue up the way they do on a real link: a
+        % command's reply is produced when the command is written and waits
+        % until it is read, and each readLine returns the OLDEST unread
+        % reply. A reply nobody reads then shifts every later one, as on
+        % hardware, and reading with nothing waiting raises
+        % SimTransport:Timeout. Default false keeps the forgiving behavior:
+        % readLine answers the last command written and can never be out of
+        % step, which is why it cannot show an unread-reply bug.
+        QueueReplies (1,1) logical = false
     end
 
     properties (SetAccess = private)
         % Every command sent through this transport, in order (string array).
         CommandLog string = string.empty(0,1)
+
+        % QueueReplies mode: replies produced but not read yet, oldest first.
+        PendingReplies string = string.empty(0,1)
     end
 
     properties (Access = private)
@@ -108,11 +127,28 @@ classdef SimTransport < ITransport
             if obj.Verbose
                 fprintf("[SIM tx] %s\n", cmd);
             end
+            if obj.QueueReplies
+                % The device answers now; the answer waits to be read.
+                r = obj.resolveResponse_(obj.LastCommand);
+                if strlength(r) > 0
+                    obj.PendingReplies = [obj.PendingReplies(:); r];
+                end
+            end
         end
 
         function s = readLine(obj)
             obj.assertOpen_();
-            s = obj.resolveResponse_(obj.LastCommand);
+            if obj.QueueReplies
+                if isempty(obj.PendingReplies)
+                    error("SimTransport:Timeout", ...
+                        "Simulated read timed out: no reply is waiting (last command: %s).", ...
+                        obj.LastCommand);
+                end
+                s = obj.PendingReplies(1);
+                obj.PendingReplies = reshape(obj.PendingReplies(2:end), [], 1);
+            else
+                s = obj.resolveResponse_(obj.LastCommand);
+            end
             if obj.Verbose
                 fprintf("[SIM rx] %s\n", s);
             end
@@ -133,7 +169,8 @@ classdef SimTransport < ITransport
 
         function flush(obj)
             obj.assertOpen_();
-            % Nothing buffered in simulation; kept for interface parity.
+            % Nothing buffered unless replies are being queued.
+            obj.PendingReplies = string.empty(0,1);
         end
     end
 

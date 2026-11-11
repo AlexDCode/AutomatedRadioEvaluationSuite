@@ -1767,22 +1767,33 @@ classdef ARES < matlab.apps.App
         function TableChangeAngle(app, event)
             % This function initiates the process of changing the turntable angle to a new value.
             % The function sends a command to set the turntable's speed and a command to adjust the 
-            % turntable's angle to the user requested value.
+            % turntable's angle to the user requested value, then waits until the turntable stops.
             
             try
-                writeline(app.EMCenter, sprintf('1A:SPEED %d', app.TableSpeedSlider.Value));
-                % Convert to the turntable's angle range (Table tab dropdown).
-                cmdAngle = AntennaPositioner.thetaCommandAngle(app.TableNewAngle.Value, ...
-                    AntennaMeasurementConfig.thetaRangeFromApp(app));
-                writeline(app.EMCenter, sprintf('1A:SK %d', round(cmdAngle)));
-                status = writeread(app.EMCenter,"1A:*OPC?");
-                status = str2double(strtrim(status));
-
-                while status ~= 1
-                    drawnow;
-                    status = writeread(app.EMCenter,'1A:*OPC?');
-                    status = str2double(strtrim(status));
+                if isempty(app.EMCenter)
+                    return;
                 end
+
+                % The positioner reads the EMCenter's answer ("OK" or "ERROR n")
+                % to every command it sends, so later replies stay in step.
+                pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
+                pos.ThetaRange = AntennaMeasurementConfig.thetaRangeFromApp(app);   % Table tab dropdown
+                pos.TimeoutSec = 600;   % generous: a full-range rotation is slow
+
+                pos.setTableSpeed(app.TableSpeedSlider.Value);
+                pos.moveTheta(app.TableNewAngle.Value);
+
+                % Tell the user if the EMCenter would not start the move.
+                refusal = pos.lastRefusal("table");
+                if strlength(refusal) > 0
+                    uialert(app.UIFigure, "The EMCenter did not accept the move. It answered " + refusal + ".", ...
+                        'Move Not Started', 'Icon', 'warning');
+                    return;
+                end
+
+                % Wait until the turntable stops. drawnow keeps the app
+                % responsive, so the Stop button works during the move.
+                pos.waitForAxis("table", 'OnPoll', @() drawnow);
             catch ME
                 app.displayError(ME);
             end
@@ -1794,7 +1805,12 @@ classdef ARES < matlab.apps.App
             % It sends a stop command to the turntable to halt any rotational operation. 
 
             try
-                writeline(app.EMCenter, '1A:ST');
+                if isempty(app.EMCenter)
+                    return;
+                end
+
+                pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
+                pos.stopTable();
             catch ME
                 app.displayError(ME);
             end
@@ -1819,19 +1835,32 @@ classdef ARES < matlab.apps.App
         function TowerChangeAngle(app, event)
             % This function initiates the process of moving the tower to a new angle. The function
             % sends two commands, one that sets the tower's speed and one that moves the tower's 
-            % angle to the user requested value entered in the GUI.
+            % angle to the user requested value entered in the GUI, then waits until the tower stops.
             
             try
-                writeline(app.EMCenter, sprintf('1B:SPEED %d', app.TowerSpeedSlider.Value));
-                writeline(app.EMCenter, sprintf('1B:SK %d', app.TowerNewAngle.Value));
-                status = writeread(app.EMCenter, "1B:*OPC?");
-                status = str2double(strtrim(status));
-    
-                while status ~= 1
-                    drawnow;
-                    status = writeread(app.EMCenter, '1B:*OPC?');
-                    status = str2double(strtrim(status));
+                if isempty(app.EMCenter)
+                    return;
                 end
+
+                % The positioner reads the EMCenter's answer ("OK" or "ERROR n")
+                % to every command it sends, so later replies stay in step.
+                pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
+                pos.TimeoutSec = 600;   % generous: a full-range rotation is slow
+
+                pos.setTowerSpeed(app.TowerSpeedSlider.Value);
+                pos.movePhi(app.TowerNewAngle.Value);
+
+                % Tell the user if the EMCenter would not start the move.
+                refusal = pos.lastRefusal("tower");
+                if strlength(refusal) > 0
+                    uialert(app.UIFigure, "The EMCenter did not accept the move. It answered " + refusal + ".", ...
+                        'Move Not Started', 'Icon', 'warning');
+                    return;
+                end
+
+                % Wait until the tower stops. drawnow keeps the app
+                % responsive, so the Stop button works during the move.
+                pos.waitForAxis("tower", 'OnPoll', @() drawnow);
             catch ME
                 app.displayError(ME);
             end
@@ -1843,7 +1872,12 @@ classdef ARES < matlab.apps.App
             % It sends a stop command to the tower to halt any rotational operation. 
 
             try
-                writeline(app.EMCenter, '1B:ST');
+                if isempty(app.EMCenter)
+                    return;
+                end
+
+                pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
+                pos.stopTower();
             catch ME
                 app.displayError(ME);
             end
