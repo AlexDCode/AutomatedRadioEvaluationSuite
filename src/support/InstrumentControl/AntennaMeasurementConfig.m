@@ -43,6 +43,8 @@ classdef AntennaMeasurementConfig < handle
         TableEndAngle   (1,1) double = NaN
         TableSpeed      (1,1) double = NaN       % turntable speed preset
         ThetaMode       (1,1) string = "Sweep"   % "Sweep" | "Single"
+        % Range the turntable controller counts in (see AntennaPositioner).
+        ThetaRange      (1,1) string {mustBeMember(ThetaRange, ["-180to180", "0to360"])} = "-180to180"
 
         % Tower (phi) scan settings (deg)
         TowerStartAngle (1,1) double = NaN
@@ -116,6 +118,9 @@ classdef AntennaMeasurementConfig < handle
             AntennaMeasurementConfig.setIfFinite_(app.TableEndAngle,      obj.TableEndAngle);
             AntennaMeasurementConfig.setIfFinite_(app.TableSpeedSlider,   obj.TableSpeed);
             app.ThetaSingleSweepSwitch.Value = char(obj.ThetaMode);
+            if isprop(app, "ThetaRangeDropDown")
+                app.ThetaRangeDropDown.Value = char(replace(obj.ThetaRange, "to", " to "));
+            end
 
             AntennaMeasurementConfig.setIfFinite_(app.TowerStartAngle,    obj.TowerStartAngle);
             AntennaMeasurementConfig.setIfFinite_(app.TowerStepAngle,     obj.TowerStepAngle);
@@ -125,7 +130,7 @@ classdef AntennaMeasurementConfig < handle
 
             % Restore the port / role table if both the map and the UI exist.
             if ~isempty(obj.PortMapping) && isprop(app, "PortMapTable")
-                app.PortMapTable.Data = obj.PortMapping.toPortRows();
+                setPortMapTable(app, obj.PortMapping);
             end
         end
 
@@ -185,6 +190,7 @@ classdef AntennaMeasurementConfig < handle
             obj.TableEndAngle   = n(app.TableEndAngle.Value);
             obj.TableSpeed      = n(app.TableSpeedSlider.Value);
             obj.ThetaMode       = string(app.ThetaSingleSweepSwitch.Value);
+            obj.ThetaRange      = AntennaMeasurementConfig.thetaRangeFromApp(app);
 
             obj.TowerStartAngle = n(app.TowerStartAngle.Value);
             obj.TowerStepAngle  = n(app.TowerStepAngle.Value);
@@ -196,7 +202,7 @@ classdef AntennaMeasurementConfig < handle
             % exists and is populated; otherwise fall back to the legacy 2-port
             % map so the app keeps working with the "More" panel collapsed.
             if isprop(app, "PortMapTable") && ~isempty(app.PortMapTable.Data)
-                obj.PortMapping = PortMap.fromUITable(app.PortMapTable.Data);
+                obj.PortMapping = portMapFromTable(app);
                 AntennaMeasurementConfig.attachReferenceGain_(app, obj.PortMapping);
             else
                 obj.PortMapping = PortMap.legacyTwoPort();
@@ -211,9 +217,9 @@ classdef AntennaMeasurementConfig < handle
             %   2. otherwise ARES's existing reference upload -
             %      app.ReferenceGainFilePath (the "Load Reference Gain File"
             %      button), with the standard "Gain (dBi)" column.
-            % No-op if nothing is uploaded, or if the port table already carried
-            % a gain file. Single-reference design: one file applies to every
-            % reference port.
+            % Each reference port can carry its own gain file from the port
+            % table; this upload is only the FALLBACK for reference ports left
+            % blank there. No-op if nothing is uploaded.
             if isempty(pm) || isempty(pm.referencePorts()), return; end
 
             file = "";
@@ -259,6 +265,72 @@ classdef AntennaMeasurementConfig < handle
             % LOADFROMJSON  Rebuild a config from a saved JSON file.
             obj = AntennaMeasurementConfig.fromStruct(jsondecode(fileread(path)));
         end
+
+        function [isValid, title, msg] = checkSweep(startFreq, endFreq, sweepPoints, smoothingPoints)
+            % CHECKSWEEP  Frequency / sweep-point / smoothing rules, shared by
+            % the config and the app's validateAntennaMeasurement.
+            %
+            %   - Start and end must be set, with end >= start. Equal start and
+            %     end is a zero-span (single frequency) measurement.
+            %   - Sweep points must be an integer >= 1.
+            %   - Smoothing of 0 or 1 means OFF (the app spinner's minimum is
+            %     1). Smoothing above 1 must be <= 25% of the sweep points, and
+            %     is not allowed with a single sweep point.
+            n = @AntennaMeasurementConfig.numOrNaN_;
+            startFreq = n(startFreq);  endFreq = n(endFreq);
+            sweepPoints = n(sweepPoints);  smoothingPoints = n(smoothingPoints);
+
+            isValid = false;
+            title = "Invalid Frequency Settings";
+            if ~isfinite(startFreq) || ~isfinite(endFreq)
+                msg = "Start and end frequencies must be set (finite numbers).";
+                return;
+            end
+            if endFreq < startFreq
+                msg = "End frequency must be greater than or equal to start frequency.";
+                return;
+            end
+
+            title = "Invalid Sweep Points";
+            if ~isfinite(sweepPoints) || sweepPoints < 1 || floor(sweepPoints) ~= sweepPoints
+                msg = "Number of sweep points must be an integer >= 1.";
+                return;
+            end
+
+            title = "Invalid Smoothing Points";
+            if ~isfinite(smoothingPoints) || smoothingPoints < 0 ...
+                    || floor(smoothingPoints) ~= smoothingPoints
+                msg = "Smoothing points must be an integer >= 0.";
+                return;
+            end
+            if AntennaMeasurementConfig.smoothingOn(smoothingPoints, sweepPoints) ...
+                    && smoothingPoints / sweepPoints > 0.25
+                msg = "Smoothing points must be <= 25% of sweep points (use 1 for no smoothing).";
+                return;
+            end
+
+            isValid = true;  title = "";  msg = "";
+        end
+
+        function r = thetaRangeFromApp(app)
+            % THETARANGEFROMAPP  The turntable range picked on the Table tab,
+            % or the "-180to180" default if the app has no range dropdown.
+            % The dropdown shows "-180 to 180" / "0 to 360"; drop the spaces.
+            r = "-180to180";
+            hasDropDown = isprop(app, "ThetaRangeDropDown") || ...
+                (isstruct(app) && isfield(app, "ThetaRangeDropDown"));
+            if hasDropDown && ~isempty(app.ThetaRangeDropDown.Value)
+                r = erase(string(app.ThetaRangeDropDown.Value), " ");
+            end
+        end
+
+        function tf = smoothingOn(smoothingPoints, sweepPoints)
+            % SMOOTHINGON  True when VNA smoothing should actually be applied:
+            % more than 1 smoothing point and more than 1 sweep point. A
+            % single-point sweep always runs unsmoothed.
+            tf = ~isempty(smoothingPoints) && smoothingPoints > 1 ...
+              && ~isempty(sweepPoints) && sweepPoints > 1;
+        end
     end
 
     methods (Static, Access = private)
@@ -289,47 +361,10 @@ classdef AntennaMeasurementConfig < handle
         function [isValid, title, msg] = validateCore_(obj)
             % Pure validation logic — no UI dependency, unit-testable.
 
-            % Frequency sweep
-            if ~isfinite(obj.StartFrequency) || ~isfinite(obj.EndFrequency)
-                isValid = false;
-                title = "Invalid Frequency Settings";
-                msg = "Start and end frequencies must be set (finite numbers).";
-                return;
-            end
-            if obj.StartFrequency == obj.EndFrequency
-                isValid = false;
-                title = "Invalid Frequency Settings";
-                msg = "Start and end frequencies must be different.";
-                return;
-            end
-            if obj.EndFrequency < obj.StartFrequency
-                isValid = false;
-                title = "Invalid Frequency Settings";
-                msg = "End frequency must be greater than start frequency.";
-                return;
-            end
-
-            % Sweep / smoothing points
-            if ~isfinite(obj.SweepPoints) || obj.SweepPoints < 2 ...
-                    || floor(obj.SweepPoints) ~= obj.SweepPoints
-                isValid = false;
-                title = "Invalid Sweep Points";
-                msg = "Number of sweep points must be an integer >= 2.";
-                return;
-            end
-            if ~isfinite(obj.SmoothingPoints) || obj.SmoothingPoints < 0 ...
-                    || floor(obj.SmoothingPoints) ~= obj.SmoothingPoints
-                isValid = false;
-                title = "Invalid Smoothing Points";
-                msg = "Smoothing points must be an integer >= 0.";
-                return;
-            end
-            if obj.SmoothingPoints / obj.SweepPoints > 0.25
-                isValid = false;
-                title = "Invalid Smoothing Points";
-                msg = "Smoothing points must be <= 25% of sweep points.";
-                return;
-            end
+            % Frequency sweep / smoothing (shared with validateAntennaMeasurement)
+            [isValid, title, msg] = AntennaMeasurementConfig.checkSweep( ...
+                obj.StartFrequency, obj.EndFrequency, obj.SweepPoints, obj.SmoothingPoints);
+            if ~isValid, return; end
 
             % Antenna geometry
             if ~isfinite(obj.AntennaSize) || obj.AntennaSize <= 0

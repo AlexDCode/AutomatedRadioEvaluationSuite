@@ -29,7 +29,9 @@ function plotNPortAntenna(app)
     hold(ax, 'on');
     labels = strings(1, numel(series));
     for k = 1:numel(series)
-        plot(ax, series(k).FreqMHz, series(k).Value);
+        spec = '-';
+        if isscalar(series(k).FreqMHz), spec = 'o'; end   % one frequency: a marker, not an invisible line
+        plot(ax, series(k).FreqMHz, series(k).Value, spec);
         labels(k) = series(k).Label;
     end
     hold(ax, 'off');

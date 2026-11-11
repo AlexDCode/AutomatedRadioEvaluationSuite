@@ -36,6 +36,11 @@ function runAntennaMeasurement(app)
     smoothingPoints = app.SmoothingPoints.Value;
     sweepPoints = app.VNASweepPoints.Value;
 
+    % A 1-point sweep is never smoothed (1 = no smoothing).
+    if ~AntennaMeasurementConfig.smoothingOn(smoothingPoints, sweepPoints)
+        smoothingPoints = 1;
+    end
+
     % Get table speed and theta angles.
     tableSpeed = app.TableSpeedSlider.Value;
     if strcmp(app.ThetaSingleSweepSwitch.Value,'Sweep')
@@ -52,13 +57,26 @@ function runAntennaMeasurement(app)
         towerAngles = app.TowerStartAngle.Value;
     end
     
-    % Create the parameters table to hold the measurement parameters.
-    parametersTable = createAntennaParametersTable(tableAngles, towerAngles);
+    % Create the parameters table to hold the measurement parameters, ordered
+    % for the turntable's angle range.
+    thetaRange = AntennaMeasurementConfig.thetaRangeFromApp(app);
+    parametersTable = createAntennaParametersTable(tableAngles, towerAngles, thetaRange);
 
-    % Add the boresight gain reference point (0,0) if not included.
+    % Always measure boresight (0,0), so the saved file can later serve as a
+    % reference gain file (those are read at boresight).
     if ~any(parametersTable.("Theta (deg)") == 0 & parametersTable.("Phi (deg)") == 0)
         zeroRef = table(0, 0, 'VariableNames', ["Theta (deg)", "Phi (deg)"]);
         parametersTable = [zeroRef; parametersTable];
+    end
+
+    % A reference gain file (Reference Antenna tab) gives absolute gain.
+    % Without one, a boresight-only run uses the two-antenna method (two
+    % identical antennas; this is how reference gain files are made). Any
+    % other run would save no gain, so confirm before anything moves.
+    hasReference = ~isempty(app.ReferenceGainFile) && ~isempty(app.ReferenceGainFile.GaindBi);
+    twoAntenna = ~hasReference && height(parametersTable) == 1;   % only (0,0)
+    if ~hasReference && ~twoAntenna && ~confirmRunWithoutGain(app)
+        return;
     end
 
     % Create the results table to hold the saved measurement data.
@@ -75,6 +93,7 @@ function runAntennaMeasurement(app)
         pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
         pos.PollDelaySec = app.AntennaMeasurementDelayValueField.Value;
         pos.TimeoutSec   = 600;   % generous: a full-range rotation is slow
+        pos.ThetaRange   = thetaRange;
 
         % Set speed of the turntable and tower.
         pos.setSpeeds(tableSpeed, towerSpeed);
@@ -106,12 +125,13 @@ function runAntennaMeasurement(app)
 
             dataPts = (i - 1) * sweepPoints + (1:sweepPoints);
 
-            % Get measurement corrected angles for (0,360) range
-            adjustedTheta = mod(parametersTable.("Theta (deg)")(i), 360); 
+            % moveTo converts theta to the turntable's ThetaRange
+            % (as-is for -180..180, mod 360 for 0..360).
+            adjustedTheta = parametersTable.("Theta (deg)")(i);
             adjustedPhi = parametersTable.("Phi (deg)")(i);
             
             % Move the turntable and tower to specified position, then block
-            % until both axes finish. waitUntilStill polls *OPC? on both axes,
+            % until both axes have arrived (*OPC?, DIR? and CP? all agree),
             % keeps the dialog responsive (OnPoll = drawnow), and stops both
             % axes if the user clicks Stop (CancelFcn). It honors the same
             % per-poll delay as before via pos.PollDelaySec.
@@ -121,12 +141,6 @@ function runAntennaMeasurement(app)
 
             % Exit the outer loop as well if stop was requested
             if d.CancelRequested
-                % Clear the reference data.
-                if isempty(app.ReferenceGainFileField.Value)
-                    app.ReferenceGainFile.GaindBi = [];
-                    app.ReferenceGainFile.FrequencyMHz = [];
-                end
-
                 % Check if any data has been recorded in the measurement.
                 validIndices = resultsTable.("Frequency (MHz)") > 0;
                 filteredResults = resultsTable(validIndices, :);
@@ -138,8 +152,9 @@ function runAntennaMeasurement(app)
                     choice = uiconfirm(app.UIFigure, question, 'Stop Test', 'Options', {'Yes', 'No'}, 'DefaultOption', 1);
 
                     if strcmp(choice, 'Yes')
-                        % Save the partial data
-                        fullFilename = saveData(filteredResults);
+                        % Save the partial data (setup recorded in the file header).
+                        fullFilename = saveData(filteredResults, '', ...
+                            buildMeasurementHeader(app, PortMap.legacyTwoPort()));
 
                         % Load the saved data into the application.
                         if ~isempty(fullFilename)
@@ -162,21 +177,19 @@ function runAntennaMeasurement(app)
             % Get S-Parameters and Frequencies from VNA
             [SParameters_dB, SParameters_Phase, VNAFrequencies] = vna.measureSParameters(smoothingPoints);
 
-            % Calculate gain.
-            if isempty(app.ReferenceGainFile)
-                % Two-Antenna Method.
-                Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
-                AbsoluteGain_dBi = calculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
-                app.ReferenceGainFile.GaindBi = Gain_dBi;
-                app.ReferenceGainFile.FrequencyMHz = VNAFrequencies/1E6;
-                app.ReferenceGainFile.ReturnLossdB = SParameters_dB{1};
-                app.ReferenceGainFile.ReturnLossdeg = SParameters_Phase{1};
-
-                plotReferenceAntenna(app);
-            else
-                % Comparison-Antenna Method.
+            % Calculate gain: comparison-antenna method with a reference file,
+            % two-antenna method for a boresight-only run without one. Otherwise
+            % there is no absolute gain: the gain columns are left NaN and the
+            % plots show the insertion loss as a relative pattern.
+            if hasReference
                 Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing, app.ReferenceGainFile.GaindBi, app.ReferenceGainFile.FrequencyMHz*1E6);
                 AbsoluteGain_dBi = calculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
+            elseif twoAntenna
+                Gain_dBi = measureAntennaGain(VNAFrequencies, SParameters_dB{2}, app.setupSpacing);
+                AbsoluteGain_dBi = calculateAbsoluteAntennaGain(Gain_dBi, SParameters_dB{3});
+            else
+                Gain_dBi = nan(size(SParameters_dB{2}));
+                AbsoluteGain_dBi = Gain_dBi;
             end
 
             resultsTable(dataPts, "Theta (deg)") = array2table(parametersTable.("Theta (deg)")(i)*ones(numel(dataPts),1));
@@ -206,8 +219,10 @@ function runAntennaMeasurement(app)
             % Sort table by Theta, Phi, and Frequency before saving.
             sortedResults = sortrows(resultsTable, ["Theta (deg)", "Phi (deg)", "Frequency (MHz)"]);
             
-            % Save the complete sorted measurement data.
-            fullFilename = saveData(sortedResults);
+            % Save the complete sorted measurement data, with the setup
+            % (spacing, offset, port map, ...) in the file header.
+            fullFilename = saveData(sortedResults, '', ...
+                buildMeasurementHeader(app, PortMap.legacyTwoPort()));
 
             if ~isempty(fullFilename)
                 loadData(app, 'Antenna', fullFilename);
@@ -225,14 +240,6 @@ function runAntennaMeasurement(app)
 
         % Return the VNA windows to continuous mode.
         vna.setContinuous(true);
-
-        % Clear the reference data if running two-antenna method.
-        if isempty(app.ReferenceGainFileField.Value)
-            app.ReferenceGainFile.GaindBi = [];
-            app.ReferenceGainFile.FrequencyMHz = [];
-            app.ReferenceGainFile.ReturnLossdB = [];
-            app.ReferenceGainFile.ReturnLossdeg = [];
-        end
     catch ME
         app.displayError(ME);
     end

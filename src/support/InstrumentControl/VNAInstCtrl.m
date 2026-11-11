@@ -36,6 +36,16 @@ classdef VNAInstCtrl < SCPIInstrument
         % bandwidth / averaging), so it is waited on by polling *OPC? rather
         % than by a single blocking read.
         SweepTimeoutSec (1,1) double = 60
+
+        % Display window that ARES-created traces are fed to (Keysight PNA).
+        % Kept separate from windows 1-2, which hold the app's legacy
+        % S11/S21/S22 mag/phase layout, so trace numbers never collide.
+        TraceWindow (1,1) double = 3
+
+        % Most traces one channel can hold (Copper Mountain limit is 16). If
+        % adding the missing traces would exceed this, the channel is rebuilt
+        % with only the traces the measurement needs.
+        MaxTraces (1,1) double = 16
     end
 
     methods
@@ -247,11 +257,10 @@ classdef VNAInstCtrl < SCPIInstrument
             %   names - string array / cellstr of "Sij" labels, e.g.
             %           ["S31" "S13" "S11"].
             % NAME-VALUE:
-            %   'AutoCreate' (default false) - define any missing traces on the
-            %       VNA before reading. When false, a requested trace that is
-            %       not configured raises a clear error naming it. The
-            %       auto-create SCPI is Keysight-PNA dialect and NOT yet
-            %       hardware-verified; leave it off until validated on the bench.
+            %   'AutoCreate' (default true) - create any missing traces on the
+            %       VNA before reading (see ensureTraces). When false, a
+            %       requested trace that is not configured raises a clear
+            %       error naming it.
             %
             % OUTPUT:
             %   freqHz - sweep frequencies (Hz), column vector [npts x 1]
@@ -260,39 +269,65 @@ classdef VNAInstCtrl < SCPIInstrument
             %
             % Reads the underlying complex data (SDATA) so magnitude, phase,
             % linear power, reciprocity and efficiency can all be derived. The
-            % requested traces must already be set up + CALIBRATED on the VNA
-            % (or created via AutoCreate); ARES never calibrates.
+            % channel must be CALIBRATED on the VNA (a full n-port cal covering
+            % every used port); ARES creates traces but never calibrates.
             names = unique(upper(string(names)), "stable");
-            autoCreate = VNAInstCtrl.getFlag_(varargin, "AutoCreate", false);
+            autoCreate = VNAInstCtrl.getFlag_(varargin, "AutoCreate", true);
 
             obj.flush();
             obj.scpi('cls');
             obj.configureBinaryTransfer();
 
             if autoCreate
-                obj.ensureTraces_(names);
+                obj.ensureTraces(names);
             end
 
             obj.triggerSingleSweep();
 
-            paramToMnum = obj.catalogParamToMnum_();
+            selectors = obj.traceSelectors_();
 
             S = containers.Map("KeyType", "char", "ValueType", "any");
             for i = 1:numel(names)
                 nm = char(names(i));
-                if ~isKey(paramToMnum, nm)
+                if ~isKey(selectors, nm)
                     error("VNAInstCtrl:MissingTrace", ...
-                        "The VNA has no trace measuring %s. Configure it on the " + ...
-                        "instrument (or pass 'AutoCreate', true). Configured: %s", ...
-                        nm, strjoin(string(keys(paramToMnum)), ", "));
+                        "The VNA has no trace measuring %s. Configured: %s", ...
+                        nm, strjoin(string(keys(selectors)), ", "));
                 end
-                obj.selectTrace(paramToMnum(nm));
+                obj.selectBySelector_(selectors(nm));
                 c = obj.readComplexTrace();
                 S(nm) = c(:);
             end
 
             freqHz = obj.getFrequencyAxis();
             freqHz = freqHz(:);
+        end
+
+        function ensureTraces(obj, names)
+            % ENSURETRACES  Make sure the VNA has a trace measuring each
+            % requested S-parameter, creating any that are missing.
+            %
+            % INPUT:
+            %   names - string array / cellstr of "Sij" labels.
+            %
+            % Traces that already exist are reused and left alone, so the
+            % app's legacy 2-port layout survives an n-port run. Two dialects,
+            % picked the same way as catalogParamToMnum_:
+            %   - Copper Mountain: grow the trace count (CALC1:PAR:COUN n) and
+            %     set each new trace's parameter (CALC1:PARk:DEF Sij). If the
+            %     channel would exceed MaxTraces it is rebuilt with only the
+            %     requested traces.
+            %   - Keysight PNA: define a named measurement "ARES_Sij"
+            %     (CALC1:PAR:DEF:EXT) and feed it to TraceWindow.
+            % Anything the VNA rejects (e.g. S33 on a 2-port box) is reported
+            % as a warning; the read that follows then names the missing trace.
+            names = unique(upper(string(names)), "stable");
+            if obj.hasCommand('trace_param?')
+                obj.ensureTracesIndexed_(names);
+            else
+                obj.ensureTracesNamed_(names);
+            end
+            obj.reportErrors("VNA trace setup");
         end
     end
 
@@ -313,10 +348,13 @@ classdef VNAInstCtrl < SCPIInstrument
             % Multi-trace / 4-port support.
             obj.registerCommand('trace_count?',     'CALC1:PAR:COUN?',     'query');
             obj.registerCommand('trace_catalog?',   'CALC1:PAR:CAT:EXT?',  'query');
-            % Trace definition (used only by the opt-in AutoCreate path). PNA
-            % dialect; hardware-unverified — re-dialect via CommandSets JSON.
-            obj.registerCommand('define_trace', 'CALC1:PAR:DEF:EXT ''%s'',''%s''', 'write');
-            obj.registerCommand('feed_trace',   'DISP:WIND1:TRAC%d:FEED ''%s''',    'write');
+            % Trace creation + selection by measurement name (ensureTraces,
+            % measureComplexByName). Copper Mountain uses its own
+            % set_trace_count / define_trace_param from CommandSets JSON.
+            obj.registerCommand('define_trace',      'CALC1:PAR:DEF:EXT ''%s'',''%s''', 'write');
+            obj.registerCommand('show_window',       'DISP:WIND%d:STATE ON',            'write');
+            obj.registerCommand('feed_trace',        'DISP:WIND%d:TRAC%d:FEED ''%s''',  'write');
+            obj.registerCommand('select_trace_name', 'CALC1:PAR:SEL ''%s''',            'write');
         end
 
         function names = parseCatalogNames_(obj, n)
@@ -368,20 +406,79 @@ classdef VNAInstCtrl < SCPIInstrument
             end
         end
 
-        function ensureTraces_(obj, names)
-            % Define any requested S-parameter not already configured and feed
-            % it to the display so it becomes readable. Keysight PNA dialect;
-            % hardware-unverified (see measureComplexByName 'AutoCreate').
+        function m = catalogParamToName_(obj)
+            % Keysight PNA: map each configured S-parameter label (upper-case
+            % "Sij") to its measurement name, from the extended catalog
+            % "name,Sxy,name,Sxy,...". First occurrence wins.
+            m = containers.Map("KeyType", "char", "ValueType", "any");
+            raw = strtrim(erase(string(obj.scpi('trace_catalog?')), ["""", "'"]));
+            if strlength(raw) == 0, return; end
+            parts = strtrim(split(raw, ","));
+            for k = 1:floor(numel(parts) / 2)
+                key = char(upper(parts(2*k)));
+                if strlength(key) > 0 && ~isKey(m, key), m(key) = char(parts(2*k - 1)); end
+            end
+        end
+
+        function m = traceSelectors_(obj)
+            % Map "Sij" -> whatever selects that trace in this dialect: a
+            % trace index (Copper Mountain) or a measurement name (Keysight).
+            % Selecting Keysight traces by name, not catalog position, keeps
+            % the read correct when measurement numbers have gaps.
+            if obj.hasCommand('trace_param?')
+                m = obj.catalogParamToMnum_();
+            else
+                m = obj.catalogParamToName_();
+            end
+        end
+
+        function selectBySelector_(obj, sel)
+            if ischar(sel) || isstring(sel)
+                obj.scpi('select_trace_name', sel);
+            else
+                obj.selectTrace(sel);
+            end
+        end
+
+        function ensureTracesNamed_(obj, names)
+            % Keysight PNA: define each missing parameter as "ARES_Sij" and
+            % feed it to TraceWindow. ARES traces fill that window in order, so
+            % the next free trace number is one past the ARES traces present.
+            existing = obj.catalogParamToName_();
+            missing  = names(~isKey(existing, cellstr(names)));
+            if isempty(missing), return; end
+
+            nAres = sum(startsWith(string(values(existing)), "ARES_"));
+            obj.scpi('show_window', obj.TraceWindow);
+            for i = 1:numel(missing)
+                measName = "ARES_" + missing(i);
+                obj.scpi('define_trace', measName, missing(i));
+                obj.scpi('feed_trace', obj.TraceWindow, nAres + i, measName);
+            end
+        end
+
+        function ensureTracesIndexed_(obj, names)
+            % Copper Mountain: traces are numbered 1..count in the channel, so
+            % grow the count and define the new ones at the end. Rebuild with
+            % only the requested traces when there is not enough room.
+            if numel(names) > obj.MaxTraces
+                error("VNAInstCtrl:TooManyTraces", ...
+                    "This measurement needs %d traces but the VNA channel holds at most %d.", ...
+                    numel(names), obj.MaxTraces);
+            end
             existing = obj.catalogParamToMnum_();
-            n = double(existing.Count);
-            for i = 1:numel(names)
-                nm = char(upper(string(names(i))));
-                if isKey(existing, nm), continue; end
-                n = n + 1;
-                measName = "ARES_" + nm;
-                obj.scpi('define_trace', measName, nm);
-                obj.scpi('feed_trace', n, measName);
-                existing(nm) = n;
+            missing  = names(~isKey(existing, cellstr(names)));
+            if isempty(missing), return; end
+
+            n = round(str2double(obj.scpi('trace_count?')));
+            if ~isfinite(n) || n < 0, n = 0; end
+            if n + numel(missing) > obj.MaxTraces
+                n = 0;
+                missing = names;
+            end
+            obj.scpi('set_trace_count', n + numel(missing));
+            for i = 1:numel(missing)
+                obj.scpi('define_trace_param', n + i, missing(i));
             end
         end
     end

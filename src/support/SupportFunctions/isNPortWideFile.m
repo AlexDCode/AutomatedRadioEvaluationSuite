@@ -6,7 +6,8 @@ function tf = isNPortWideFile(filename)
     % SECOND line carries the key names (Theta.../Frequency...) while the FIRST
     % line (the S-parameter name row) does not. Legacy wide and the older long
     % single-header format both carry the keys on the FIRST line, so they read
-    % false.
+    % false. A metadata block ending in a DATA line (readMeasurementHeader) is
+    % skipped first, so the two header rows are the ones after DATA.
     %
     % INPUT:
     %   filename - path to a candidate results file.
@@ -16,14 +17,14 @@ function tf = isNPortWideFile(filename)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     tf = false;
-    fid = fopen(filename, 'r');
-    if fid == -1, return; end
-    l1 = fgetl(fid);
-    l2 = fgetl(fid);
-    fclose(fid);
-    if ~ischar(l1) || ~ischar(l2), return; end
+    try
+        [~, k, lines] = readMeasurementHeader(filename);
+    catch
+        return;
+    end
+    if numel(lines) < k + 2, return; end
 
-    l1 = string(l1);
-    l2 = string(l2);
+    l1 = lines(k + 1);
+    l2 = lines(k + 2);
     tf = contains(l2, "Theta") && contains(l2, "Frequency") && ~contains(l1, "Theta");
 end

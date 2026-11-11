@@ -10,5 +10,7 @@
   { "name": "trace_sdata",      "fmt": "CALC1:DATA:SDAT?",            "type": "query", "read": "binblock:double" },
   { "name": "freq_axis",        "fmt": "SENS1:FREQ:DATA?",            "type": "query", "read": "binblock:double" },
   { "name": "trace_count?",     "fmt": "CALC1:PAR:COUN?",             "type": "query" },
-  { "name": "trace_param?",     "fmt": "CALC1:PAR%d:DEF?",            "type": "query" }
+  { "name": "trace_param?",     "fmt": "CALC1:PAR%d:DEF?",            "type": "query" },
+  { "name": "set_trace_count",  "fmt": "CALC1:PAR:COUN %d",           "type": "write" },
+  { "name": "define_trace_param", "fmt": "CALC1:PAR%d:DEF %s",        "type": "write" }
 ]

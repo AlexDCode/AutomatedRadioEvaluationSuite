@@ -1,4 +1,4 @@
-function [freqHz, gaindBi, columns] = readReferenceGainFile(fileName, columnName)
+function [freqHz, gaindBi, columns, returnLossdB] = readReferenceGainFile(fileName, columnName)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % Reads a reference-antenna gain curve from an ARES measurement CSV (the
@@ -22,12 +22,14 @@ function [freqHz, gaindBi, columns] = readReferenceGainFile(fileName, columnName
     %   gaindBi - selected reference gain (dBi), column vector ([] if no column
     %             was requested).
     %   columns - string array of the selectable gain-column names in the file.
+    %   returnLossdB - boresight "Return Loss (dB)" at the same frequencies
+    %             (NaN if the file has no such column); used for plotting.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     if nargin < 2, columnName = ""; end
 
     w = warning('off', 'MATLAB:table:ModifiedAndSavedVarnames');
-    T = readtable(fileName, 'Delimiter', ',');
+    T = readMeasurementTable(fileName);      % skips a metadata header, if any
     warning(w);
 
     % Normalize variable names to a compact, comparable form (strip spaces,
@@ -65,6 +67,7 @@ function [freqHz, gaindBi, columns] = readReferenceGainFile(fileName, columnName
     columns = raw(gainMask);      % report ORIGINAL (readable) names
 
     gaindBi = [];
+    returnLossdB = [];
     if strlength(string(columnName)) == 0
         return;                    % caller just wants the column list
     end
@@ -80,7 +83,15 @@ function [freqHz, gaindBi, columns] = readReferenceGainFile(fileName, columnName
     gaindBi = double(T.(char(norm(hit))));
     gaindBi = gaindBi(:);
 
+    returnLossdB = nan(size(freqHz));
+    rlIdx = find(strcmpi(norm, "ReturnLossdB"), 1);
+    if ~isempty(rlIdx)
+        returnLossdB = double(T.(char(norm(rlIdx))));
+        returnLossdB = returnLossdB(:);
+    end
+
     % Sort by frequency so downstream interpolation is well behaved.
     [freqHz, order] = sort(freqHz);
     gaindBi = gaindBi(order);
+    returnLossdB = returnLossdB(order);
 end

@@ -2,13 +2,16 @@ function plotAntenna2DRadiationPattern(app)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function generates and displays several 2D plots related to antenna measurements. It extracts the relevant
-    % antenna data based on user-selected θ, φ, gain type, and frequency values. It updates four axes in the application UI to 
-    % display the following plots:
+    % antenna data based on user-selected θ, φ, gain, and frequency values. It updates four axes in the application UI
+    % to display the following plots:
     %
     %   - Gain vs. Frequency at a fixed θ/φ angle.
     %   - Gain vs. Angle (θ and φ cuts) at a fixed frequency.
     %   - Return Loss vs. Frequency at a fixed θ/φ angle.
     %   - Polar Radiation Pattern (θ and φ cuts).
+    %
+    % The Gain dropdown picks which pattern to show (see antennaPlotSeries): a gain column of a 2-port file, the
+    % gain of one AUT <-> reference path of an n-port file, or "All (overlay)" to draw every one together.
     %
     % INPUT:
     %   app  - Application object containing the antenna measurement data and plot handles.
@@ -24,123 +27,94 @@ function plotAntenna2DRadiationPattern(app)
         cla(app.GainvsAngle2DPattern);
         cla(app.RadiationPlot2DPattern);
 
-        % n-port (long/tidy) data is pivoted to the legacy wide shape for the
-        % selected gain path; legacy wide data passes through unchanged.
-        data = antennaPlotData(app);
+        series = selectedPlotSeries(app);
+        if isempty(series), return; end
+        overlay = numel(series) > 1;
 
-        % Specified angle and frequency plotting index.
-        idx_theta = (data.Thetadeg==str2double(app.ThetaDropDown.Value));
-        idx_phi = (data.Phideg==str2double(app.PhiDropDown.Value));
-        idx_freq = (data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
-        idx_angle = idx_theta & idx_phi; 
-     
-        % 1) Antenna Gain vs. Frequency, at specified angle
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            plot(app.GainvsFrequency2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).GaindBi);
-            title(app.GainvsFrequency2DPattern, sprintf('Realized Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
-            ylabel(app.GainvsFrequency2DPattern, 'Realized Gain (dBi)');
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            plot(app.GainvsFrequency2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).AbsoluteGaindBi);
-            title(app.GainvsFrequency2DPattern, sprintf('Absolute Gain vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
-            ylabel(app.GainvsFrequency2DPattern, 'Absolute Gain (dBi)');
+        theta = str2double(app.ThetaDropDown.Value);
+        phi   = str2double(app.PhiDropDown.Value);
+        freq  = str2double(app.FrequencyMHzDropDown.Value);
+        name  = series(1).Label;
+        ylab  = series(1).YLabel;
+        if overlay, name = "Gain"; end
+
+        hold(app.GainvsFrequency2DPattern, 'on');
+        hold(app.ReturnLoss2DPattern, 'on');
+        hold(app.GainvsAngle2DPattern, 'on');
+        hold(app.RadiationPlot2DPattern, 'on');
+        cutLines = gobjects(0);  cutNames = strings(0);
+        polarLines = gobjects(0);
+        for k = 1:numel(series)
+            data = series(k).Data;
+            tag = "";
+            if overlay, tag = series(k).Label + " "; end
+
+            % Specified angle and frequency plotting index.
+            idx_theta = data.Thetadeg == theta;
+            idx_phi   = data.Phideg == phi;
+            idx_freq  = data.FrequencyMHz == freq;
+            idx_angle = idx_theta & idx_phi;
+
+            % 1) Gain vs. Frequency, at specified angle
+            f = data.FrequencyMHz(idx_angle);
+            plot(app.GainvsFrequency2DPattern, f, data.Value(idx_angle), lineSpec_(f), ...
+                'DisplayName', series(k).Label);
+
+            % 2) Return Loss vs. Frequency, at specified angle
+            plot(app.ReturnLoss2DPattern, f, data.ReturnLossdB(idx_angle), lineSpec_(f), ...
+                'DisplayName', series(k).Label);
+
+            % Phi cut: theta varies, phi fixed. Theta cut: phi varies, theta fixed.
+            [phiCutAngles, phiCutGain]     = cut_(data.Thetadeg(idx_phi & idx_freq), data.Value(idx_phi & idx_freq));
+            [thetaCutAngles, thetaCutGain] = cut_(data.Phideg(idx_theta & idx_freq), data.Value(idx_theta & idx_freq));
+
+            % 3) Gain vs. Angle, at specified frequency
+            cutLines(end + 1) = plot(app.GainvsAngle2DPattern, phiCutAngles, phiCutGain, lineSpec_(phiCutAngles)); %#ok<AGROW>
+            cutLines(end + 1) = plot(app.GainvsAngle2DPattern, thetaCutAngles, thetaCutGain, lineSpec_(thetaCutAngles)); %#ok<AGROW>
+            cutNames(end + (1:2)) = [tag + "\Phi Cut", tag + "\theta Cut"];
+
+            % 4) Polar pattern: close each curve by repeating its first point.
+            polarLines(end + 1) = polarplot(app.RadiationPlot2DPattern, ...
+                deg2rad(closeLoop_(phiCutAngles)), closeLoop_(phiCutGain)); %#ok<AGROW>
+            polarLines(end + 1) = polarplot(app.RadiationPlot2DPattern, ...
+                deg2rad(closeLoop_(thetaCutAngles)), closeLoop_(thetaCutGain)); %#ok<AGROW>
         end
+        hold(app.GainvsFrequency2DPattern, 'off');
+        hold(app.ReturnLoss2DPattern, 'off');
+        hold(app.GainvsAngle2DPattern, 'off');
+        hold(app.RadiationPlot2DPattern, 'off');
+
+        title(app.GainvsFrequency2DPattern, sprintf('%s vs. Frequency at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', ...
+            name, app.PhiDropDown.Value, app.ThetaDropDown.Value));
+        ylabel(app.GainvsFrequency2DPattern, ylab);
         xlabel(app.GainvsFrequency2DPattern, 'Frequency (MHz)');
         axis(app.GainvsFrequency2DPattern, 'tight');
 
-        % 2) Return Loss (dB) Plot
-        plot(app.ReturnLoss2DPattern, data(idx_angle,:).FrequencyMHz, data(idx_angle,:).ReturnLossdB);
-        title(app.ReturnLoss2DPattern, sprintf('Return Loss at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', app.PhiDropDown.Value,app.ThetaDropDown.Value));
+        title(app.ReturnLoss2DPattern, sprintf('Return Loss at \\Phi = %s^{\\circ} and \\theta = %s^{\\circ}', ...
+            app.PhiDropDown.Value, app.ThetaDropDown.Value));
         xlabel(app.ReturnLoss2DPattern, 'Frequency (MHz)');
         ylabel(app.ReturnLoss2DPattern, 'RL (dB)');
         axis(app.ReturnLoss2DPattern, 'tight');
-
-        % Prepare the polar data correctly.
-        % For phi cut: theta varies, phi is fixed
-        phiCutAngles = data(idx_phi & idx_freq,:).Thetadeg;
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            phiCutGain = data(idx_phi & idx_freq,:).GaindBi;
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            phiCutGain = data(idx_phi & idx_freq,:).AbsoluteGaindBi;
-        end
-        
-        % For theta cut: phi varies, theta is fixed
-        thetaCutAngles = data(idx_theta & idx_freq,:).Phideg;
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            thetaCutGain = data(idx_theta & idx_freq,:).GaindBi;
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            thetaCutGain = data(idx_theta & idx_freq,:).AbsoluteGaindBi;
+        if overlay
+            legend(app.GainvsFrequency2DPattern, 'Location', 'best');
+            legend(app.ReturnLoss2DPattern, 'Location', 'best');
+        else
+            legend(app.GainvsFrequency2DPattern, 'off');
+            legend(app.ReturnLoss2DPattern, 'off');
         end
 
-        % Extra sorting for old data recorded prior to the new sorted
-        % results table changes.
-        [phiCutAngles, sortIdx] = sort(phiCutAngles);
-        phiCutGain = phiCutGain(sortIdx);
-        [thetaCutAngles, sortIdx] = sort(thetaCutAngles);
-        thetaCutGain = thetaCutGain(sortIdx);
-
-        % Check if we need to add a point at -180 to match a point at 180
-        if any(phiCutAngles == 180) && ~any(phiCutAngles == -180)
-            % Find gain at 180 degrees
-            idx180 = phiCutAngles == 180;
-            gain180 = phiCutGain(idx180);
-            
-            % Add a point at -180 with the same gain as 180
-            phiCutAngles = [-180; phiCutAngles];
-            phiCutGain = [gain180; phiCutGain];
-        end
-
-        % Do the same check for theta cut
-        if any(thetaCutAngles == 180) && ~any(thetaCutAngles == -180)
-            idx180 = thetaCutAngles == 180;
-            gain180 = thetaCutGain(idx180);
-            
-            thetaCutAngles = [-180; thetaCutAngles];
-            thetaCutGain = [gain180; thetaCutGain];
-        end
-
-        % For polar plots, we need to add the first point at the end to close the circle
-        phiCutAnglesPolar = phiCutAngles;
-        phiCutGainPolar = phiCutGain;
-        thetaCutAnglesPolar = thetaCutAngles;
-        thetaCutGainPolar = thetaCutGain;
-        
-        if ~isempty(phiCutAnglesPolar)
-            phiCutAnglesPolar = [phiCutAnglesPolar; phiCutAnglesPolar(1)];
-            phiCutGainPolar = [phiCutGainPolar; phiCutGainPolar(1)];
-        end
-        
-        if ~isempty(thetaCutAnglesPolar)
-            thetaCutAnglesPolar = [thetaCutAnglesPolar; thetaCutAnglesPolar(1)];
-            thetaCutGainPolar = [thetaCutGainPolar; thetaCutGainPolar(1)];
-        end
-
-        % 3) Antenna Gains vs. Angles, at specified frequency
-        h_phi = plot(app.GainvsAngle2DPattern, phiCutAngles, phiCutGain);
-        hold(app.GainvsAngle2DPattern,'on');
-        h_theta = plot(app.GainvsAngle2DPattern, thetaCutAngles, thetaCutGain);
-        hold(app.GainvsAngle2DPattern,'off');
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            title(app.GainvsAngle2DPattern, sprintf('Realized Gain vs. Angle at %s MHz', app.FrequencyMHzDropDown.Value));
-            ylabel(app.GainvsAngle2DPattern, 'Realized Gain (dBi)');
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            title(app.GainvsAngle2DPattern, sprintf('Absolute Gain vs. Angle at %s MHz', app.FrequencyMHzDropDown.Value));
-            ylabel(app.GainvsAngle2DPattern, 'Absolute Gain (dBi)');
-        end
+        title(app.GainvsAngle2DPattern, sprintf('%s vs. Angle at %s MHz', name, app.FrequencyMHzDropDown.Value));
+        ylabel(app.GainvsAngle2DPattern, ylab);
         xlabel(app.GainvsAngle2DPattern, 'Angle (degrees)');
-        lgd = legend(app.GainvsAngle2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
+        lgd = legend(app.GainvsAngle2DPattern, cutLines, cellstr(cutNames), 'Location', 'best');
         enableLegendToggle(lgd);
         axis(app.GainvsAngle2DPattern, 'tight');
-        
-        % 4) 2D Radiation Pattern Polar Plot 
-        h_phi = polarplot(app.RadiationPlot2DPattern, deg2rad(phiCutAnglesPolar), phiCutGainPolar);
-        hold(app.RadiationPlot2DPattern,'on');
-        h_theta = polarplot(app.RadiationPlot2DPattern, deg2rad(thetaCutAnglesPolar), thetaCutGainPolar);
-        hold(app.RadiationPlot2DPattern,'off');
+
         title(app.RadiationPlot2DPattern, sprintf('Radiation Pattern at %s MHz', app.FrequencyMHzDropDown.Value));
         axis(app.RadiationPlot2DPattern, 'tight');
-        lgd = legend(app.RadiationPlot2DPattern, [h_phi,h_theta], {"\Phi Cut", "\theta Cut"}, 'Location', 'best');
+        lgd = legend(app.RadiationPlot2DPattern, polarLines, cellstr(cutNames), 'Location', 'best');
         enableLegendToggle(lgd);
-    
+
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(app, app.GainvsFrequency2DPattern, 'LineThickness', 2);
         improveAxesAppearance(app, app.ReturnLoss2DPattern, 'LineThickness', 2);
@@ -149,12 +123,37 @@ function plotAntenna2DRadiationPattern(app)
         updateColormap(app);
 
         h = findobj(app.RadiationPlot2DPattern, 'Type', 'line');
-        
         for i = 1:numel(h)
             h(i).LineWidth = 2;
         end
 
     catch ME
         app.displayError(ME);
+    end
+end
+
+function [angles, gain] = cut_(angles, gain)
+    % Sort a cut by angle (older files were not saved sorted) and, if it has a
+    % point at 180 but not -180, repeat it at -180 so the cut spans the circle.
+    [angles, order] = sort(angles(:));
+    gain = gain(order);
+    gain = gain(:);
+    if any(angles == 180) && ~any(angles == -180)
+        angles = [-180; angles];
+        gain = [gain(find(angles(2:end) == 180, 1)); gain];
+    end
+end
+
+function v = closeLoop_(v)
+    % Repeat the first point at the end so a polar curve closes.
+    if ~isempty(v), v = [v; v(1)]; end
+end
+
+function s = lineSpec_(x)
+    % A single sample would be an invisible zero-length line; show a marker.
+    if isscalar(x)
+        s = 'o';
+    else
+        s = '-';
     end
 end

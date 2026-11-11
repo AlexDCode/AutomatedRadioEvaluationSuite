@@ -32,13 +32,17 @@ function combinedData = loadData(app, RFcomponent, FileName)
         % Suppress warning about variable names being modified.
         w = warning('off','MATLAB:table:ModifiedAndSavedVarnames');
 
+        % Metadata block above a DATA line (setup + port map), if the file has one.
+        header = readMeasurementHeader(FileName);
+        assignin('base', 'loadedFileHeader', header);
+
         if isNPortWideFile(FileName)
             % Compact two-header-row n-port format -> melt back to the long/tidy
             % table the rest of ARES consumes (already compact-named).
             combinedData = nportReadWide(FileName);
         else
-            % Load the table from the file.
-            combinedData = readtable(FileName,'Delimiter',',');
+            % Load the table from the file (skipping any metadata header).
+            combinedData = readMeasurementTable(FileName);
 
             % Remove underscores from the variable names.
             combinedData.Properties.VariableNames = regexprep(combinedData.Properties.VariableNames, '_', '');
@@ -46,6 +50,11 @@ function combinedData = loadData(app, RFcomponent, FileName)
 
         % Reset warning level.
         warning(w);
+
+        % Show the port map an n-port antenna file was measured with.
+        if strcmp(RFcomponent, 'Antenna')
+            restorePortMap_(app, header);
+        end
 
         % Proceed based on RFcomponent type.
         switch RFcomponent
@@ -64,4 +73,27 @@ function combinedData = loadData(app, RFcomponent, FileName)
     catch ME
         app.displayError(ME);
     end
+end
+
+function restorePortMap_(app, header)
+    % Put the file's port map into the VNA-tab port table. Legacy 2-port files
+    % are left alone (that run used no port table), and the table keeps its
+    % current number of rows so a 4-port table stays 4 rows.
+    if ~isfield(header, 'PortMap') || isempty(header.PortMap), return; end
+    pm = header.PortMap;
+    if pm.isLegacyTwoPort() || ~isprop(app, 'PortMapTable'), return; end
+
+    nRows = pm.NumPorts;
+    if istable(app.PortMapTable.Data)
+        nRows = max(nRows, height(app.PortMapTable.Data));
+    end
+    shown = PortMap(nRows);
+    for e = pm.Ports
+        shown.setPort(e.Port, e.Direction, e.Role, e.GainFile, e.GainColumn);
+    end
+    setPortMapTable(app, shown);
+
+    % The next run uses this table, so make sure it is on screen.
+    if isprop(app, 'PortMapPanel'), app.PortMapPanel.Visible = 'on'; end
+    if isprop(app, 'AdvancedSetupButton'), app.AdvancedSetupButton.Text = 'Hide Advanced Setup'; end
 end

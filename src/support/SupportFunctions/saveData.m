@@ -1,4 +1,4 @@
-function fullFilename = saveData(combinedData, combinedNames)
+function fullFilename = saveData(combinedData, combinedNames, header)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     % DESCRIPTION:
     % This function saves test data to either a CSV or Excel (.xlsx) file, depending on size and user selection. If
@@ -7,6 +7,9 @@ function fullFilename = saveData(combinedData, combinedNames)
     % INPUT:
     %   combinedData  - Either a table or a cell array of measurement vectors (e.g., {frequency, gain, ...}).
     %   combinedNames - Cell array of variable names corresponding to the data (e.g., {'Frequency (Hz)', 'Gain (dB)', ...}).
+    %   header        - (Optional) metadata rows (cell array, from buildMeasurementHeader). When given, they are
+    %                   written first, then a line "DATA", then the table, so readMeasurementHeader can find
+    %                   where the data starts.
     %
     % OUTPUT:
     %   fullFilename  - Full path to the saved file, or an empty string if the user cancels the save dialog.
@@ -16,9 +19,12 @@ function fullFilename = saveData(combinedData, combinedNames)
     EXCEL_MAX_ROWS = 1048576;  
     EXCEL_MAX_COLUMNS = 16384;
 
-    % Handle missing second argument.
+    % Handle missing optional arguments.
     if nargin < 2
         combinedNames = '';
+    end
+    if nargin < 3
+        header = {};
     end
     
     % Convert input to table if needed.
@@ -32,9 +38,9 @@ function fullFilename = saveData(combinedData, combinedNames)
     % compact TWO-HEADER-ROW wide layout (nportLongToWide): one row per
     % (theta,phi,freq), each (S-parameter, quantity) a column. Everything else
     % keeps the plain single-header writetable path. Pivot once here and reuse.
-    isNPort = istable(dataTable) && all(ismember({'Quantity', 'Value'}, dataTable.Properties.VariableNames));
-    if isNPort
-        wideCell = nportLongToWide(dataTable);
+    % A metadata header (written above a DATA line) also needs the cell path.
+    [wideCell, writeAsCell] = measurementFileCell(dataTable, header);
+    if writeAsCell
         nRows = size(wideCell, 1);
         nCols = size(wideCell, 2);
     else
@@ -67,7 +73,7 @@ function fullFilename = saveData(combinedData, combinedNames)
 
         % Save backup
         backupFile = fullfile(ARESDirectory, 'measurement_backup.csv');
-        if isNPort
+        if writeAsCell
             writecell(wideCell, backupFile);
         else
             writetable(dataTable, backupFile);
@@ -80,7 +86,7 @@ function fullFilename = saveData(combinedData, combinedNames)
 
     % Build full path and save the data.
     fullFilename = fullfile(path, filename);
-    if isNPort
+    if writeAsCell
         writecell(wideCell, fullFilename);
     else
         writetable(dataTable, fullFilename);

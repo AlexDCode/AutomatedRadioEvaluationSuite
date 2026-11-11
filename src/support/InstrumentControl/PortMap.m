@@ -7,9 +7,12 @@ classdef PortMap < handle
     % measurement code can derive which S-parameters to read and how to
     % interpret them. Each used port has TWO independent attributes:
     %
-    %   Direction : Transmitter | Receiver   -- who drives, who measures.
+    %   Direction : Transmitter | Receiver | Either -- who drives, who measures.
     %               Determines which transmissions are captured: for a
-    %               transmitter t and receiver r the path is S(r,t).
+    %               transmitter t and receiver r the path is S(r,t). An
+    %               Either port takes whatever direction its partner needs
+    %               (it receives from a Transmitter and drives a Receiver);
+    %               between two Either ports the AUT drives. See links_().
     %   Role      : AUT | Reference          -- the antenna's job in the test.
     %               A Reference has a known gain (a gain file + column); the
     %               AUT is the antenna being characterized.
@@ -41,7 +44,7 @@ classdef PortMap < handle
         NumPorts (1,1) double = 0
 
         % Per-port assignment (used ports only). Struct array with fields:
-        % Port (double), Direction (string "Transmitter"|"Receiver"),
+        % Port (double), Direction (string "Transmitter"|"Receiver"|"Either"),
         % Role (string "AUT"|"Reference"), GainFile (string), GainColumn
         % (string). GainFile/GainColumn are "" unless Role is "Reference".
         Ports struct = struct('Port', {}, 'Direction', {}, 'Role', {}, ...
@@ -49,7 +52,7 @@ classdef PortMap < handle
     end
 
     properties (Constant)
-        ValidDirections = ["Transmitter", "Receiver", "Unused"];
+        ValidDirections = ["Transmitter", "Receiver", "Either", "Unused"];
         ValidRoles      = ["AUT", "Reference"];
     end
 
@@ -115,14 +118,25 @@ classdef PortMap < handle
             p = sort([obj.Ports(strcmpi(string({obj.Ports.Role}), role)).Port]);
         end
 
-        function p = transmitPorts(obj);  p = obj.portsByDirection("Transmitter"); end
-        function p = receivePorts(obj);   p = obj.portsByDirection("Receiver");    end
+        function p = transmitPorts(obj)
+            % TRANSMITPORTS  Transmitter ports, plus Either ports that drive
+            % at least one link.
+            L = obj.links_();
+            p = unique([obj.portsByDirection("Transmitter"), L(:, 1)']);
+        end
+        function p = receivePorts(obj)
+            % RECEIVEPORTS  Receiver ports, plus Either ports that receive on
+            % at least one link.
+            L = obj.links_();
+            p = unique([obj.portsByDirection("Receiver"), L(:, 2)']);
+        end
         function p = autPorts(obj);       p = obj.portsByRole("AUT");              end
         function p = referencePorts(obj); p = obj.portsByRole("Reference");        end
 
         function p = usedPorts(obj)
-            % USEDPORTS  Sorted transmitter + receiver ports.
-            p = sort([obj.transmitPorts(), obj.receivePorts()]);
+            % USEDPORTS  Sorted ports that take part (any direction but Unused).
+            if isempty(obj.Ports), p = []; return; end
+            p = sort([obj.Ports(~strcmpi(string({obj.Ports.Direction}), "Unused")).Port]);
         end
 
         function dir = directionAtPort(obj, port)
@@ -161,28 +175,28 @@ classdef PortMap < handle
             paths = struct('TxPort', {}, 'RxPort', {}, 'TxRole', {}, ...
                            'RxRole', {}, 'SParamFwd', {}, 'SParamRev', {}, ...
                            'IsGainPath', {}, 'RefPort', {}, 'AUTPort', {});
-            for t = obj.transmitPorts()
-                for r = obj.receivePorts()
-                    tRole = obj.roleAtPort(t);
-                    rRole = obj.roleAtPort(r);
-                    entry.TxPort    = t;
-                    entry.RxPort    = r;
-                    entry.TxRole    = tRole;
-                    entry.RxRole    = rRole;
-                    entry.SParamFwd = PortMap.sparamName(r, t);
-                    entry.SParamRev = PortMap.sparamName(t, r);
-                    isGain = (strcmpi(tRole,"AUT") && strcmpi(rRole,"Reference")) ...
-                          || (strcmpi(tRole,"Reference") && strcmpi(rRole,"AUT"));
-                    entry.IsGainPath = isGain;
-                    if isGain && strcmpi(rRole, "Reference")
-                        entry.RefPort = r;  entry.AUTPort = t;
-                    elseif isGain
-                        entry.RefPort = t;  entry.AUTPort = r;
-                    else
-                        entry.RefPort = NaN; entry.AUTPort = NaN;
-                    end
-                    paths(end + 1) = entry; %#ok<AGROW>
+            L = obj.links_();
+            for k = 1:size(L, 1)
+                t = L(k, 1);  r = L(k, 2);
+                tRole = obj.roleAtPort(t);
+                rRole = obj.roleAtPort(r);
+                entry.TxPort    = t;
+                entry.RxPort    = r;
+                entry.TxRole    = tRole;
+                entry.RxRole    = rRole;
+                entry.SParamFwd = PortMap.sparamName(r, t);
+                entry.SParamRev = PortMap.sparamName(t, r);
+                isGain = (strcmpi(tRole,"AUT") && strcmpi(rRole,"Reference")) ...
+                      || (strcmpi(tRole,"Reference") && strcmpi(rRole,"AUT"));
+                entry.IsGainPath = isGain;
+                if isGain && strcmpi(rRole, "Reference")
+                    entry.RefPort = r;  entry.AUTPort = t;
+                elseif isGain
+                    entry.RefPort = t;  entry.AUTPort = r;
+                else
+                    entry.RefPort = NaN; entry.AUTPort = NaN;
                 end
+                paths(end + 1) = entry; %#ok<AGROW>
             end
         end
 
@@ -191,29 +205,36 @@ classdef PortMap < handle
             % directed S-parameters to compare (S_rt vs S_tr).
             pairs = struct('PortA', {}, 'PortB', {}, ...
                            'SParamFwd', {}, 'SParamRev', {});
-            for t = obj.transmitPorts()
-                for r = obj.receivePorts()
-                    entry.PortA     = t;
-                    entry.PortB     = r;
-                    entry.SParamFwd = PortMap.sparamName(r, t);
-                    entry.SParamRev = PortMap.sparamName(t, r);
-                    pairs(end + 1) = entry; %#ok<AGROW>
-                end
+            L = obj.links_();
+            for k = 1:size(L, 1)
+                t = L(k, 1);  r = L(k, 2);
+                entry.PortA     = t;
+                entry.PortB     = r;
+                entry.SParamFwd = PortMap.sparamName(r, t);
+                entry.SParamRev = PortMap.sparamName(t, r);
+                pairs(end + 1) = entry; %#ok<AGROW>
             end
         end
 
         function names = sparamsNeeded(obj)
-            % SPARAMSNEEDED  Self terms S_ii (return loss / efficiency) plus
-            % both directions of every Transmitter<->Receiver pair (insertion
-            % loss / gain + reciprocity). Sorted, unique.
+            % SPARAMSNEEDED  Self terms S_ii (return loss / efficiency), both
+            % directions of every Transmitter<->Receiver pair (insertion
+            % loss / gain + reciprocity), and S_jt from each AUT transmitter t
+            % to every AUT port j (radiation efficiency; this covers two AUT
+            % ports that are both transmitters). Sorted, unique.
             names = strings(1, 0);
             for i = obj.usedPorts()
                 names(end + 1) = PortMap.sparamName(i, i); %#ok<AGROW>
             end
-            for t = obj.transmitPorts()
-                for r = obj.receivePorts()
-                    names(end + 1) = PortMap.sparamName(r, t); %#ok<AGROW>
-                    names(end + 1) = PortMap.sparamName(t, r); %#ok<AGROW>
+            L = obj.links_();
+            for k = 1:size(L, 1)
+                names(end + 1) = PortMap.sparamName(L(k, 2), L(k, 1)); %#ok<AGROW>
+                names(end + 1) = PortMap.sparamName(L(k, 1), L(k, 2)); %#ok<AGROW>
+            end
+            aut = obj.autPorts();
+            for t = intersect(obj.transmitPorts(), aut)
+                for j = aut
+                    names(end + 1) = PortMap.sparamName(j, t); %#ok<AGROW>
                 end
             end
             names = sort(unique(names));
@@ -253,9 +274,9 @@ classdef PortMap < handle
             seen = [];
             for k = 1:obj.numAssigned()
                 e = obj.Ports(k);
-                if ~any(strcmpi(e.Direction, ["Transmitter","Receiver"]))
+                if ~any(strcmpi(e.Direction, ["Transmitter","Receiver","Either"]))
                     title = "Invalid Direction";
-                    msg = sprintf("Port %g has direction '%s' (need Transmitter or Receiver).", e.Port, e.Direction);
+                    msg = sprintf("Port %g has direction '%s' (need Transmitter, Receiver or Either).", e.Port, e.Direction);
                     return;
                 end
                 if ~any(strcmpi(e.Role, obj.ValidRoles))
@@ -290,11 +311,17 @@ classdef PortMap < handle
                 end
             end
 
-            if isempty(obj.transmitPorts())
-                title = "No Transmitter"; msg = "At least one port must be a Transmitter."; return;
-            end
-            if isempty(obj.receivePorts())
-                title = "No Receiver"; msg = "At least one port must be a Receiver."; return;
+            if isempty(obj.paths())
+                if ~isempty(obj.portsByDirection("Either"))
+                    title = "No Transmission Path";
+                    msg = "No port pair forms a Transmitter -> Receiver link. An Either port " + ...
+                          "needs another used port to link with.";
+                elseif isempty(obj.portsByDirection("Transmitter"))
+                    title = "No Transmitter"; msg = "At least one port must be a Transmitter (or Either).";
+                else
+                    title = "No Receiver"; msg = "At least one port must be a Receiver (or Either).";
+                end
+                return;
             end
             if isempty(obj.autPorts())
                 title = "No AUT"; msg = "At least one port must have role AUT."; return;
@@ -306,26 +333,32 @@ classdef PortMap < handle
         %% UI table interchange (per-port rows, matching a VNA-tab uitable)
         function T = toPortRows(obj)
             % TOPORTROWS  One row per port for the VNA-tab uitable:
-            %   Port | Direction | Role
+            %   Port | Direction | Role | GainFile | GainColumn
             % Direction and Role are CATEGORICAL, so App Designer renders them
             % as in-cell dropdowns automatically (no ColumnFormat needed, and
             % ColumnFormat is ignored anyway when a uitable's Data is a table).
-            % The reference gain file is NOT a column here -- it is uploaded
-            % separately and merged onto the reference port(s) in fromApp.
+            % GainFile / GainColumn give each reference port its own gain
+            % curve; a reference port left blank falls back to the app's
+            % single "Load Reference Gain File" upload (see fromApp).
             port      = (1:obj.NumPorts)';
             direction = repmat("Unused", obj.NumPorts, 1);
             role      = repmat("AUT",    obj.NumPorts, 1);
+            gainFile  = strings(obj.NumPorts, 1);
+            gainCol   = strings(obj.NumPorts, 1);
             for k = 1:obj.numAssigned()
                 e = obj.Ports(k);
                 if e.Port >= 1 && e.Port <= obj.NumPorts
                     direction(e.Port) = e.Direction;
                     role(e.Port)      = e.Role;
+                    gainFile(e.Port)  = e.GainFile;
+                    gainCol(e.Port)   = e.GainColumn;
                 end
             end
             T = table(port, ...
-                categorical(direction, ["Transmitter", "Receiver", "Unused"]), ...
+                categorical(direction, ["Transmitter", "Receiver", "Either", "Unused"]), ...
                 categorical(role,      ["AUT", "Reference"]), ...
-                'VariableNames', {'Port', 'Direction', 'Role'});
+                gainFile, gainCol, ...
+                'VariableNames', {'Port', 'Direction', 'Role', 'GainFile', 'GainColumn'});
         end
 
         %% Serialization
@@ -395,7 +428,8 @@ classdef PortMap < handle
         function pm = fromUITable(data)
             % FROMUITABLE  Build a map from a VNA-tab uitable's Data. Accepts a
             % MATLAB table with variables Port, Direction, Role and optionally
-            % GainFile, GainColumn (extra columns are ignored).
+            % GainFile, GainColumn (extra columns are ignored; gain on a
+            % non-Reference row is dropped).
             T = data;
             if ~istable(T)
                 error("PortMap:BadUITable", ...
@@ -412,6 +446,11 @@ classdef PortMap < handle
             if any(strcmpi(T.Properties.VariableNames, "GainColumn"))
                 gc = string(T.GainColumn);
             end
+            % Blank cells come back as <missing>; a gain file only applies to
+            % a Reference row.
+            gf(ismissing(gf)) = "";  gc(ismissing(gc)) = "";
+            notRef = ~strcmpi(rl, "Reference");
+            gf(notRef) = "";  gc(notRef) = "";
             pm = PortMap.fromPortRows(T.Port, T.Direction, rl, gf, gc);
         end
 
@@ -442,6 +481,42 @@ classdef PortMap < handle
     end
 
     methods (Access = private)
+        function L = links_(obj)
+            % Every Transmitter -> Receiver link as rows [TxPort RxPort],
+            % sorted by Tx then Rx. Each pair of used ports gives at most one
+            % link, with Either ports taking the direction their partner needs:
+            %   Transmitter + Receiver/Either -> the Transmitter drives
+            %   Receiver + Either             -> the Either port drives
+            %   Either + Either               -> the AUT drives (lower port
+            %                                    number if the roles match)
+            %   Transmitter + Transmitter, Receiver + Receiver -> no link
+            used = obj.usedPorts();
+            L = zeros(0, 2);
+            for a = 1:numel(used)
+                for b = a + 1:numel(used)
+                    p = used(a);  q = used(b);
+                    dp = lower(obj.directionAtPort(p));
+                    dq = lower(obj.directionAtPort(q));
+                    if dp == "transmitter" && any(dq == ["receiver", "either"])
+                        L(end + 1, :) = [p q]; %#ok<AGROW>
+                    elseif dq == "transmitter" && any(dp == ["receiver", "either"])
+                        L(end + 1, :) = [q p]; %#ok<AGROW>
+                    elseif dp == "either" && dq == "receiver"
+                        L(end + 1, :) = [p q]; %#ok<AGROW>
+                    elseif dq == "either" && dp == "receiver"
+                        L(end + 1, :) = [q p]; %#ok<AGROW>
+                    elseif dp == "either" && dq == "either"
+                        if strcmpi(obj.roleAtPort(q), "AUT") && ~strcmpi(obj.roleAtPort(p), "AUT")
+                            L(end + 1, :) = [q p]; %#ok<AGROW>
+                        else
+                            L(end + 1, :) = [p q]; %#ok<AGROW>
+                        end
+                    end
+                end
+            end
+            L = sortrows(L);
+        end
+
         function idx = indexOfPort_(obj, port)
             idx = [];
             if isempty(obj.Ports), return; end

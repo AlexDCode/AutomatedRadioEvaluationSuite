@@ -171,6 +171,7 @@ classdef ARES < matlab.apps.App
         ReferenceAntennaTab             matlab.ui.container.Tab
         RefAntGridLayout                matlab.ui.container.GridLayout
         ClearReferenceButton            matlab.ui.control.Button
+        ReferenceViewDropDown           matlab.ui.control.DropDown
         ReferenceGainFileField          matlab.ui.control.EditField
         BrowseReferenceButton           matlab.ui.control.Button
         GainvsFrequencyBoresight        matlab.ui.control.UIAxes
@@ -205,6 +206,9 @@ classdef ARES < matlab.apps.App
         VNATab                          matlab.ui.container.Tab
         VNAGridLayout                   matlab.ui.container.GridLayout
         PortMapPanel                    matlab.ui.container.Panel
+        PortMapGridLayout               matlab.ui.container.GridLayout
+        PortMapHintLabel                matlab.ui.control.Label
+        PortMapGainLabel                matlab.ui.control.Label
         PortMapTable                    matlab.ui.control.Table
         AdvancedSetupButton             matlab.ui.control.Button
         SmoothingPoints                 matlab.ui.control.Spinner
@@ -217,6 +221,8 @@ classdef ARES < matlab.apps.App
         SweepPointsLabel                matlab.ui.control.Label
         Table                           matlab.ui.container.Tab
         TableGridLayout                 matlab.ui.container.GridLayout
+        ThetaRangeDropDown              matlab.ui.control.DropDown
+        ThetaRangeDropDownLabel         matlab.ui.control.Label
         StopTableButton                 matlab.ui.control.Button
         TableNewAngle                   matlab.ui.control.NumericEditField
         MovetoAngleButton               matlab.ui.control.Button
@@ -297,8 +303,11 @@ classdef ARES < matlab.apps.App
         PlotGridOnOffButton             matlab.ui.control.Button
         LoadSaveConfigurationsTab       matlab.ui.container.Tab
         GridLayout26                    matlab.ui.container.GridLayout
-        AntennaMeasurementConfigurationsLabel  matlab.ui.control.Label
+        AntennaConfigPanel              matlab.ui.container.Panel
+        AntennaConfigGridLayout         matlab.ui.container.GridLayout
+        ConfigLoadStatusLabel           matlab.ui.control.Label
         LoadConfigurationButton         matlab.ui.control.Button
+        ConfigSaveStatusLabel           matlab.ui.control.Label
         SaveConfigurationButton         matlab.ui.control.Button
     end
 
@@ -354,6 +363,13 @@ classdef ARES < matlab.apps.App
         function PSUChangeModeHandle(app)
             % Public handle function to execute callback.
             app.PSUChangeMode();
+        end
+
+        function offset_m = antennaOffset(app)
+            % Fixed antenna offset (m) added to the linear slider spacing.
+            % Public so support functions (e.g. the results-file header) can
+            % read the otherwise private offsetSpacing.
+            offset_m = app.offsetSpacing;
         end
 
         function displayError(app, ME)
@@ -619,6 +635,9 @@ classdef ARES < matlab.apps.App
                     app.ThetaDropDown.Value = thetaStrings(1);
                     app.PhiDropDown.Items = phiStrings;
                     app.PhiDropDown.Value = phiStrings(1);
+
+                    % Gain patterns present in the data (gain columns / paths).
+                    updateGainTypeDropDown(app);
                 end
             catch ME
                 app.displayError(ME);
@@ -1752,7 +1771,10 @@ classdef ARES < matlab.apps.App
             
             try
                 writeline(app.EMCenter, sprintf('1A:SPEED %d', app.TableSpeedSlider.Value));
-                writeline(app.EMCenter, sprintf('1A:SK %d', app.TableNewAngle.Value));
+                % Convert to the turntable's angle range (Table tab dropdown).
+                cmdAngle = AntennaPositioner.thetaCommandAngle(app.TableNewAngle.Value, ...
+                    AntennaMeasurementConfig.thetaRangeFromApp(app));
+                writeline(app.EMCenter, sprintf('1A:SK %d', round(cmdAngle)));
                 status = writeread(app.EMCenter,"1A:*OPC?");
                 status = str2double(strtrim(status));
 
@@ -1829,7 +1851,7 @@ classdef ARES < matlab.apps.App
 
         % Button pushed function: StartTestButton
         function AntennaStartMeasurement(app, event)
-            % This function validates that the start and end frequencies of the VNA are set and distinct, that 
+            % This function validates that the start and end frequencies of the VNA are set (end >= start), that
             % the number of sweep points is specified, and that the antenna physical size is provided. The 
             % function then calls the runAntennaMeasurement function to start the antenna pattern measurement. 
 
@@ -1855,12 +1877,15 @@ classdef ARES < matlab.apps.App
                 % Magnitude S22: Trace 5
                 % Phase S22: Trace 6
 
-                traceIndex = 1;  
+                % Smoothing of 1 means off, and a 1-point sweep is never smoothed.
+                smoothingOn = AntennaMeasurementConfig.smoothingOn(app.SmoothingPoints.Value, app.VNASweepPoints.Value);
+
+                traceIndex = 1;
                 for i = 1:length(measLabels)
                     % Magnitude smoothing.
                     writeline(app.VNA, sprintf('CALC1:PAR:MNUM %d', traceIndex));
 
-                    if app.SmoothingPoints.Value ~= 0
+                    if smoothingOn
                         writeline(app.VNA, 'CALC1:SMO:STAT ON');
                         writeline(app.VNA, sprintf('CALC1:SMO:POIN %g', app.SmoothingPoints.Value));
                     else
@@ -1871,7 +1896,7 @@ classdef ARES < matlab.apps.App
                     traceIndex = traceIndex + 1;
                     writeline(app.VNA, sprintf('CALC1:PAR:MNUM %d', traceIndex));
 
-                    if app.SmoothingPoints.Value ~= 0
+                    if smoothingOn
                         writeline(app.VNA, 'CALC1:SMO:STAT ON');
                         writeline(app.VNA, sprintf('CALC1:SMO:APER %g', app.SmoothingPoints.Value));
                     else
@@ -1931,6 +1956,13 @@ classdef ARES < matlab.apps.App
                 app.ThetaDropDown.Value = app.ThetaDropDown.Items(1);
                 app.PhiDropDown.Value = app.PhiDropDown.Items(1);
                 app.FrequencyMHzDropDown.Value = app.FrequencyMHzDropDown.Items(1);
+
+                % Gain patterns present in the data (gain columns / paths).
+                updateGainTypeDropDown(app);
+
+                % n-port files also feed the Multi-port Measurements tab.
+                updateNPortPlotDropdowns(app);
+                plotNPortAntenna(app);
 
                 % Replot automatically.
                 plotAntenna2DRadiationPattern(app);
@@ -2008,6 +2040,10 @@ classdef ARES < matlab.apps.App
                 [~, filename, ext] = fileparts(app.ReferenceGainFilePath);
                 app.ReferenceGainFileField.Value = [filename, ext];
                 plotReferenceAntenna(app);
+
+                % Offer the spacing the reference was measured at, if its
+                % file header records one that differs from the current setup.
+                checkReferenceSpacing(app, app.ReferenceGainFilePath);
             catch ME
                 app.displayError(ME);
             end
@@ -2021,8 +2057,6 @@ classdef ARES < matlab.apps.App
 
             try
                 % Only clear if values exist.
-                cla(app.GainvsFrequencyBoresight);
-                cla(app.ReturnLossBoresight);
                 if ~isempty(app.ReferenceGainFile)
                     app.ReferenceGainFile = [];
                 end
@@ -2034,6 +2068,9 @@ classdef ARES < matlab.apps.App
                 if ~strcmp(app.ReferenceGainFileField.Value, '')
                     app.ReferenceGainFileField.Value = '';
                 end
+
+                % Redraw: any port-map reference files stay on the plot.
+                plotReferenceAntenna(app);
             catch ME
                 app.displayError(ME);
             end
@@ -2300,6 +2337,7 @@ classdef ARES < matlab.apps.App
             try
                 cfg = AntennaMeasurementConfig.loadFromJSON(fullfile(path, file));
                 cfg.applyToApp(app);                          % populate the UI fields
+                app.ConfigLoadStatusLabel.Text = ['Last Loaded: ', file];
                 cfg.validate(app.UIFigure);                   % alert if the file is invalid
             catch ME
                 uialert(app.UIFigure, ME.message, 'Config Load Failed');
@@ -2313,6 +2351,7 @@ classdef ARES < matlab.apps.App
             try
                 cfg = AntennaMeasurementConfig.fromApp(app);  % snapshot current UI
                 cfg.saveToJSON(fullfile(path, file));
+                app.ConfigSaveStatusLabel.Text = ['Last Saved: ', file];
             catch ME
                 uialert(app.UIFigure, ME.message, 'Config Save Failed');
             end
@@ -2320,17 +2359,121 @@ classdef ARES < matlab.apps.App
 
         % Button pushed function: AdvancedSetupButton
         function OpenPortMap(app, event)
+            % Show or hide the port map. Hiding it only collapses the panel:
+            % a filled-in table is still used by the next measurement.
+            if strcmp(app.PortMapPanel.Visible, 'on')
+                app.PortMapPanel.Visible = 'off';
+                app.AdvancedSetupButton.Text = 'Advanced Setup';
+                return;
+            end
             app.PortMapPanel.Visible = 'on';
-            app.PortMapTable.Visible = 'on';
+            app.AdvancedSetupButton.Text = 'Hide Advanced Setup';
             if isempty(app.PortMapTable.Data)
-                app.PortMapTable.Data = PortMap(4).toPortRows();   % 4 = your VNA's port count
-                app.PortMapTable.ColumnEditable = [false true true];
+                setPortMapTable(app, PortMap(4));   % 4 = your VNA's port count
+            end
+        end
+
+        % Cell edit callback: PortMapTable
+        function PortMapTableCellEdit(app, event)
+            % A port that stops being a Reference loses its gain file; keep
+            % the summary under the table in step.
+            try
+                updatePortMapGainSummary(app);
+            catch ME
+                app.displayError(ME);
+            end
+        end
+
+        % Cell selection callback: PortMapTable
+        function PortMapTableCellSelection(app, event)
+            % Clicking a Reference row's Gain cell picks that port's own
+            % reference gain file (an ARES measurement file). If the file has
+            % more than one gain column, the user picks which one. Clicking a
+            % cell that already has a file offers to replace or clear it. The
+            % table shows the file name; the full path and column are kept in
+            % PortMapTable.UserData (see setPortMapTable).
+            try
+                if isempty(event.Indices), return; end
+                row = event.Indices(end, 1);
+                col = event.Indices(end, 2);
+                T = app.PortMapTable.Data;
+                if ~istable(T) || col ~= find(strcmp(T.Properties.VariableNames, 'GainFile')), return; end
+                if string(T.Role(row)) ~= "Reference"
+                    uialert(app.UIFigure, 'Set this port''s Role to Reference before picking a gain file.', ...
+                        'Not a Reference Port', 'Icon', 'info');
+                    return;
+                end
+
+                port  = T.Port(row);
+                store = app.PortMapTable.UserData;
+                if ~isstruct(store), store = struct('Port', {}, 'File', {}, 'Column', {}); end
+                mine  = [store.Port] == port;
+
+                if any(mine)
+                    choice = uiconfirm(app.UIFigure, sprintf('Port %d uses %s.', port, store(mine).File), ...
+                        'Reference Gain File', 'Options', {'Replace', 'Clear', 'Cancel'}, ...
+                        'DefaultOption', 1, 'CancelOption', 3);
+                    if strcmp(choice, 'Cancel'), return; end
+                    if strcmp(choice, 'Clear')
+                        app.PortMapTable.UserData = store(~mine);
+                        T.GainFile(row) = "";
+                        app.PortMapTable.Data = T;
+                        updatePortMapGainSummary(app);
+                        return;
+                    end
+                end
+
+                [file, path] = uigetfile({'*.csv;*.xls;*.xlsx', 'ARES Data Files (*.csv, *.xls, *.xlsx)'}, ...
+                    sprintf('Reference gain file for port %d', port));
+                figure(app.UIFigure);   % bring the app back in front of the dialog
+                if isequal(file, 0), return; end
+                full = string(fullfile(path, file));
+
+                [~, ~, cols] = readReferenceGainFile(full);
+                if isempty(cols)
+                    uialert(app.UIFigure, 'That file has no gain column.', 'No Gain Data');
+                    return;
+                end
+                % Offer "Gain (dBi)" first; uiconfirm has room for three plus Cancel.
+                hit = strcmpi(regexprep(cols, '[^0-9A-Za-z]', ''), "GaindBi");
+                cols = [cols(hit), cols(~hit)];
+                pickCol = cols(1);
+                if numel(cols) > 1
+                    options = [cellstr(cols(1:min(3, end))), {'Cancel'}];
+                    pickCol = uiconfirm(app.UIFigure, sprintf('Which gain column in %s is port %d''s gain?', file, port), ...
+                        'Gain Column', 'Options', options, 'DefaultOption', 1, 'CancelOption', numel(options));
+                    if strcmp(pickCol, 'Cancel'), return; end
+                    pickCol = string(pickCol);
+                end
+
+                store = store(~mine);
+                store(end + 1) = struct('Port', port, 'File', full, 'Column', pickCol);
+                app.PortMapTable.UserData = store;
+                T.GainFile(row) = string(file);
+                app.PortMapTable.Data = T;
+                updatePortMapGainSummary(app);
+
+                % Offer the spacing the reference was measured at, if its
+                % file header records one that differs from the current setup.
+                checkReferenceSpacing(app, full);
+            catch ME
+                app.displayError(ME);
             end
         end
 
         % Value changed function: NPortQuantityDropDown
         function NPortQuantityDropDownValueChanged(app, event)
             plotNPortAntenna(app);
+        end
+
+        % Value changed function: ReferenceViewDropDown
+        function ReferenceViewDropDownValueChanged(app, event)
+            % Show the reference antenna picked in the dropdown (or all).
+            try
+                plotReferenceAntenna(app);
+            catch ME
+                app.displayError(ME);
+            end
         end
     end
 

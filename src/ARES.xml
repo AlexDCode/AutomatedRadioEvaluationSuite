@@ -2,7 +2,7 @@
 <MATLABApp schemaVersion='1.0.0' release='R2026b.0' minRelease='R2026b'>
     <UIFigure name='UIFigure'>
         <CloseRequestFcn>closeupFcn</CloseRequestFcn>
-        <Icon>'./assets/ARES Icon.png'</Icon>
+        <Icon>'././././assets/ARES Icon.png'</Icon>
         <Name>'Automated Radio Evaluation Suite'</Name>
         <NumberTitle>'on'</NumberTitle>
         <Position>[100 100 1300 800]</Position>
@@ -26,7 +26,7 @@
                                         <RowHeight>{'1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x'}</RowHeight>
                                         <Children>
                                             <Image name='Logo'>
-                                                <ImageSource>'./assets/ARES Icon.png'</ImageSource>
+                                                <ImageSource>'././././assets/ARES Icon.png'</ImageSource>
                                                 <Layout>
                                                     <Column>1</Column>
                                                     <Row>[1 4]</Row>
@@ -49,11 +49,11 @@
                                                     <Column>[2 4]</Column>
                                                     <Row>[3 4]</Row>
                                                 </Layout>
-                                                <Text>{'Author: Jose Abrahan Bolaños Vargas'; 'Mentor: Alex D. Santiago Vargas'; 'PI: Dimitrios Peroulis'; 'Adaptive Radio Electronics and Sensors (ARES) Group'}</Text>
+                                                <Text>{'Authors: Jose Abrahan Bolaños Vargas, Joe Kritenbrink'; 'Mentor: Alex D. Santiago Vargas'; 'PI: Dimitrios Peroulis'; 'Adaptive Radio Electronics and Sensors (ARES) Group'}</Text>
                                             </Label>
                                             <Image name='Docs'>
                                                 <AltText>'Documentation'</AltText>
-                                                <ImageSource>'./assets/logo-dark.svg'</ImageSource>
+                                                <ImageSource>'././././assets/logo-dark.svg'</ImageSource>
                                                 <Layout>
                                                     <Column>[1 2]</Column>
                                                     <Row>[11 12]</Row>
@@ -62,7 +62,7 @@
                                             </Image>
                                             <Image name='Repo'>
                                                 <AltText>'Github Repository'</AltText>
-                                                <ImageSource>'./assets/github-mark.svg'</ImageSource>
+                                                <ImageSource>'././././assets/github-mark.svg'</ImageSource>
                                                 <Layout>
                                                     <Column>[3 4]</Column>
                                                     <Row>[11 12]</Row>
@@ -1280,7 +1280,7 @@
                                                         <Title>'VNA'</Title>
                                                         <Children>
                                                             <GridLayout name='VNAGridLayout'>
-                                                                <RowHeight>{25, 25, 25, 25, 25, 25, 25, '1x'}</RowHeight>
+                                                                <RowHeight>{25, 25, 25, 25, 25, '1x'}</RowHeight>
                                                                 <Scrollable>'on'</Scrollable>
                                                                 <Children>
                                                                     <Label name='SweepPointsLabel'>
@@ -1354,25 +1354,58 @@
                                                                         <ButtonPushedFcn>OpenPortMap</ButtonPushedFcn>
                                                                         <Layout>
                                                                             <Column>[1 2]</Column>
-                                                                            <Row>6</Row>
+                                                                            <Row>5</Row>
                                                                         </Layout>
                                                                         <Text>'Advanced Setup'</Text>
                                                                     </Button>
                                                                     <Panel name='PortMapPanel'>
+                                                                        <BorderType>'none'</BorderType>
+                                                                        <FontWeight>'bold'</FontWeight>
                                                                         <Layout>
                                                                             <Column>[1 2]</Column>
-                                                                            <Row>8</Row>
+                                                                            <Row>6</Row>
                                                                         </Layout>
+                                                                        <Title>'Port Map'</Title>
                                                                         <Visible>'off'</Visible>
                                                                         <Children>
-                                                                            <Table name='PortMapTable'>
-                                                                                <ColumnEditable>[false true true]</ColumnEditable>
-                                                                                <ColumnName>{'Port'; 'Direction'; 'Role'}</ColumnName>
-                                                                                <Position>[1 -363 290 359]</Position>
-                                                                                <RowName>{}</RowName>
-                                                                                <RowStriping>'off'</RowStriping>
-                                                                                <Visible>'off'</Visible>
-                                                                            </Table>
+                                                                            <GridLayout name='PortMapGridLayout'>
+                                                                                <ColumnWidth>{'1x'}</ColumnWidth>
+                                                                                <Padding>[0 0 0 0]</Padding>
+                                                                                <RowHeight>{'fit', 'fit', 'fit', '1x'}</RowHeight>
+                                                                                <Children>
+                                                                                    <Table name='PortMapTable'>
+                                                                                        <CellEditCallback>PortMapTableCellEdit</CellEditCallback>
+                                                                                        <CellSelectionCallback>PortMapTableCellSelection</CellSelectionCallback>
+                                                                                        <ColumnEditable>[false true true false]</ColumnEditable>
+                                                                                        <ColumnName>{'Port'; 'Direction'; 'Role'; 'Gain'}</ColumnName>
+                                                                                        <ColumnWidth>{38, 98, 86, '1x'}</ColumnWidth>
+                                                                                        <Layout>
+                                                                                            <Column>1</Column>
+                                                                                            <Row>1</Row>
+                                                                                        </Layout>
+                                                                                        <RowName>{}</RowName>
+                                                                                        <RowStriping>'off'</RowStriping>
+                                                                                    </Table>
+                                                                                    <Label name='PortMapGainLabel'>
+                                                                                        <Layout>
+                                                                                            <Column>1</Column>
+                                                                                            <Row>2</Row>
+                                                                                        </Layout>
+                                                                                        <Text>''</Text>
+                                                                                        <Visible>'off'</Visible>
+                                                                                        <WordWrap>'on'</WordWrap>
+                                                                                    </Label>
+                                                                                    <Label name='PortMapHintLabel'>
+                                                                                        <FontAngle>'italic'</FontAngle>
+                                                                                        <Layout>
+                                                                                            <Column>1</Column>
+                                                                                            <Row>3</Row>
+                                                                                        </Layout>
+                                                                                        <Text>'Click a Reference port''s Gain cell to choose its gain file.'</Text>
+                                                                                        <WordWrap>'on'</WordWrap>
+                                                                                    </Label>
+                                                                                </Children>
+                                                                            </GridLayout>
                                                                         </Children>
                                                                     </Panel>
                                                                 </Children>
@@ -1383,7 +1416,7 @@
                                                         <Title>'Table'</Title>
                                                         <Children>
                                                             <GridLayout name='TableGridLayout'>
-                                                                <RowHeight>{50, 25, 25, 25, 25, 25, 25, '1x'}</RowHeight>
+                                                                <RowHeight>{50, 25, 25, 25, 25, 25, 25, 25, '1x'}</RowHeight>
                                                                 <Scrollable>'on'</Scrollable>
                                                                 <Children>
                                                                     <Label name='TableSpeedSliderLabel'>
@@ -1487,6 +1520,21 @@
                                                                         </Layout>
                                                                         <Text>'Stop Table'</Text>
                                                                     </Button>
+                                                                    <Label name='ThetaRangeDropDownLabel'>
+                                                                        <Layout>
+                                                                            <Column>1</Column>
+                                                                            <Row>8</Row>
+                                                                        </Layout>
+                                                                        <Text>'Turntable Range (°)'</Text>
+                                                                    </Label>
+                                                                    <DropDown name='ThetaRangeDropDown' label='ThetaRangeDropDownLabel'>
+                                                                        <Items>{'-180 to 180', '0 to 360'}</Items>
+                                                                        <Layout>
+                                                                            <Column>2</Column>
+                                                                            <Row>8</Row>
+                                                                        </Layout>
+                                                                        <Value>'-180 to 180'</Value>
+                                                                    </DropDown>
                                                                 </Children>
                                                             </GridLayout>
                                                         </Children>
@@ -1737,15 +1785,15 @@
                                                                             <Column>1</Column>
                                                                             <Row>1</Row>
                                                                         </Layout>
-                                                                        <Text>'Plot Type'</Text>
+                                                                        <Text>'Gain'</Text>
                                                                     </Label>
                                                                     <DropDown name='GainTypeDropDown' label='PlotTypeDropDownLabel'>
-                                                                        <Items>{'Realized Gain', 'Absolute Gain'}</Items>
+                                                                        <Items>{'No gain data'}</Items>
                                                                         <Layout>
                                                                             <Column>2</Column>
                                                                             <Row>1</Row>
                                                                         </Layout>
-                                                                        <Value>'Realized Gain'</Value>
+                                                                        <Value>'No gain data'</Value>
                                                                         <ValueChangedFcn>AntennaSelectedPlotTypeValue</ValueChangedFcn>
                                                                     </DropDown>
                                                                     <Label name='FrequencyMHzDropDownLabel_2'>
@@ -1878,10 +1926,20 @@
                                                                     <EditField name='ReferenceGainFileField'>
                                                                         <Editable>'off'</Editable>
                                                                         <Layout>
-                                                                            <Column>[2 3]</Column>
+                                                                            <Column>2</Column>
                                                                             <Row>3</Row>
                                                                         </Layout>
                                                                     </EditField>
+                                                                    <DropDown name='ReferenceViewDropDown'>
+                                                                        <Items>{'No reference loaded'}</Items>
+                                                                        <Layout>
+                                                                            <Column>3</Column>
+                                                                            <Row>3</Row>
+                                                                        </Layout>
+                                                                        <Tooltip>'Which reference antenna to plot'</Tooltip>
+                                                                        <Value>'No reference loaded'</Value>
+                                                                        <ValueChangedFcn>ReferenceViewDropDownValueChanged</ValueChangedFcn>
+                                                                    </DropDown>
                                                                     <Button name='ClearReferenceButton'>
                                                                         <ButtonPushedFcn>ClearReferenceGainFile</ButtonPushedFcn>
                                                                         <Layout>
@@ -1989,7 +2047,7 @@
                                                         <Title>'Multi-port Measurements'</Title>
                                                         <Children>
                                                             <UIAxes name='NPortPlot'>
-                                                                <Position>[9 -703 914 689]</Position>
+                                                                <Position>[11 2 914 689]</Position>
                                                                 <Title>
                                                                     <String>'N Port Antenna Results'</String>
                                                                 </Title>
@@ -2045,7 +2103,6 @@
                             </Tab>
                             <Tab name='SettingsTab'>
                                 <Title>'Settings'</Title>
-                                <Tooltip>''</Tooltip>
                                 <Children>
                                     <GridLayout name='SettingsGridLayout'>
                                         <ColumnWidth>{'1x'}</ColumnWidth>
@@ -2219,34 +2276,61 @@
                                                         <Title>'Load/Save Configurations'</Title>
                                                         <Children>
                                                             <GridLayout name='GridLayout26'>
-                                                                <RowHeight>{'1x', 67, 67, '15x'}</RowHeight>
+                                                                <ColumnWidth>{'1x'}</ColumnWidth>
+                                                                <RowHeight>{'1x'}</RowHeight>
                                                                 <Children>
-                                                                    <Button name='SaveConfigurationButton'>
-                                                                        <ButtonPushedFcn>saveConfigButtonPushed</ButtonPushedFcn>
-                                                                        <Layout>
-                                                                            <Column>1</Column>
-                                                                            <Row>2</Row>
-                                                                        </Layout>
-                                                                        <Text>'Save Configuration'</Text>
-                                                                    </Button>
-                                                                    <Button name='LoadConfigurationButton'>
-                                                                        <ButtonPushedFcn>LoadConfigButtonPushed</ButtonPushedFcn>
-                                                                        <Layout>
-                                                                            <Column>1</Column>
-                                                                            <Row>3</Row>
-                                                                        </Layout>
-                                                                        <Text>'Load Configuration'</Text>
-                                                                    </Button>
-                                                                    <Label name='AntennaMeasurementConfigurationsLabel'>
-                                                                        <FontSize>14</FontSize>
+                                                                    <Panel name='AntennaConfigPanel'>
+                                                                        <BorderType>'none'</BorderType>
                                                                         <FontWeight>'bold'</FontWeight>
-                                                                        <HorizontalAlignment>'center'</HorizontalAlignment>
                                                                         <Layout>
                                                                             <Column>1</Column>
                                                                             <Row>1</Row>
                                                                         </Layout>
-                                                                        <Text>'Antenna Measurement Configurations:'</Text>
-                                                                    </Label>
+                                                                        <Title>'Antenna Measurement Configurations'</Title>
+                                                                        <Children>
+                                                                            <GridLayout name='AntennaConfigGridLayout'>
+                                                                                <ColumnWidth>{'1x', '1x', '1x', '1x', '1x'}</ColumnWidth>
+                                                                                <Padding>[0 10 0 0]</Padding>
+                                                                                <RowHeight>{'1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x'}</RowHeight>
+                                                                                <Children>
+                                                                                    <Button name='SaveConfigurationButton'>
+                                                                                        <ButtonPushedFcn>saveConfigButtonPushed</ButtonPushedFcn>
+                                                                                        <Layout>
+                                                                                            <Column>1</Column>
+                                                                                            <Row>1</Row>
+                                                                                        </Layout>
+                                                                                        <Text>'Save Configuration'</Text>
+                                                                                    </Button>
+                                                                                    <Label name='ConfigSaveStatusLabel'>
+                                                                                        <HorizontalAlignment>'center'</HorizontalAlignment>
+                                                                                        <Layout>
+                                                                                            <Column>2</Column>
+                                                                                            <Row>1</Row>
+                                                                                        </Layout>
+                                                                                        <Text>'Last Saved: None'</Text>
+                                                                                        <WordWrap>'on'</WordWrap>
+                                                                                    </Label>
+                                                                                    <Button name='LoadConfigurationButton'>
+                                                                                        <ButtonPushedFcn>LoadConfigButtonPushed</ButtonPushedFcn>
+                                                                                        <Layout>
+                                                                                            <Column>1</Column>
+                                                                                            <Row>2</Row>
+                                                                                        </Layout>
+                                                                                        <Text>'Load Configuration'</Text>
+                                                                                    </Button>
+                                                                                    <Label name='ConfigLoadStatusLabel'>
+                                                                                        <HorizontalAlignment>'center'</HorizontalAlignment>
+                                                                                        <Layout>
+                                                                                            <Column>2</Column>
+                                                                                            <Row>2</Row>
+                                                                                        </Layout>
+                                                                                        <Text>'Last Loaded: None'</Text>
+                                                                                        <WordWrap>'on'</WordWrap>
+                                                                                    </Label>
+                                                                                </Children>
+                                                                            </GridLayout>
+                                                                        </Children>
+                                                                    </Panel>
                                                                 </Children>
                                                             </GridLayout>
                                                         </Children>

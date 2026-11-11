@@ -30,25 +30,27 @@ function plotAntenna3DRadiationPattern(app)
             delete(cb);
         end
 
-        % n-port (long/tidy) data is pivoted to the legacy wide shape for the
-        % selected gain path; legacy wide data passes through unchanged.
-        data = antennaPlotData(app);
+        % The pattern picked in the Gain dropdown. A 3D surface shows one
+        % pattern, so "All (overlay)" shows the first and says which.
+        series = selectedPlotSeries(app);
+        if isempty(series), return; end
+        if numel(series) > 1
+            app.RadiationPlot3DLabel.Text = sprintf('Showing %s (3D shows one pattern at a time).', series(1).Label);
+        end
+        series = series(1);
+        data = series.Data;
 
         % Specified frequency plotting index.
         if ~isempty(app.FrequencyMHzDropDown.Value)
             idx_freq = (data.FrequencyMHz==str2double(app.FrequencyMHzDropDown.Value));
-        else 
+        else
             return;
         end
 
         % Extract theta, phi, and gain values for specified frequency.
         thetaValues = data.Thetadeg(idx_freq);
         phiValues   = data.Phideg(idx_freq);
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            gainValues  = data.GaindBi(idx_freq);
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            gainValues  = data.AbsoluteGaindBi(idx_freq);
-        end
+        gainValues  = data.Value(idx_freq);
 
         % Ensure wrapped angles are consistent.
         if ismember(-180, thetaValues) && ismember(180, thetaValues)
@@ -90,11 +92,7 @@ function plotAntenna3DRadiationPattern(app)
         createAntenna3DRadiationPattern(ax, gainMatrix, uniqueTheta, uniquePhi);
         cb = colorbar('peer', ax);
         axis(ax, 'tight');
-        if app.GainTypeDropDown.Value == "Realized Gain"
-            ylabel(cb, 'Realized Gain (dBi)');
-        elseif app.GainTypeDropDown.Value == "Absolute Gain"
-            ylabel(cb, 'Absolute Gain (dBi)');
-        end
+        ylabel(cb, series.Label);
 
         % Improves the plot appearance, line thickness can be modified.
         improveAxesAppearance(app, ax, 'LineThickness', 2);

@@ -4,8 +4,8 @@ function isValid = validateAntennaMeasurement(app)
     % This function performs the following validation checks on the antenna test setup.
     %
     %   - Whether the VNA, EMCenter, and EMSlider are connected.
-    %   - Whether the start and end frequencies are specified and not equal.
-    %   - Whether the number of sweep points is defined.
+    %   - Whether the start and end frequencies are specified (end >= start; equal means a single frequency).
+    %   - Whether the number of sweep points and smoothing points are valid.
     %   - Whether the antenna's physical size is specified.
     %   - Whether the turntable scan settings (mode, start angle, step angle, end angle) are configured.
     %   - Whether the tower scan settings (mode, start angle, step angle, end angle) are configured.
@@ -41,23 +41,12 @@ function isValid = validateAntennaMeasurement(app)
         return;
     end
 
-    % Check if start and end frequencies are set and different.
-    if isempty(startFrequency) || isempty(endFrequency) || (startFrequency == endFrequency)
-        uialert(app.UIFigure, 'Invalid frequency values. Start and end frequencies must be set and different.', 'Invalid Frequency Settings');
-        isValid = false;
-        return;
-    end
-
-    % Check if the number of sweep points is set.
-    if isempty(sweepPoints)
-        uialert(app.UIFigure, 'Number of sweep points is not set.', 'Invalid Sweep Points');
-        isValid = false;
-        return;
-    end
-
-    % Check if the smoothing points are valid
-    if isempty(app.SmoothingPoints) || (app.SmoothingPoints.Value/sweepPoints > 0.25)
-        uialert(app.UIFigure, 'Number of smoothing points is invalid. Has to be less than 25% of the number of sweep points', 'Invalid Sweep Points');
+    % Check the frequencies, sweep points and smoothing points. Start and end
+    % may be equal (single frequency), and a 1-point sweep runs unsmoothed.
+    [sweepOk, sweepTitle, sweepMsg] = AntennaMeasurementConfig.checkSweep( ...
+        startFrequency, endFrequency, sweepPoints, app.SmoothingPoints.Value);
+    if ~sweepOk
+        uialert(app.UIFigure, sweepMsg, sweepTitle);
         isValid = false;
         return;
     end

@@ -25,16 +25,10 @@ function runNPortAntennaMeasurement(app, cfg)
     portMap = cfg.PortMapping;
     spacing = app.setupSpacing;
 
-    % Opt-in trace auto-creation (off unless a UI toggle exists and is set).
-    autoCreate = false;
-    if isprop(app, 'PortMapAutoCreateTraces')
-        autoCreate = logical(app.PortMapAutoCreateTraces.Value);
-    end
-
     % Angular grid (reuse the shared position-table builder).
     tableAngles = cfg.tableAngles();
     towerAngles = cfg.towerAngles();
-    parametersTable = createAntennaParametersTable(tableAngles, towerAngles);
+    parametersTable = createAntennaParametersTable(tableAngles, towerAngles, cfg.ThetaRange);
     if ~any(parametersTable.("Theta (deg)") == 0 & parametersTable.("Phi (deg)") == 0)
         zeroRef = table(0, 0, 'VariableNames', ["Theta (deg)", "Phi (deg)"]);
         parametersTable = [zeroRef; parametersTable];
@@ -45,13 +39,25 @@ function runNPortAntennaMeasurement(app, cfg)
     names    = portMap.sparamsNeeded();
     refGains = loadReferenceGains_(portMap);
 
+    % Reference ports but no gain file on any of them: confirm before anything
+    % moves, since the run would save no gain. (A map with no Reference ports,
+    % e.g. an AUT-only reciprocity test, is not expected to give gain.)
+    if ~isempty(portMap.referencePorts()) && refGains.Count == 0 && ~confirmRunWithoutGain(app)
+        return;
+    end
+
     resultsTable = createNPortResultsTable();
 
     try
         vna = aresInstrument(app.VNA, "VNA");
+        % Create whatever S-parameter traces the port map needs, once, before
+        % the turntable moves, so a VNA that can't measure one fails up front.
+        vna.ensureTraces(names);
+
         pos = AntennaPositioner(aresInstrument(app.EMCenter, "Chamber"));
         pos.PollDelaySec = app.AntennaMeasurementDelayValueField.Value;
         pos.TimeoutSec   = 600;
+        pos.ThetaRange   = cfg.ThetaRange;
         pos.setSpeeds(app.TableSpeedSlider.Value, app.TowerSpeedSlider.Value);
 
         d = uiprogressdlg(app.UIFigure, 'Title', 'Measurement Progress', 'Cancelable', 'on');
@@ -71,7 +77,7 @@ function runNPortAntennaMeasurement(app, cfg)
                 string(duration(0, 0, round(totalTime))), ...
                 string(duration(0, 0, round(remainingTime))));
 
-            adjustedTheta = mod(parametersTable.("Theta (deg)")(i), 360);
+            adjustedTheta = parametersTable.("Theta (deg)")(i);   % moveTo applies ThetaRange
             adjustedPhi   = parametersTable.("Phi (deg)")(i);
 
             pos.moveTo(adjustedTheta, adjustedPhi);
@@ -82,7 +88,7 @@ function runNPortAntennaMeasurement(app, cfg)
                     choice = uiconfirm(app.UIFigure, 'Do you want to save collected data?', ...
                         'Stop Test', 'Options', {'Yes', 'No'}, 'DefaultOption', 1);
                     if strcmp(choice, 'Yes')
-                        saveAndLoad_(app, resultsTable);
+                        saveAndLoad_(app, resultsTable, portMap);
                     end
                 end
                 break;
@@ -91,7 +97,7 @@ function runNPortAntennaMeasurement(app, cfg)
             pause(app.AntennaMeasurementDelayValueField.Value);
 
             % Measure the needed complex S-parameters and derive all quantities.
-            [freqHz, S] = vna.measureComplexByName(names, 'AutoCreate', autoCreate);
+            [freqHz, S] = vna.measureComplexByName(names, 'AutoCreate', false);
             q = computeNPortQuantities(freqHz, S, portMap, spacing, refGains);
             resultsTable = appendNPortRows(resultsTable, ...
                 parametersTable.("Theta (deg)")(i), parametersTable.("Phi (deg)")(i), q);
@@ -103,7 +109,7 @@ function runNPortAntennaMeasurement(app, cfg)
             measurementEndTime = datetime('now');
             logMeasurementTime(app, 'Antenna', measurementStartTime, measurementEndTime, ...
                 measurementEndTime - measurementStartTime, totalPositions);
-            saveAndLoad_(app, resultsTable);
+            saveAndLoad_(app, resultsTable, portMap);
         end
 
         close(d);
@@ -127,14 +133,17 @@ function refGains = loadReferenceGains_(portMap)
     end
 end
 
-function saveAndLoad_(app, resultsTable)
-    % Save the long results table and reload it into the app (schema-aware
-    % processAntennaData stores it without applying the legacy field check).
+function saveAndLoad_(app, resultsTable, portMap)
+    % Save the long results table, with the setup + port map in the file's
+    % header, and reload it into the app (schema-aware processAntennaData
+    % stores it without applying the legacy field check).
     sorted = sortrows(resultsTable, ["Theta (deg)", "Phi (deg)", "Frequency (MHz)"]);
-    fullFilename = saveData(sorted);
+    fullFilename = saveData(sorted, '', buildMeasurementHeader(app, portMap));
     if ~isempty(fullFilename)
         loadData(app, 'Antenna', fullFilename);
         updateNPortPlotDropdowns(app);   % populate selectors from the data
         plotNPortAntenna(app);           % draw the default view
+        updateAntennaPlotDropdowns(app); % angles, frequencies, gain paths
+        plotAntenna2DRadiationPattern(app);
     end
 end

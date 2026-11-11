@@ -5,7 +5,8 @@ function T = nportReadWide(filename)
     % nportLongToWide / saveData) back into the LONG/tidy table the rest of
     % ARES consumes, so loading is transparent to the plots and selectors.
     %
-    % Row 1 of the file names each column's S-parameter (blank for the
+    % Any metadata block above a DATA line is skipped (readMeasurementHeader).
+    % Row 1 of the table names each column's S-parameter (blank for the
     % Theta/Phi/Frequency keys, "Port<n>" for radiation efficiency); row 2
     % names the quantity. Each data column is expanded back into long rows,
     % reconstructing Driven/Receive port and S-parameter from the column name.
@@ -18,18 +19,16 @@ function T = nportReadWide(filename)
     %       ReceivePort, SParameter, Quantity, Value.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-    fid = fopen(filename, 'r');
-    if fid == -1
-        error("nportReadWide:FileError", "Could not open %s.", filename);
+    % Skip the metadata block (through its DATA line) if the file has one.
+    [~, k, lines] = readMeasurementHeader(filename);
+    if numel(lines) < k + 2
+        error("nportReadWide:FileError", "%s has no two-row n-port header.", filename);
     end
-    l1 = fgetl(fid);
-    l2 = fgetl(fid);
-    fclose(fid);
 
-    nameRow = string(strsplit(l1, ',', 'CollapseDelimiters', false));
-    qtyRow  = string(strsplit(l2, ',', 'CollapseDelimiters', false));
+    nameRow = string(strsplit(lines(k + 1), ',', 'CollapseDelimiters', false));
+    qtyRow  = string(strsplit(lines(k + 2), ',', 'CollapseDelimiters', false));
 
-    M  = readmatrix(filename, 'NumHeaderLines', 2);   % empty cells -> NaN
+    M  = readmatrix(filename, 'NumHeaderLines', k + 2);   % empty cells -> NaN
     th = M(:, 1);  ph = M(:, 2);  fr = M(:, 3);
     nR = numel(th);
 
