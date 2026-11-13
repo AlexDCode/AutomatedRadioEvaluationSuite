@@ -21,18 +21,24 @@ classdef AntennaPositioner < handle
     %     PositionToleranceDeg of the commanded angle, on two polls in a row.
     %     (Chamber data showed measurements taken while the tower was still
     %     turning when only *OPC? was checked.)
-    %   - The EMCenter answers every action command (SK, SPEED, ST) with a
-    %     line of its own: "OK", or "ERROR n" if it refused. Those lines have
-    %     to be read. Left unread they sit in front of the next query's
-    %     answer, so *OPC? is handed the "OK" from a seek, CP? is handed the
-    %     answer to *OPC?, and so on. (That froze the 2026-11 chamber run at
-    %     its first position: the three checks could never agree. With only
-    %     *OPC? polled, the same stale answers can end a wait early.) This
-    %     class keeps replies in step with commands: after sending them it
-    %     sends SyncQuery (*IDN?) and reads up to that reply, which clears
-    %     whatever is queued no matter who sent it; a refused command is
-    %     reported; and a reply that cannot belong to its query causes one
-    %     resync before anything is concluded from it.
+    %   - The EMCenter answers EVERY command with one line: a query with its
+    %     value, an action command (SK, SPEED, ST) with "OK", or "ERROR n" if
+    %     it refused. This class therefore talks to it strictly one command
+    %     at a time: write a command, read its one reply, then send the next.
+    %     Measured on the chamber's EMCenter (firmware 3.3.16, 2026-11-13):
+    %       * Each exchange takes 10 to 110 ms and is always answered.
+    %       * A reply left unread goes wrong in two ways. If the next command
+    %         follows within a few ms the old reply is read in its place
+    %         (*OPC? is handed the "OK" from a seek, and so on), which is
+    %         what froze the 2026-11 run. If it follows later, the old reply
+    %         is thrown away.
+    %       * Sending the mainframe's *IDN? while a card reply is unread
+    %         loses one of the two. Never mix them without reading between.
+    %       * Replies are shared between programs: a second connection can be
+    %         handed this one's replies. Only one program should talk to the
+    %         EMCenter at a time.
+    %     A refused command is reported, and a reply that cannot belong to
+    %     its query is dealt with by reading the link empty and asking again.
     %   - A move the operator starts by hand (the app's Move to Angle
     %     buttons) uses waitForAxis instead: one axis, no re-send, and
     %     stopping short is not an error, so the Stop button (stopTable /
@@ -79,11 +85,6 @@ classdef AntennaPositioner < handle
         % answers +1/-1 or CW/CCW while moving, 0 or N when stopped). Set to
         % "" to skip this check.
         DirectionQuery (1,1) string = "DIR?"
-
-        % Query used to line replies back up with commands (see NOTES). Its
-        % reply must be text that no other reply can be mistaken for: not
-        % "OK", not "ERROR n", not a number. *IDN? is.
-        SyncQuery (1,1) string {mustBeNonzeroLengthText} = "*IDN?"
     end
 
     properties (SetAccess = private)
@@ -95,9 +96,6 @@ classdef AntennaPositioner < handle
         LastThetaCmd_ double = NaN  % last angle actually SENT to each axis
         LastPhiCmd_   double = NaN
 
-        % Reply bookkeeping (see settle_).
-        Unsettled_ (:,1) string = strings(0, 1)  % commands sent, answers not read yet
-        Backlog_   (:,1) string = strings(0, 1)  % lines read off the link, not handed out yet
         Odd_       (:,1) string = strings(0, 1)  % queries this controller never answers usably
         TableRefusal_ (1,1) string = ""          % how the controller refused the last seek, if it did
         TowerRefusal_ (1,1) string = ""
@@ -105,7 +103,7 @@ classdef AntennaPositioner < handle
     end
 
     properties (Constant, Access = private)
-        MaxSyncLines = 2000   % stop clearing the link after this many stale lines
+        MaxDrainLines = 50    % most stale replies read off the link in one go
     end
 
     methods
@@ -145,19 +143,16 @@ classdef AntennaPositioner < handle
             % SETSPEEDS  Set turntable and tower speed (percent of maximum).
             obj.send_(obj.TableAxis, AntennaPositioner.speedCommand_(tableSpeed));
             obj.send_(obj.TowerAxis, AntennaPositioner.speedCommand_(towerSpeed));
-            obj.settle_();
         end
 
         function setTableSpeed(obj, speed)
             % SETTABLESPEED  Set only the turntable speed.
             obj.send_(obj.TableAxis, AntennaPositioner.speedCommand_(speed));
-            obj.settle_();
         end
 
         function setTowerSpeed(obj, speed)
             % SETTOWERSPEED  Set only the tower speed.
             obj.send_(obj.TowerAxis, AntennaPositioner.speedCommand_(speed));
-            obj.settle_();
         end
 
         %% Motion
@@ -165,29 +160,25 @@ classdef AntennaPositioner < handle
             % MOVETHETA  Seek the turntable to an absolute angle (deg),
             % converted to the controller's ThetaRange.
             obj.sendTheta_(thetaDeg);
-            obj.settle_();
         end
 
         function movePhi(obj, phiDeg)
             % MOVEPHI  Seek the tower to an absolute angle (deg).
             obj.sendPhi_(phiDeg);
-            obj.settle_();
         end
 
         function moveTo(obj, thetaDeg, phiDeg)
             % MOVETO  Command both axes (does not block; pair with
-            % waitUntilStill). Both seeks go out back to back so the axes
-            % start together; the controller's answers are read afterwards.
+            % waitUntilStill). The tower's seek goes out as soon as the
+            % controller has answered the turntable's.
             obj.sendTheta_(thetaDeg);
             obj.sendPhi_(phiDeg);
-            obj.settle_();
         end
 
         %% Readback
         function thetaDeg = getTheta(obj)
             % GETTHETA  Current turntable angle (deg), in the measurement
             % (-180,180] range whatever ThetaRange the controller counts in.
-            obj.settle_();
             thetaDeg = AntennaPositioner.replyNumber_(obj.ask_(obj.TableAxis, ...
                 obj.PositionQuery, @(s) AntennaPositioner.isNumberReply_(s)));
             thetaDeg = AntennaPositioner.thetaMeasurementAngle(thetaDeg, obj.ThetaRange);
@@ -195,7 +186,6 @@ classdef AntennaPositioner < handle
 
         function phiDeg = getPhi(obj)
             % GETPHI  Current tower angle (deg).
-            obj.settle_();
             phiDeg = AntennaPositioner.replyNumber_(obj.ask_(obj.TowerAxis, ...
                 obj.PositionQuery, @(s) AntennaPositioner.isNumberReply_(s)));
         end
@@ -211,7 +201,6 @@ classdef AntennaPositioner < handle
             if any(lower(string(which)) == ["tower","phi"])
                 axis = obj.TowerAxis;
             end
-            obj.settle_();
             raw = obj.exchange_(sprintf("%s:%s", axis, obj.PositionQuery));
         end
 
@@ -226,10 +215,6 @@ classdef AntennaPositioner < handle
             % target, the move is re-sent once; if it stops short again, this
             % errors (AntennaPositioner:OffTarget) instead of letting a
             % measurement run at the wrong angle.
-            %
-            % The wait starts by clearing any replies still queued on the
-            % link (see NOTES), so each answer it acts on belongs to the
-            % query that asked for it.
             %
             % Name-Value:
             %   TimeoutSec - overrides obj.TimeoutSec for this wait
@@ -250,11 +235,6 @@ classdef AntennaPositioner < handle
                 opts.CancelFcn = []
                 opts.OnPoll    = []
             end
-
-            % Start in step: read off anything still queued on the link,
-            % including answers to commands other code sent (for example the
-            % app's manual move buttons).
-            obj.settle_();
 
             canceled = false;
             t0 = tic;
@@ -317,7 +297,6 @@ classdef AntennaPositioner < handle
                         obj.send_(obj.TowerAxis, sprintf("SK %d", obj.LastPhiCmd_));
                         changedB = tic;
                     end
-                    obj.settle_();
                     resent = true;
                     settledPolls = 0;
                 end
@@ -369,41 +348,28 @@ classdef AntennaPositioner < handle
             end
             [axis, target] = obj.axisFor_(which);
 
-            obj.settle_();   % start in step (see waitUntilStill)
-
-            arrived = false;
             t0 = tic;
             stoppedPolls = 0;    % consecutive polls with the axis stopped
-            sawMotion = false;   % the axis has been seen moving during this wait
-            firstPos = NaN;
+            sawMotion = false;   % the controller has reported it moving
             while true
                 if ~isempty(opts.OnPoll)
                     opts.OnPoll();
                 end
 
-                [onTarget, stopped, ~, pos, inMotion] = obj.axisState_(axis, target);
-                if isnan(firstPos), firstPos = pos; end
-                if inMotion || (isfinite(pos) && isfinite(firstPos) && pos ~= firstPos)
-                    sawMotion = true;
-                end
-
+                [arrived, stopped, ~, pos, inMotion] = obj.axisState_(axis, target);
+                sawMotion = sawMotion || inMotion;
                 if stopped
                     stoppedPolls = stoppedPolls + 1;
                 else
                     stoppedPolls = 0;
                 end
 
-                if stoppedPolls >= 2
-                    if onTarget
-                        arrived = true;
-                        return;
-                    end
-                    % Stopped somewhere else. If it had been moving, something
-                    % stopped it (the Stop button, a travel limit): done. If
-                    % it has not moved at all, give it StallSec to start.
-                    if sawMotion || toc(t0) > obj.StallSec
-                        return;
-                    end
+                % Done once it has stopped (two polls in a row) and either it
+                % is at the target, or it was moving and something stopped it
+                % (the Stop button, a travel limit), or it has had StallSec to
+                % start and never did.
+                if stoppedPolls >= 2 && (arrived || sawMotion || toc(t0) > obj.StallSec)
+                    return;
                 end
 
                 if toc(t0) > opts.TimeoutSec
@@ -431,29 +397,27 @@ classdef AntennaPositioner < handle
 
         %% Safety
         function stopAll(obj)
-            % STOPALL  Stop motion on both axes immediately. Both stops are
-            % sent before anything is read back, so nothing can hold up the
-            % second one.
-            obj.send_(obj.TableAxis, "ST");
-            obj.send_(obj.TowerAxis, "ST");
-            try
-                obj.settle_();
-            catch
-                % The stops are already sent. A controller that will not
-                % answer is reported by the next command that needs it.
+            % STOPALL  Stop motion on both axes immediately. The one place
+            % two commands go out before a reply is read: nothing may hold up
+            % the second stop. Their two answers are read straight after.
+            stops = [obj.TableAxis, obj.TowerAxis] + ":ST";
+            for cmd = stops
+                obj.EMCenter.write(cmd);
+                obj.log_(">", cmd);
+            end
+            for k = 1:numel(stops)
+                obj.log_("<", obj.readReply_());
             end
         end
 
         function stopTable(obj)
             % STOPTABLE  Stop the turntable only.
             obj.send_(obj.TableAxis, "ST");
-            obj.settle_();
         end
 
         function stopTower(obj)
             % STOPTOWER  Stop the tower only.
             obj.send_(obj.TowerAxis, "ST");
-            obj.settle_();
         end
 
         function home(obj)
@@ -550,13 +514,12 @@ classdef AntennaPositioner < handle
             end
         end
 
-        %% Commands and replies, kept in step
-        % Every line the controller sends is the answer to one command, in
-        % the order the commands arrived. The methods below make sure each
-        % answer is read by the command that caused it:
-        %   send_     action command; its "OK"/"ERROR n" answer is owed
-        %   settle_   reads everything owed (and anything stale) off the link
-        %   ask_      query; one reply, checked against what the query can say
+        %% One command, one reply
+        % The controller answers every command with one line, and stays in
+        % step only if that line is read before the next command is sent
+        % (see NOTES). Everything below goes through exchange_:
+        %   send_   action command; reads its "OK" or "ERROR n"
+        %   ask_    query; reads its reply and checks it fits the query
         function [axis, target] = axisFor_(obj, which)
             % "table"/"theta" or "tower"/"phi" -> axis ID and the last angle
             % sent to that axis.
@@ -590,136 +553,87 @@ classdef AntennaPositioner < handle
         end
 
         function send_(obj, axis, cmd)
-            % Send an action command (SK, SPEED, ST) without waiting. The
-            % controller answers each with "OK" or "ERROR n"; that answer is
-            % remembered as owed and read by the next settle_().
+            % Send an action command (SK, SPEED, ST) and read its answer:
+            % "OK", or "ERROR n" if the controller refused it.
             full = string(sprintf("%s:%s", axis, cmd));
-            obj.EMCenter.write(full);
-            obj.log_(">", full);
-            obj.Unsettled_(end+1, 1) = full;
-        end
-
-        function settle_(obj)
-            % Read off everything the controller has queued, so the next
-            % reply read is the answer to the next query sent.
-            %
-            % It sends SyncQuery and reads lines until that query's answer
-            % turns up. Whatever came before it was queued earlier: the
-            % "OK"/"ERROR n" answers to the commands sent since the last
-            % settle (the newest lines), and anything other code left unread.
-            % This needs no knowledge of which commands the controller
-            % answers, and nothing waits on a line that is not coming.
-            sent = obj.Unsettled_;
-            obj.Unsettled_ = strings(0, 1);
-
-            [queued, found] = obj.readToSync_();
-            if ~found
-                % One more try before giving up (a slow answer to the first
-                % sync is read here as a stale line).
-                [more, found] = obj.readToSync_();
-                queued = [queued; more];
+            reply = obj.exchange_(full);
+            if strlength(reply) > 0 && ~AntennaPositioner.isAckReply_(reply) ...
+                    && ~AntennaPositioner.isErrorReply_(reply)
+                % An older reply was in the way. The answer to this command
+                % is the last line still waiting behind it.
+                rest = obj.drain_();
+                if ~isempty(rest), reply = rest(end); end
             end
-            if ~found
-                error("AntennaPositioner:NoReply", ...
-                    "The positioner controller did not answer %s, so its replies cannot be " + ...
-                    "matched to the commands sent. Check the EMCenter connection. " + ...
-                    "(Read while waiting: %s)", obj.SyncQuery, AntennaPositioner.quoteList_(queued));
-            end
-
-            % The answers to our own commands are the newest lines.
-            n = min(numel(sent), numel(queued));
-            for k = 1:n
-                answer = queued(end - n + k);
-                if AntennaPositioner.isErrorReply_(answer)
-                    obj.refused_(sent(end - n + k), answer);
-                end
-            end
-        end
-
-        function [queued, found] = readToSync_(obj)
-            % Send SyncQuery and read until its answer. queued = the lines
-            % that were ahead of it. found = false if the answer never came
-            % (the read timed out, or MaxSyncLines other lines arrived).
-            queued = strings(0, 1);
-            found = false;
-            obj.EMCenter.write(obj.SyncQuery);
-            obj.log_(">", obj.SyncQuery);
-            for k = 1:obj.MaxSyncLines
-                try
-                    line = obj.nextLine_();
-                catch
-                    line = "";
-                end
-                obj.log_("<", line);
-                if strlength(line) == 0
-                    return;   % nothing more is coming
-                end
-                if AntennaPositioner.isSyncReply_(line)
-                    found = true;
-                    return;
-                end
-                queued(end+1, 1) = line; %#ok<AGROW>
+            if AntennaPositioner.isErrorReply_(reply)
+                obj.refused_(full, reply);
             end
         end
 
         function reply = ask_(obj, axis, cmd, isValid)
             % Send a query and return its reply. isValid(reply) says whether
-            % the reply is something this query can answer. If it is not (an
-            % unread "OK", someone else's answer, nothing at all), the link
-            % is out of step: clear it and ask once more. A query the
-            % controller never answers usably is remembered, so it is not
-            % resynced over on every poll.
+            % the reply is something this query can answer. "ERROR n" is the
+            % controller's answer and is returned as it is. Anything else
+            % that does not fit (an older reply, or silence) means the link
+            % is out of step: read it empty and ask once more. A query the
+            % controller keeps answering unusably is remembered, so this is
+            % not repeated on every poll.
             full = string(sprintf("%s:%s", axis, cmd));
-            if ~isempty(obj.Unsettled_)
-                obj.settle_();
-            end
-
             reply = obj.exchange_(full);
             if isValid(reply)
                 obj.Odd_(obj.Odd_ == full) = [];
                 return;
             end
-            if any(obj.Odd_ == full)
+            if AntennaPositioner.isErrorReply_(reply) || any(obj.Odd_ == full)
                 return;
             end
 
-            obj.settle_();
+            silent = strlength(reply) == 0;
+            if ~silent
+                obj.drain_();
+            end
             reply = obj.exchange_(full);
-            if ~isValid(reply)
+            if silent && strlength(reply) == 0
+                error("AntennaPositioner:NoReply", ...
+                    "The positioner controller did not answer %s (asked twice). Check the " + ...
+                    "EMCenter connection, and that no other program is connected to it.", full);
+            end
+            if ~isValid(reply) && ~AntennaPositioner.isErrorReply_(reply)
                 obj.Odd_(end+1, 1) = full;
             end
         end
 
         function reply = exchange_(obj, full)
-            % One query out, one reply line back ("" if nothing came).
+            % One command out, its one reply line back ("" if none came).
             obj.EMCenter.write(full);
             obj.log_(">", full);
-            try
-                reply = obj.nextLine_();
-            catch
-                reply = "";
-            end
+            reply = obj.readReply_();
             obj.log_("<", reply);
         end
 
-        function line = nextLine_(obj)
-            % Next reply line from the controller. A read normally carries
-            % one reply, but replies end in a carriage return and one read
-            % can deliver several, so split them and hand out one at a time.
-            if isempty(obj.Backlog_)
-                raw = string(obj.EMCenter.read());
-                parts = strings(0, 1);
-                for k = 1:numel(raw)
-                    if ismissing(raw(k)), continue; end
-                    parts = [parts; strip(split(raw(k), [string(char(13)), string(newline)]))]; %#ok<AGROW>
+        function reply = readReply_(obj)
+            % One reply line; "" if none arrives before the I/O timeout.
+            reply = "";
+            try
+                raw = strip(string(obj.EMCenter.read()));
+                if ~isempty(raw) && ~ismissing(raw(1))
+                    reply = raw(1);
                 end
-                obj.Backlog_ = parts(strlength(parts) > 0);
+            catch
+                % Timed out: nothing was waiting.
             end
-            if isempty(obj.Backlog_)
-                line = "";
-            else
-                line = obj.Backlog_(1);
-                obj.Backlog_(1) = [];
+        end
+
+        function lines = drain_(obj)
+            % Read the link empty: replies nobody collected. Stops at the
+            % first read that brings nothing (which costs one I/O timeout).
+            lines = strings(0, 1);
+            for k = 1:obj.MaxDrainLines
+                line = obj.readReply_();
+                if strlength(line) == 0
+                    return;
+                end
+                obj.log_("< (stale)", line);
+                lines(end+1, 1) = line; %#ok<AGROW>
             end
         end
 
@@ -772,14 +686,14 @@ classdef AntennaPositioner < handle
         end
 
         function tf = isOpcReply_(s)
-            % *OPC? answers 0 (in motion) or 1 (motion complete).
-            v = AntennaPositioner.replyNumber_(s);
-            tf = (v == 0) || (v == 1);
+            % *OPC? answers a bare 0 (in motion) or 1 (motion complete). A
+            % position ("0.0 DEGREES") is not accepted in its place.
+            tf = ~isempty(regexp(char(strtrim(string(s))), '^\+?[01]$', 'once'));
         end
 
         function tf = isDirReply_(s)
-            % DIR? answers a number (+1, 0, -1) or a direction word.
-            tf = ~isnan(AntennaPositioner.replyNumber_(s)) || ...
+            % DIR? answers a bare +1, 0 or -1, or a direction word.
+            tf = ~isempty(regexp(char(strtrim(string(s))), '^[+-]?[01]$', 'once')) || ...
                 any(upper(strtrim(string(s))) == ...
                     ["CW", "CCW", "UP", "DN", "DOWN", "+", "-", "N", "NONE", "STOP", "STOPPED"]);
         end
@@ -797,15 +711,6 @@ classdef AntennaPositioner < handle
             tf = startsWith(upper(strtrim(string(s))), "ERR");
         end
 
-        function tf = isSyncReply_(s)
-            % The answer to SyncQuery is the one line that is not "OK", not
-            % an error, and not a status reply (a number or direction word).
-            tf = strlength(strtrim(string(s))) > 0 ...
-                && ~AntennaPositioner.isAckReply_(s) ...
-                && ~AntennaPositioner.isErrorReply_(s) ...
-                && ~AntennaPositioner.isDirReply_(s);
-        end
-
         function v = replyNumber_(s)
             % The number a reply consists of, with an optional unit after it:
             % "1", "+1", "-90.0", "200.5 DEGREES". NaN for anything else
@@ -820,14 +725,6 @@ classdef AntennaPositioner < handle
                 'tokens', 'once');
             if ~isempty(tok)
                 v = str2double(tok{1});
-            end
-        end
-
-        function txt = quoteList_(lines)
-            if isempty(lines)
-                txt = "nothing";
-            else
-                txt = join("""" + lines(max(1, end-9):end) + """", ", ");
             end
         end
     end
