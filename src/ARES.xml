@@ -2,7 +2,7 @@
 <MATLABApp schemaVersion='1.0.0' release='R2026b.0' minRelease='R2026b'>
     <UIFigure name='UIFigure'>
         <CloseRequestFcn>closeupFcn</CloseRequestFcn>
-        <Icon>'././././assets/ARES Icon.png'</Icon>
+        <Icon>'././././././assets/ARES Icon.png'</Icon>
         <Name>'Automated Radio Evaluation Suite'</Name>
         <NumberTitle>'on'</NumberTitle>
         <Position>[100 100 1300 800]</Position>
@@ -26,7 +26,7 @@
                                         <RowHeight>{'1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x', '1x'}</RowHeight>
                                         <Children>
                                             <Image name='Logo'>
-                                                <ImageSource>'././././assets/ARES Icon.png'</ImageSource>
+                                                <ImageSource>'././././././assets/ARES Icon.png'</ImageSource>
                                                 <Layout>
                                                     <Column>1</Column>
                                                     <Row>[1 4]</Row>
@@ -53,7 +53,7 @@
                                             </Label>
                                             <Image name='Docs'>
                                                 <AltText>'Documentation'</AltText>
-                                                <ImageSource>'././././assets/logo-dark.svg'</ImageSource>
+                                                <ImageSource>'././././././assets/logo-dark.svg'</ImageSource>
                                                 <Layout>
                                                     <Column>[1 2]</Column>
                                                     <Row>[11 12]</Row>
@@ -62,7 +62,7 @@
                                             </Image>
                                             <Image name='Repo'>
                                                 <AltText>'Github Repository'</AltText>
-                                                <ImageSource>'././././assets/github-mark.svg'</ImageSource>
+                                                <ImageSource>'././././././assets/github-mark.svg'</ImageSource>
                                                 <Layout>
                                                     <Column>[3 4]</Column>
                                                     <Row>[11 12]</Row>
@@ -2355,7 +2355,7 @@
         <Description>Automated RF measurements with SCPI commands sent by VISA</Description>
         <Name>ARES</Name>
         <Summary>Automated Radio Evaluation Suite</Summary>
-        <Version>1.1</Version>
+        <Version>2.0</Version>
     </AppDetails>
     <InternalData>
         <AppId>1f3d0034-4ae8-455e-98ff-598041666353</AppId>
